@@ -340,6 +340,88 @@ p { margin: 0; line-height: 1.55; }
 
 .tag.moss { background: #dde3c8; color: var(--moss-ink); }
 .tag.amber { background: #f6dca6; color: #7c5410; }
+.tag.ba { background: var(--peach); color: var(--terracotta-ink); }
+.tag.ivex { background: #dde3c8; color: var(--moss-ink); }
+
+.head-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.seg {
+  display: inline-flex;
+  background: var(--cream-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px;
+  margin-bottom: 8px;
+  width: fit-content;
+}
+
+.seg-btn {
+  border: 0;
+  background: transparent;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--cocoa-2);
+}
+
+.seg-btn.active[data-modality="ba"] {
+  background: var(--terracotta);
+  color: var(--cream-2);
+  box-shadow: 0 8px 22px rgba(192, 115, 79, 0.32);
+}
+
+.seg-btn.active[data-modality="ivex"] {
+  background: var(--moss);
+  color: var(--cream-2);
+  box-shadow: 0 8px 22px rgba(124, 140, 91, 0.32);
+}
+
+.legend {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  font-size: 12px; color: var(--muted); align-items: center;
+}
+
+.legend-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.legend-dot.ba { background: var(--terracotta); }
+.legend-dot.ivex { background: var(--moss); }
+.legend-dot.done { background: var(--cocoa); }
+.legend-dot.goal { background: var(--amber); }
+
+.cal-cell .mark.ivex { background: var(--moss); }
+
+.stream-item.ivex { border-left: 3px solid var(--moss); }
+
+.mini-cal div.ba::after { background: var(--terracotta); }
+.mini-cal div.ivex::after { background: var(--moss); }
+
+.bubble.coach .source-pill {
+  display: inline-block;
+  margin-top: 6px;
+  margin-right: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(192,115,79,0.14);
+  color: var(--terracotta-ink);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.bubble.coach .source-pill.ivex {
+  background: rgba(124,140,91,0.18);
+  color: var(--moss-ink);
+}
 
 .primary, .ghost {
   border: 0;
@@ -468,6 +550,15 @@ p { margin: 0; line-height: 1.55; }
   width: 5px; height: 5px;
   border-radius: 50%;
   background: var(--terracotta);
+}
+
+.mini-cal div.has-ivex::before {
+  content: "";
+  position: absolute;
+  inset: auto auto 4px 4px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--moss);
 }
 
 .mini-cal div.today {

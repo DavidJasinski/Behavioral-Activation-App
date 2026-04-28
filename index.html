@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BA App — a warm space for behavioral activation</title>
+  <title>Break Free — behavioral activation + in-vivo exposure</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -12,8 +12,8 @@
       <div class="brand">
         <span class="brand-mark" aria-hidden="true"></span>
         <div>
-          <div class="brand-name">BA</div>
-          <div class="brand-sub">a warm space for action</div>
+          <div class="brand-name">Break Free</div>
+          <div class="brand-sub">activation + exposure, gently</div>
         </div>
       </div>
 
@@ -37,7 +37,7 @@
       <header class="coach-head">
         <div>
           <div class="coach-title">Coach</div>
-          <div class="coach-sub" id="coach-sub">A patient, learning companion</div>
+          <div class="coach-sub" id="coach-sub">Trained on Behavioral Activation + Graded Exposure</div>
         </div>
         <button id="close-coach" class="ghost" aria-label="Close coach">Close</button>
       </header>
@@ -50,7 +50,7 @@
         <textarea
           id="coach-input"
           rows="2"
-          placeholder="Tell me what you noticed today, or ask me to add something."
+          placeholder="Tell me what you noticed today, ask for an activation, or build an exposure step."
           aria-label="Talk to your coach"></textarea>
         <button class="primary" type="submit">Send</button>
       </form>
@@ -70,7 +70,10 @@
           <h1 id="home-greeting">Welcome back.</h1>
           <p class="lede" id="home-lede">A small, kind action counts. Choose any door below.</p>
         </div>
-        <button class="primary" data-action="quick-checkin">Quick check-in</button>
+        <div class="head-actions">
+          <button class="primary" data-action="quick-checkin">Quick check-in</button>
+          <span class="muted small" id="home-modality-stat"></span>
+        </div>
       </header>
 
       <div class="grid grid-3">
@@ -81,7 +84,11 @@
           </div>
           <h2>This week at a glance</h2>
           <div id="home-calendar" class="mini-cal"></div>
-          <div class="muted" id="home-calendar-foot">Recent + upcoming, in one breath.</div>
+          <div class="legend">
+            <span class="legend-dot ba"></span> Activation
+            <span class="legend-dot ivex"></span> Exposure
+            <span class="legend-dot goal"></span> Goal
+          </div>
         </article>
 
         <article class="card preview" data-route="create">
@@ -91,9 +98,9 @@
           </div>
           <h2>Design a small step</h2>
           <ul class="bullet" id="home-create-tips">
-            <li>Pick something small and concrete</li>
-            <li>Tie it to a value you care about</li>
-            <li>Choose a kind time of day</li>
+            <li>Behavioral activation: small, valued action</li>
+            <li>In-vivo exposure: graded approach to what's avoided</li>
+            <li>Same form. Two paths. One kinder day.</li>
           </ul>
           <div class="muted" id="home-create-stat">No plans yet.</div>
         </article>
@@ -105,7 +112,7 @@
           </div>
           <h2>If today feels heavy</h2>
           <p id="home-help-quote" class="quote">
-            “Action doesn't have to feel like motivation. It can be the smallest, gentlest move.”
+            "Action precedes motivation. Approach precedes safety. Both can be small."
           </p>
           <div class="muted">Stuck? The Coach can sit with you.</div>
         </article>
@@ -114,7 +121,7 @@
       <section class="grid grid-2">
         <article class="card">
           <div class="card-head">
-            <h3>Recent reflections</h3>
+            <h3>Recent moves</h3>
             <button class="ghost small" data-route="create">Add one</button>
           </div>
           <div id="home-recent" class="stream"></div>
@@ -138,7 +145,7 @@
         <div>
           <div class="eyebrow">Calendar</div>
           <h1>Your rhythm, gently</h1>
-          <p class="lede">Recent moves and what's coming. Tap a day to see, or add, an activation.</p>
+          <p class="lede">Activations and exposures, recent and upcoming. Tap a day to see, or add, a step.</p>
         </div>
         <div class="cal-controls">
           <button class="ghost" id="cal-prev" aria-label="Previous month">‹</button>
@@ -150,12 +157,18 @@
       <div class="grid grid-2 stretch">
         <article class="card">
           <div id="cal-grid" class="cal-grid"></div>
+          <div class="legend" style="margin-top: 12px">
+            <span class="legend-dot ba"></span> Activation
+            <span class="legend-dot ivex"></span> Exposure
+            <span class="legend-dot done"></span> Done
+            <span class="legend-dot goal"></span> Goal
+          </div>
         </article>
 
         <article class="card">
           <div class="card-head">
             <h3 id="cal-day-title">Agenda</h3>
-            <button class="ghost small" data-route="create">Add activation</button>
+            <button class="ghost small" data-route="create">Add step</button>
           </div>
           <div id="cal-day-list" class="stream"></div>
 
@@ -173,28 +186,41 @@
       <header class="page-head">
         <div>
           <div class="eyebrow">Create</div>
-          <h1>Design a behavioral activation</h1>
-          <p class="lede">Small, specific, and tied to something you care about.</p>
+          <h1>Design a step</h1>
+          <p class="lede">Pick a path. Behavioral activation rebuilds reward and value. In-vivo exposure rebuilds approach to what's avoided. Same form, different intent.</p>
         </div>
       </header>
+
+      <div class="seg" role="tablist" aria-label="Modality">
+        <button class="seg-btn active" data-modality="ba" role="tab">Behavioral Activation</button>
+        <button class="seg-btn" data-modality="ivex" role="tab">In-Vivo Exposure</button>
+      </div>
 
       <div class="grid grid-2 stretch">
         <article class="card">
           <form id="create-form" class="form">
+            <input type="hidden" name="modality" value="ba" />
+
             <label>
-              <span>What is the action?</span>
-              <input name="title" required placeholder="e.g. step outside for 5 minutes" />
+              <span data-label-for="title" data-ba="What is the action?" data-ivex="What is the feared situation you'll approach?">What is the action?</span>
+              <input name="title" required id="create-title"
+                     data-ba="e.g. step outside for 5 minutes"
+                     data-ivex="e.g. ride the bus three stops"
+                     placeholder="e.g. step outside for 5 minutes" />
             </label>
 
             <label>
-              <span>Why does it matter to you?</span>
-              <input name="value" placeholder="e.g. feeling connected to my body" />
+              <span data-label-for="value" data-ba="Why does it matter to you?" data-ivex="What does approaching this give back to you?">Why does it matter to you?</span>
+              <input name="value"
+                     data-ba="e.g. feeling connected to my body"
+                     data-ivex="e.g. independence to travel on my own"
+                     placeholder="e.g. feeling connected to my body" />
             </label>
 
             <div class="row">
               <label>
                 <span>Category</span>
-                <select name="category">
+                <select name="category" id="create-category">
                   <option>Movement</option>
                   <option>Connection</option>
                   <option>Care</option>
@@ -204,8 +230,8 @@
                 </select>
               </label>
               <label>
-                <span>Energy needed</span>
-                <select name="energy">
+                <span data-label-for="energy" data-ba="Energy needed" data-ivex="Anticipated SUDS (0-100)">Energy needed</span>
+                <select name="energy" id="create-energy">
                   <option value="1">1 — almost none</option>
                   <option value="2">2 — small</option>
                   <option value="3" selected>3 — moderate</option>
@@ -226,6 +252,11 @@
               </label>
             </div>
 
+            <label class="ivex-only" hidden>
+              <span>Safety behavior to drop (optional)</span>
+              <input name="safety" placeholder="e.g. checking my phone, leaving early" />
+            </label>
+
             <label>
               <span>Tied to a goal (optional)</span>
               <select name="goalId" id="create-goal-select"><option value="">—</option></select>
@@ -233,11 +264,14 @@
 
             <label>
               <span>A kind note to your future self</span>
-              <textarea name="notes" rows="2" placeholder="It's okay if it's small. You're showing up."></textarea>
+              <textarea name="notes" rows="2"
+                        data-ba="It's okay if it's small. You're showing up."
+                        data-ivex="Approach. Stay long enough to learn something new."
+                        placeholder="It's okay if it's small. You're showing up."></textarea>
             </label>
 
             <div class="row">
-              <button class="primary" type="submit">Save activation</button>
+              <button class="primary" type="submit" id="create-submit">Save activation</button>
               <button class="ghost" type="button" id="create-add-goal">+ Add a goal</button>
             </div>
           </form>
@@ -264,10 +298,36 @@
       <header class="page-head">
         <div>
           <div class="eyebrow">Help</div>
-          <h1>When the day pushes back</h1>
-          <p class="lede">Gentle scaffolding, on purpose. Pick what fits where you are.</p>
+          <h1>Two paths, one kindness</h1>
+          <p class="lede">Behavioral activation and in-vivo exposure work different angles of the same problem: a life that's gotten smaller. Pick what fits where you are.</p>
         </div>
       </header>
+
+      <div class="grid grid-2">
+        <article class="card warm-card">
+          <span class="tag ba">Behavioral Activation</span>
+          <h2 style="margin-top:8px">Rebuild contact with what matters</h2>
+          <p>Action precedes motivation. You schedule small, valued activities and do them regardless of mood. Mood follows the doing.</p>
+          <ul class="bullet">
+            <li>Pick activities tied to a value you care about</li>
+            <li>Start small — energy 1 or 2 is real</li>
+            <li>Track mood before and after, not just thoughts</li>
+            <li>Repeat. Pattern beats intensity.</li>
+          </ul>
+        </article>
+
+        <article class="card warm-card">
+          <span class="tag ivex">In-Vivo Exposure</span>
+          <h2 style="margin-top:8px">Approach what's been avoided</h2>
+          <p>Anxiety shrinks a life by pruning approach. Graded exposure widens it again — gradually, deliberately, and long enough to learn something new.</p>
+          <ul class="bullet">
+            <li>Build a hierarchy from easiest to hardest (SUDS 0-100)</li>
+            <li>Approach the next step, not the top step</li>
+            <li>Stay until learning happens, not just until relief</li>
+            <li>Drop one safety behavior at a time</li>
+          </ul>
+        </article>
+      </div>
 
       <div class="grid grid-3">
         <article class="card">
@@ -281,11 +341,11 @@
         </article>
 
         <article class="card">
-          <h3>If avoidance shows up</h3>
+          <h3>If avoidance is loud</h3>
           <ul class="bullet">
             <li>Name what you're moving away from</li>
-            <li>Pick the smallest opposite move</li>
-            <li>Set a 5-minute container, then stop</li>
+            <li>Pick a SUDS 30-40 step from your hierarchy</li>
+            <li>Stay 5 extra minutes past the urge to leave</li>
           </ul>
           <button class="ghost small" data-help="avoidance">Walk me through it</button>
         </article>
@@ -294,8 +354,8 @@
           <h3>If it didn't help</h3>
           <ul class="bullet">
             <li>Rate honestly — that's data, not failure</li>
-            <li>Try a different category next</li>
-            <li>Ask the Coach to suggest one</li>
+            <li>Try a different category or smaller step</li>
+            <li>Ask the Coach what your data is showing</li>
           </ul>
           <button class="ghost small" data-help="didnt-help">Walk me through it</button>
         </article>
@@ -305,6 +365,12 @@
         <h3>Patterns we're noticing</h3>
         <div id="help-patterns" class="stream"></div>
         <p class="muted small">Patterns are clues, not verdicts.</p>
+      </article>
+
+      <article class="card">
+        <h3>Sources</h3>
+        <p class="muted small">The Coach indexes these clinical workbooks for context.</p>
+        <ul class="bullet" id="help-sources"></ul>
       </article>
     </section>
   </template>

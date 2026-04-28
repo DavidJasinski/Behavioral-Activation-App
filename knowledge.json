@@ -1,0 +1,1918 @@
+{
+  "version": 1,
+  "modalities": {
+    "ba": {
+      "label": "Behavioral Activation",
+      "summary": "Behavioral Activation (BA) treats low mood and depression by rebuilding contact with rewarding activities tied to your values. You schedule small, specific actions, do them regardless of mood, and learn from how they actually feel.",
+      "principles": [
+        "Action precedes motivation",
+        "Track activity and mood, not just thoughts",
+        "Tie activities to values",
+        "Start small and grade up",
+        "Outside-in change: behavior shapes feeling"
+      ]
+    },
+    "ivex": {
+      "label": "In-Vivo Exposure",
+      "summary": "In-Vivo Exposure (graded exposure) treats anxiety and avoidance by approaching feared situations in real life, on purpose, in graded steps. New learning occurs when you stay with the situation long enough for the feared outcome to be disconfirmed.",
+      "principles": [
+        "Approach what is avoided, gradually",
+        "Build a fear/avoidance hierarchy (SUDS 0-100)",
+        "Stay long enough for new learning, not just relief",
+        "Drop safety behaviors that block disconfirmation",
+        "Repeat across contexts to generalize learning"
+      ]
+    }
+  },
+  "docs": [
+    {
+      "id": "ba-Behavioral-Activation-for-Depression",
+      "filename": "Behavioral-Activation-for-Depression.pdf",
+      "label": "Behavioral Activation for Depression",
+      "modality": "ba",
+      "chars": 53923,
+      "topics": [
+        "activities",
+        "activity",
+        "going",
+        "time",
+        "values",
+        "mood",
+        "feel",
+        "things",
+        "life",
+        "people",
+        "behavioral",
+        "depression"
+      ]
+    },
+    {
+      "id": "ivex-Graded-Exposure",
+      "filename": "Graded-Exposure.pdf",
+      "label": "In-Vivo Graded Exposure",
+      "modality": "ivex",
+      "chars": 18526,
+      "topics": [
+        "anxiety",
+        "goal",
+        "exposure",
+        "graded",
+        "situation",
+        "situations",
+        "driving",
+        "drive",
+        "step",
+        "time",
+        "achieved",
+        "goals"
+      ]
+    }
+  ],
+  "chunks": [
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 0,
+      "text": "Behavioral activation is one of the most important CBT skills used in\ntreating depression. It has to do with the way that behaviors and\nfeelings influence each other.\nIn this chapter we'll learn how your behavior can directly affect your\nmood, for better or worse, and how to use skills to put ourselves in\nsituations that will make it most likely to improve our mood.\nHave you ever noticed that certain things that you do influence your\nmood or anxiety? For example: When you listen to sad music do you\never notice feeling sad for longer periods of time? Do you ever feel\nless motivated to apply for a job or school when you are actively\nworrying?\n5.1\n\nWill Behavioral Activation be helpful for me?\nBehavioral activation is helpful for many people.",
+      "topics": [
+        "behavioral",
+        "activation",
+        "mood",
+        "ever",
+        "most",
+        "skills",
+        "influence",
+        "will"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 1,
+      "text": "r a job or school when you are actively\nworrying?\n5.1\n\nWill Behavioral Activation be helpful for me?\nBehavioral activation is helpful for many people. If you answer \"yes\" to any of the following questions,\nBA could be a good fit for you.\n\u2022\u202fDo I have a sense of what is triggering my mood or anxiety?\n\u2022\u202fDo I generally find myself doing very little, with little pleasure or meaning in my life?\n\u2022\u202fAre there times that I feel better or worse and I'm not sure why?\n\u2022\u202fDo I have a difficult time working with my negative thoughts, but seem to feel better when I can get\nmyself moving and doing something?\n\u2022\u202fDo I have a hard time even knowing what I enjoy or find meaning in?\nBehavioral Activation (BA) is a specific CBT skill.",
+      "topics": [
+        "behavioral",
+        "activation",
+        "helpful",
+        "find",
+        "myself",
+        "little",
+        "meaning",
+        "feel"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 2,
+      "text": "moving and doing something?\n\u2022\u202fDo I have a hard time even knowing what I enjoy or find meaning in?\nBehavioral Activation (BA) is a specific CBT skill. It can\nbe a treatment all by itself, or can be used alongside\nother CBT skills such as cognitive restructuring.\nBehavioral activation helps us understand how\nbehaviors influence emotions, just like cognitive work\nhelps us understand the connection between thoughts\nand emotions.\nHere are some examples of how BA may be used:\nJim deals with depression and anxiety. He has a hard time figuring out why his\nmood drastically dips and also finds it difficult to understand why he feels better\nfor short periods of time. While working with his schedule in therapy, he began\nto discover specific mood triggers (how he spent his time or random events) that\nhe had never noticed before.",
+      "topics": [
+        "time",
+        "understand",
+        "hard",
+        "behavioral",
+        "activation",
+        "specific",
+        "cbt",
+        "used"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 3,
+      "text": "g with his schedule in therapy, he began\nto discover specific mood triggers (how he spent his time or random events) that\nhe had never noticed before. He was able to become more aware of these\ntriggers and change his approach, ultimately allowing him to change his mood.\nDebbie knew that her family history, stress with taking care of her special needs\nson, and seasonal change contribute to her depression. Though she knows the\ntriggers, she struggles with managing her mood as she often does not feel like\ndoing activities that will help her depression. She often tells herself that she will\nwait until it warms up outside to exercise and does not feel up to calling her\nfriends who usually cheer her up. With her therapist she began to find strategies\nto help her motivation by practicing awareness of different avoidance patterns\nand developing alternative, adaptive behaviors.\n5.2",
+      "topics": [
+        "mood",
+        "triggers",
+        "change",
+        "began",
+        "depression",
+        "often",
+        "feel",
+        "will"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 4,
+      "text": "to find strategies\nto help her motivation by practicing awareness of different avoidance patterns\nand developing alternative, adaptive behaviors.\n5.2\n\nBehavioral Activation is based on the well-researched understanding that\ndepression often keeps us from doing the things that bring enjoyment and\nmeaning to our lives. This \"downward spiral\" (explained in the first chapter of\nthis manual) causes us to feel even worse. In Behavioral Activation we work to\nreverse this cycle using our actions and choices.\nBehavioral Activation involves:\n\u2022\u202fUnderstanding the \"vicious cycles\" of\ndepression\n\u2022\u202fMonitoring our daily activities\n\u2022\u202fIdentification of goals and values\n\u2022\u202fBuilding an upward spiral of motivation and\nenergy through pleasure and mastery\n\u2022\u202fActivity Scheduling: purposefully scheduling\nin enjoyable and meaningful activities\n\u2022\u202fProblem solving around potential barriers to\nactivation\n\u2022\u202fReducing avo",
+      "topics": [
+        "activation",
+        "behavioral",
+        "motivation",
+        "understanding",
+        "depression",
+        "spiral",
+        "activities",
+        "scheduling"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 5,
+      "text": "ty Scheduling: purposefully scheduling\nin enjoyable and meaningful activities\n\u2022\u202fProblem solving around potential barriers to\nactivation\n\u2022\u202fReducing avoidance\n\u2022\u202fWorking as a team to make gradual,\nsystematic, sustained progress. Change\ndoesn't happen over night!\n\u2022\u202fUsing between-session assignments. Practice\nchanges the brain, little by little!\n\"But my depression is 'situational!'\"\nYes, it is true that often depression is set in motion by difficult events that happen to us. If you are\ndealing with a big loss, stressful situation, or change in your life, feelings of depression could be a\nresult. While it is important to address these external events and sometimes to talk about the past, it\nis also important to find ways to address our current situation, find ways to fulfill on our future life\naims, and find time for enjoyment. Behavioral Activation can help with this part of treatment.\n5.3",
+      "topics": [
+        "depression",
+        "find",
+        "scheduling",
+        "activation",
+        "change",
+        "happen",
+        "little",
+        "events"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 6,
+      "text": "situation, find ways to fulfill on our future life\naims, and find time for enjoyment. Behavioral Activation can help with this part of treatment.\n5.3\n\nOn the next few pages we\nillustrate the \"vicious cycles\" of\ndepression, according to the\nresearch on depression and\nBehavioral Activation.\nNote: Behavioral Activation has\nbeen shown in research studies to\nbe effective on its own for some\npeople to overcome depression.\nHowever, it is often used alongside\nother therapeutic skills, as it may\nnot address your specific situation\nall by itself. Consider it just one of\nmany options in your effort to\nmanage depression.\nAction precedes emotion!?\nWe often wait to feel better or more motivated before\ndoing something.\nRemember that anxiety and depression come from\nparts of our brain that are really trying to protect us by\ngetting us to avoid or isolate.",
+      "topics": [
+        "depression",
+        "behavioral",
+        "activation",
+        "situation",
+        "find",
+        "research",
+        "often",
+        "ways"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 7,
+      "text": "g something.\nRemember that anxiety and depression come from\nparts of our brain that are really trying to protect us by\ngetting us to avoid or isolate. This means that as long\nas we are following the lead of the anxiety and\ndepression, we will continue to feel less motivated and\nwant to avoid and isolate.\nSo, when we are feeling anxious and depressed,\nwe cannot wait on the brain to give us the\nmotivation to get out there and do things.\nResearch has shown that our decision to activate (in\nother words, to do the opposite of what the\ndepression wants us to do, and do something in\nline with our values and goals) is necessary for\nemotions to change.\nSo why activate first? Firstly, activating changes our brain state and can make us\nfeel better, right away. For example, exercise can produce \"good chemicals\" in\nthe brain that lift mood while they are in the bloodstream.",
+      "topics": [
+        "brain",
+        "depression",
+        "something",
+        "anxiety",
+        "avoid",
+        "isolate",
+        "feel",
+        "activate"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 8,
+      "text": "can make us\nfeel better, right away. For example, exercise can produce \"good chemicals\" in\nthe brain that lift mood while they are in the bloodstream. Secondly, the more\nthat we activate, the more situations we find ourselves in that can give us positive\nexperiences. The technical term for this is \"reinforcing positive context\ncontingencies.\" Technicalities aside, we need to \"get out there\" and give\nourselves the best chance of feeling better, even if we don't feel like it at the\ntime.\n5.4",
+      "topics": [
+        "feel",
+        "better",
+        "ourselves",
+        "give",
+        "positive",
+        "make",
+        "right",
+        "away"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 9,
+      "text": "Technicalities aside, we need to \"get out there\" and give\nourselves the best chance of feeling better, even if we don't feel like it at the\ntime.\n5.4\n\nWhat happened\n(stressful life events, triggers from past, etc.)\n\"I lost my job\"\n\"We had our first child\"\nHow you feel\n(emotions)\nSad\nAnxious\nStressed\nShut down\nEmbarrassed\nWhat you do\n(or don't do)\nStay in bed\nDon't engage with family\nDon't return calls or texts\nAvoid people\nFIRST\nVICIOUS\nCYCLE\nEvents often get\nthe depression\n\"ball rolling.\"\nThis could be\nsomething new\nor a reminder\nfrom a past\nstressful event.\nThe stress of\nevents leads to\nnegative\nemotions that\nare distressing\nand make us\nwant to draw\nback.\nEmotions lead\nto behaviors: we\navoid or isolate,\nwhich makes us\nfeel worse.\n5.5",
+      "topics": [
+        "don't",
+        "feel",
+        "events",
+        "emotions",
+        "get",
+        "stressful",
+        "past",
+        "first"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 10,
+      "text": "negative\nemotions that\nare distressing\nand make us\nwant to draw\nback.\nEmotions lead\nto behaviors: we\navoid or isolate,\nwhich makes us\nfeel worse.\n5.5\n\nWhat happened\n(life events, triggers, etc.)\n\"I lost my job\"\n\"We had our first child\"\n* Increased odds of more hardships and negative life events\nMy friends stop calling me because I never return calls or texts\nHow you feel\n(emotions)\nSad\nAnxious\nStressed\nShut down\nEmbarrassed\nWhat you do\n(or don't do)\nStay in bed\nDon't engage with family\nDon't return calls or texts\nAvoid people\nFIRST\nVICIOUS\nCYCLE\nSECOND\nVICIOUS\nCYCLE\nAvoidance,\nisolation, and\nother behaviors\ncause further\nnegative events,\nmaking us feel\neven more\ndepressed.\n5.6\n\nWhat happened\n(life events, triggers, etc.)\nHow you feel\n(symptoms)\nWhat you do\n(or don't do)\nTry to determine your own \"vicious cycles,\" identifying specific events, emotions, and responses.\n5.7",
+      "topics": [
+        "events",
+        "emotions",
+        "feel",
+        "don't",
+        "negative",
+        "life",
+        "vicious",
+        "behaviors"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 11,
+      "text": "w you feel\n(symptoms)\nWhat you do\n(or don't do)\nTry to determine your own \"vicious cycles,\" identifying specific events, emotions, and responses.\n5.7\n\nWith BA, we rate mood on a scale of 0-10, 10\nbeing the best, 0 being the worst. We ask\npeople to rate mood in each hour to the best\nof their ability in order to understand mood\nchanges.\nFor example:\nMonday:!\n8am: Woke up (5)!\n9am: Went to go eat breakfast (6)!\n10am: Got to work, talked to Bob (5)!\n11am:Sitting at my desk reading e-mails (3)!\n12pm:Eating lunch at my desk, worrying\nabout meeting (3)!\n1pm:Meeting, thinking about issue with\nreports that I missed, tired (3)!\n2pm: Sitting at my desk working (4)!\n3pm: Working (4)!\n4pm: Working (4)!\n5pm: Driving home (6)!\nBeing aware of our mood,\nemotions, and behaviors is an\nimportant part of CBT.",
+      "topics": [
+        "mood",
+        "desk",
+        "working",
+        "emotions",
+        "rate",
+        "best",
+        "sitting",
+        "meeting"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 12,
+      "text": "working (4)!\n3pm: Working (4)!\n4pm: Working (4)!\n5pm: Driving home (6)!\nBeing aware of our mood,\nemotions, and behaviors is an\nimportant part of CBT. In order to\nknow what to do to fix a problem,\nwe first need to understand what is\ngoing on!\nActivity Monitoring is the first step\nof Behavioral Activation. It is\nimportant to know exactly what we\nare doing throughout the day, and\nhow this corresponds to our mood.\nWhile we can't fix the depression\njust by noticing this, we can take a\nstep toward feeling better by\nunderstanding which behaviors\nhelp us feel better, which continue\nto maintain the depression as it is,\nand which make us feel worse.\nUse the Activity Monitoring Chart\non the next page to start tracking\nyour activities and mood.\n Get out that pen and paper!\nResearch shows that people who\nwrite things down as part of CBT\npractice do better than those that try\nto do it all in their he",
+      "topics": [
+        "working",
+        "mood",
+        "better",
+        "behaviors",
+        "important",
+        "part",
+        "cbt",
+        "know"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 13,
+      "text": "ut that pen and paper!\nResearch shows that people who\nwrite things down as part of CBT\npractice do better than those that try\nto do it all in their heads. While it\ndoes involve more work (and may\nseem like going back to school), we\nhope you will give it a try at first, until\nthe skills become more natural.\n5.8\n\n Sun Mon Tues Wed Thurs Fr Sat\n5-7:00am\n __________________________________________________________________________________________________________\n7:00 am\n __________________________________________________________________________________________________________\n8:00 am\n __________________________________________________________________________________________________________\n9:00 am\n __________________________________________________________________________________________________________\n10:00 am\n _________________________________________________________________________________",
+      "topics": [
+        "try",
+        "pen",
+        "paper",
+        "research",
+        "shows",
+        "people",
+        "write",
+        "things"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 14,
+      "text": "__________________________________________________________\n10:00 am\n __________________________________________________________________________________________________________\n11:00 am\n __________________________________________________________________________________________________________\n12:00 pm\n __________________________________________________________________________________________________________\n1:00 pm\n __________________________________________________________________________________________________________\n2:00 pm\n __________________________________________________________________________________________________________\n3:00 pm\n __________________________________________________________________________________________________________\n4:00 pm\n __________________________________________________________________________________________________________\n5:00 pm\n _________________",
+      "topics": []
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 15,
+      "text": "_______\n4:00 pm\n __________________________________________________________________________________________________________\n5:00 pm\n __________________________________________________________________________________________________________\n6:00 pm\n __________________________________________________________________________________________________________\n7:00 pm\n __________________________________________________________________________________________________________\n8:00 pm\n __________________________________________________________________________________________________________\n9:00 pm\n __________________________________________________________________________________________________________\n10:00 pm\n __________________________________________________________________________________________________________\n11:00 pm\n _____________________________________________________________________",
+      "topics": []
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 16,
+      "text": "______________________________________________________________________\n11:00 pm\n __________________________________________________________________________________________________________\nInstructions: Record your activity for each hour of the day (what you were doing, with whom,\nwhere, etc.). Record a rating for your mood as you were doing each activity. Mood is rated\nbetween 0-10, with \"0\" indicating \"low mood\" and \"10\" indicating \"good mood.\"\n5.9",
+      "topics": [
+        "mood",
+        "record",
+        "activity",
+        "indicating",
+        "instructions",
+        "hour",
+        "day",
+        "whom"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 17,
+      "text": "rating for your mood as you were doing each activity. Mood is rated\nbetween 0-10, with \"0\" indicating \"low mood\" and \"10\" indicating \"good mood.\"\n5.9\n\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________",
+      "topics": [
+        "mood",
+        "indicating",
+        "rating",
+        "activity",
+        "rated",
+        "between",
+        "low",
+        "good"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 18,
+      "text": "____________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________",
+      "topics": []
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 19,
+      "text": "__________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\n_________________________________________________________________________________________________________________\nAntidepressant/UP Activities Depressant/DOWN Activities\nBased on the mood ratings you recorded on the Activity Monitoring Worksheet, determine which\nactivities helped you to feel more positive (\"UP\" activities) and which led to feeling down\n(\"DOWN\" activities).\nIn Behavioral Activation, one of our aims is to increase \"UP\" activities and decrease \"DOWN\"\nactivities. Over the next section we will learn more about the types of activities that will lead to\nbetter mood, to add to the list above.",
+      "topics": [
+        "activities",
+        "mood",
+        "will",
+        "antidepressant",
+        "depressant",
+        "based",
+        "ratings",
+        "recorded"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 20,
+      "text": "ase \"DOWN\"\nactivities. Over the next section we will learn more about the types of activities that will lead to\nbetter mood, to add to the list above. Over time, we can replace the \"DOWN\" activities with\nmore \"UP\" ones.\n5.10\n\nA Life Worth Living: Values, Pleasure, Mastery, and Goals\nThe next step in Behavioral Activation is determining the behaviors on which to\nfocus to improve our mood. While some behaviors, like exercise and meditation,\ncan be used right away to improve mood directly, many of the behaviors that are\nlikely to help us are those that align with the things that we enjoy or are\nimportant to us.\nAn exploration of \"values,\" \"pleasure,\" and \"mastery\" describe much of the\n\"stuff\" that makes life worth living.",
+      "topics": [
+        "activities",
+        "mood",
+        "behaviors",
+        "next",
+        "will",
+        "life",
+        "worth",
+        "living"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 21,
+      "text": "that we enjoy or are\nimportant to us.\nAn exploration of \"values,\" \"pleasure,\" and \"mastery\" describe much of the\n\"stuff\" that makes life worth living. This process can help us come up with\ntangible goals to move us toward the things that are most important to us.\nGoals and objectives outline the steps we take to experience our lives more\nfully. They give us targets to help us experience more pleasure, mastery, and\nvalue-driven behavior.\n\"Values\" are what we find meaningful in life. They\nare the most important things to us. Everyone has\ndifferent values, and for each of us they can\nchange over time. They are like a compass,\npointing us in the direction we want to go.\n\"Pleasure\" involves activities, or \"play\" that we enjoy for the sake\nof the activity itself.",
+      "topics": [
+        "important",
+        "values",
+        "pleasure",
+        "enjoy",
+        "mastery",
+        "life",
+        "help",
+        "goals"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 22,
+      "text": "ke a compass,\npointing us in the direction we want to go.\n\"Pleasure\" involves activities, or \"play\" that we enjoy for the sake\nof the activity itself. Hobbies, games, spending time in nature, or\nspending time with a good friend.\n\"Mastery\" involves activities, such as work or sports, that\ninvolve the development of skills; we are able to\naccomplish things and feel a sense of mastery over our\nenvironment. When enjoyed in moderation and\ndiversified well with other activities, they can increase\npositive emotions and improve how we feel about\nourselves. Also, we may feel more creative as we learn to\nmaster certain skills, adding to the possibilities of\nenjoyment.\nTo feel more consistently engaged and happy in the world, it is usually best to\nfind a balance of goals centered on values, pleasure, and mastery. How that\nbalance looks for you will be unique.",
+      "topics": [
+        "feel",
+        "activities",
+        "mastery",
+        "pleasure",
+        "involves",
+        "spending",
+        "time",
+        "skills"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 23,
+      "text": "in the world, it is usually best to\nfind a balance of goals centered on values, pleasure, and mastery. How that\nbalance looks for you will be unique. On the following pages, we will help you\nunderstand how this balance might look for your own life.\n5.11\n\nAs we mentioned earlier, \"values\" are what we find\nmeaningful and important. These can be different for\ndifferent people.\nValues are important to explore, because much of our\ngoal-directed activity comes from a foundation of what\nis valued. For example, one may value a healthy\nlifestyle, and a related goal may be to exercise daily.\nWe may value family, and therefore choose to\nschedule in time with them. Or if we don't have a\nfamily, our activities could lead to getting married and\nstarting one.\nIt is common to mistake certain wishes and feelings for\nvalues.",
+      "topics": [
+        "values",
+        "balance",
+        "may",
+        "find",
+        "will",
+        "important",
+        "different",
+        "one"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 24,
+      "text": "we don't have a\nfamily, our activities could lead to getting married and\nstarting one.\nIt is common to mistake certain wishes and feelings for\nvalues. Values are not internal states, how people treat\nus, or specific things to achieve.\nBelow are some of the common areas of life that\npeople value and may lead to goal-directed activity.\nIntimate relationships\nWhat kind of partner do you\nwant to be? What quality of\nrelationship do you want to be\npart of? How do you want to\nspend time together?\nMental/Emotional Health\nWhat helps you maintain\nsound mental health? Why is\nthis important to you? What\nissues would you like to\naddress?\nFriendships/\nsocial relations\nWhat sort of friend do you want\nto be? How would you like to\nact towards your friends? How\ncan these relationships be\nimproved?\nEmployment/career\nWhat kind of work is valuable to\nyou? What qualities do you\nwant to bring as an employee?\nW",
+      "topics": [
+        "want",
+        "lead",
+        "common",
+        "values",
+        "people",
+        "relationships",
+        "kind",
+        "mental"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 25,
+      "text": "How\ncan these relationships be\nimproved?\nEmployment/career\nWhat kind of work is valuable to\nyou? What qualities do you\nwant to bring as an employee?\nWhat kind of work relationships\nwould you like to build?\nEducation/training/\npersonal growth\nHow would you like to grow?\nWhat kind of skills would you\nlike to develop? What would\nyou like to know more about?\nHobbies/ Recreation\nHow would you like to enjoy\nyourself? What relaxes you?\nWhen are you most playful? Are\nthere any special interests you\nwould like to pursue?\nSpirituality\nWhat kind of relationship do\nyou want with God/nature/ the\nEarth/mankind? What does\nhaving a spiritual life mean to\nyou? How can you exercise this?\nCitizenship/Community\nWhat kind of environment\ndo you want to be a part of?\nHow do you want to contribute to your community?\nPhysical well-being\nWhat kind of values do you\nhave regarding your physical\nwellbeing? How do yo",
+      "topics": [
+        "kind",
+        "like",
+        "want",
+        "relationships",
+        "work",
+        "community",
+        "physical",
+        "improved"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 26,
+      "text": "of?\nHow do you want to contribute to your community?\nPhysical well-being\nWhat kind of values do you\nhave regarding your physical\nwellbeing? How do you want\nto look at yourself?\nFamily relationships\nWhat kind of relationships do you\nwant with your family? What kind of\nmother/father/ brother/sister/uncle/\naunt do you want to be? What is\nimportant to you about a good\nfamily?\nOn the next page is a list of values\nthat are related to the categories\nbelow. Use them to start listing your\nown values on the following page.\n5.12",
+      "topics": [
+        "want",
+        "kind",
+        "values",
+        "family",
+        "physical",
+        "relationships",
+        "page",
+        "contribute"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 27,
+      "text": "On the next page is a list of values\nthat are related to the categories\nbelow. Use them to start listing your\nown values on the following page.\n5.12\n\nFamily relations\n\u2022\u202fWork on current relationships\n\u2022\u202fSpend time with family\n\u2022\u202fTake an active role in raising my children\n\u2022\u202fMaintain consistent healthy\n communication\nMarriage/couples/intimate relationships\n\u2022\u202fEstablish a sense of safety and trust\n\u2022\u202fGive and receive affection\n\u2022\u202fSpend quality time with my partner\n\u2022\u202fShow my partner how much I\n appreciate them\nFriendships/Social Relationships\n\u2022\u202fEnd destructive relationships\n\u2022\u202fReach out for new relationships\n\u2022\u202fFeel a sense of belonging\n\u2022\u202fHave and keep close friends\n\u2022\u202fSpend time with friends\n\u2022\u202fHave people to do things with\nMental/Emotional health\n\u2022\u202fSeek fun and things that give me\n pleasure\n\u2022\u202fHave free time\n\u2022\u202fBe independent and take care of myself\n\u2022\u202fChallenge my negative thinking\n\u2022\u202fMake my own deci",
+      "topics": [
+        "relationships",
+        "time",
+        "spend",
+        "page",
+        "values",
+        "own",
+        "family",
+        "take"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 28,
+      "text": "ek fun and things that give me\n pleasure\n\u2022\u202fHave free time\n\u2022\u202fBe independent and take care of myself\n\u2022\u202fChallenge my negative thinking\n\u2022\u202fMake my own decisions\n\u2022\u202fEngage in therapy\n\u2022\u202fTake my medications\n\u2022\u202fStay active\nPhysical well-being\n\u2022\u202fLive in secure and safe surroundings\n\u2022\u202fEngage in regular exercise\n\u2022\u202fHave a steady income to meet physical\n needs\n\u2022\u202fEat foods that are nourishing to my\n body\n\u2022\u202fMaintain a balance between rest and\n activity\n\u2022\u202fGet enough sleep\nCitizenship/Community\n\u2022\u202fContribute to the larger community\n\u2022\u202fHelp people in need\n\u2022\u202fImprove society\n\u2022\u202fBe committed to a cause or group that\n has a larger purpose\n\u2022\u202fMake sacrifices for others\nSpirituality\n\u2022\u202fFollow traditions and customs\n\u2022\u202fLive according to spiritual principles\n\u2022\u202fPractice my religion or faith\n\u2022\u202fGrow in understanding myself, my\n personal calling, and life's purpose\n\u2022\u202fDiscern the will of God\n\u2022\u202fFind meaning in life\n\u2022\u202fDevelop a",
+      "topics": [
+        "take",
+        "myself",
+        "make",
+        "engage",
+        "physical",
+        "live",
+        "community",
+        "larger"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 29,
+      "text": "ligion or faith\n\u2022\u202fGrow in understanding myself, my\n personal calling, and life's purpose\n\u2022\u202fDiscern the will of God\n\u2022\u202fFind meaning in life\n\u2022\u202fDevelop a personal philosophy of life\n\u2022\u202fSpend time in nature\n\u2022\u202fFocus on the greater good\nEducation/Training/Personal Growth\n\u2022\u202fBe involved in undertakings I believe\n personally are significant\n\u2022\u202fTry new and different things in life\n\u2022\u202fLearn new things\n\u2022\u202fBe daring and seek adventure\n\u2022\u202fHave an exciting life\n\u2022\u202fLearn to do challenging things that help\n me grow as a person\nEmployment\n\u2022\u202fBe powerful and able to influence\n others, have authority\n\u2022\u202fMake important decisions that affect the\n organization\n\u2022\u202fBe a leader\n\u2022\u202fMake a great deal of money\n\u2022\u202fBe respected by others\n\u2022\u202fBe seen by others as successful, be\n ambitious\n\u2022\u202fBecome well-known, obtain recognition\n and status\n\u2022\u202fBe productive, work hard\n\u2022\u202fAchieve significant goals\n\u2022\u202fEnjoy the work I do\n\u2022\u202fDo what I'm tol",
+      "topics": [
+        "life",
+        "personal",
+        "things",
+        "others",
+        "grow",
+        "significant",
+        "new",
+        "learn"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 30,
+      "text": "ous\n\u2022\u202fBecome well-known, obtain recognition\n and status\n\u2022\u202fBe productive, work hard\n\u2022\u202fAchieve significant goals\n\u2022\u202fEnjoy the work I do\n\u2022\u202fDo what I'm told and follow the rules\nBelow is a list of general value categories, and some specific values that are common in each. See\nif any of them fit you, and use this page to fill out the values rating sheet on the next page.\nValues, con.\n5.13\n\nHere are some other experiments to explore your own values:\n1.\u202fImagine that an important newscaster were doing a biographical story on your life.\nThink about how you'd want them to describe you. How would they describe the way\nyou spent your time? How you related to others? What was most important to you?\nWhat are your strengths as a person? Write down a narrative of what they would say.\n2.\u202fImagine you could read the mind of a person that's important to you and with whom\nyou've had a good relationship.",
+      "topics": [
+        "values",
+        "important",
+        "work",
+        "page",
+        "imagine",
+        "describe",
+        "person",
+        "ous"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 31,
+      "text": "narrative of what they would say.\n2.\u202fImagine you could read the mind of a person that's important to you and with whom\nyou've had a good relationship. They are thinking all kinds of thoughts about your\nqualities: what you stand for, what your strengths are, what you mean to him or her, and\nthe role you play in his or her life.\n3.\u202fThink about your heroes. They can be people directly in your life, or other people that\nyou look up to, even fictional characters. What are their qualities? What do you admire\nabout them?\n4.\u202fImagine you are writing your own autobiography. Imagine how you would like to live\nyour life, barring all barriers, in the \"best case scenario.\" What are the things that are\nmost important to you in this scenario? What would you stand for? How would you\nspend your time?\n5.\u202fImagine that someone is performing the eulogy at your funeral.",
+      "topics": [
+        "imagine",
+        "life",
+        "important",
+        "qualities",
+        "stand",
+        "people",
+        "scenario",
+        "narrative"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 32,
+      "text": "nt to you in this scenario? What would you stand for? How would you\nspend your time?\n5.\u202fImagine that someone is performing the eulogy at your funeral. Looking back on your\nlife, they would be commenting on your strengths, values, and achievements. How\nwould you want them to describe your life?\n6.\u202fIf you are struggling to find a valued direction, commit to experimenting with some of\nthe values on the previous pages for just one week. After choosing a value, plan to\nnotice your reactions to making the effort to hold to this value. Make a list of behaviors\nthat might fit with the value and choose one behavior to try. Notice your judgments\nthat come up about choosing this behavior. Then make a plan to fulfill on the valuedriven behavior. Just do the behavior without telling anyone about it and see what\nhappens.",
+      "topics": [
+        "behavior",
+        "value",
+        "life",
+        "values",
+        "one",
+        "choosing",
+        "plan",
+        "notice"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 33,
+      "text": "ing this behavior. Then make a plan to fulfill on the valuedriven behavior. Just do the behavior without telling anyone about it and see what\nhappens. Commit to following through on this behavior once per day for one week.\nKeep a diary of your reactions to behaving this way and others' reactions to you. At the\nend of the week, reflect on your experiment with someone else, like a therapist or\ngroup leader.\nValues, con.\n5.14\n\nBased on your exploration of the previous pages, write a summary of your values.",
+      "topics": [
+        "behavior",
+        "week",
+        "reactions",
+        "values",
+        "ing",
+        "make",
+        "plan",
+        "fulfill"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 34,
+      "text": "th someone else, like a therapist or\ngroup leader.\nValues, con.\n5.14\n\nBased on your exploration of the previous pages, write a summary of your values. For example,\n\"to live a healthy life and take care of my body\" (physical well-being), or \"to be a good friend\nto people who need me, and to enjoy time with people I love\"(friendships).\nRate each domain for how important it is to you from 0-10 (0 = not important, 10 = extremely\nimportant).\nRemember: values are not internal states, how people treat us, or specific things to achieve.\nValues Rating Sheet\nPhysical well-being\nCitizenship/Community\nSpirituality\nFamily relationships Intimate Relationships\nMental/Emotional Health\nFriendships/social relations\nEmployment/career Education/training/\npersonal growth\nHobbies/Recreation\nOther?\n5.15",
+      "topics": [
+        "values",
+        "people",
+        "important",
+        "physical",
+        "well-being",
+        "friendships",
+        "relationships",
+        "someone"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 35,
+      "text": "lationships\nMental/Emotional Health\nFriendships/social relations\nEmployment/career Education/training/\npersonal growth\nHobbies/Recreation\nOther?\n5.15\n\nThe next step is to translate our values into activities that help us fulfill on those goals.\nTake a moment to think about the values that you identified on the previous page. What are\nsome short term goals in each area? What are some long term goals? Use this page and the\nnext to start to brainstorm. Write down your results on the upcoming page: \"Values, Pleasure,\nand Mastery Master List.\"\nParenting\nI want to be involved in my\nchildren's interests and\nlearning. I'd like to build special\nmemories with my kids and\nspend quality time with them.\nI'm going to attend the\nnext PTO meeting and\nmaybe contact the\nteacher to be a\nclassroom volunteer.",
+      "topics": [
+        "next",
+        "values",
+        "goals",
+        "page",
+        "term",
+        "lationships",
+        "mental",
+        "emotional"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 36,
+      "text": "ies with my kids and\nspend quality time with them.\nI'm going to attend the\nnext PTO meeting and\nmaybe contact the\nteacher to be a\nclassroom volunteer. I\ncan plan a small vacation\nto take with the kids\nnext summer.\nVALUE ACTIVITIES\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\nExample:\n5.16",
+      "topics": [
+        "kids",
+        "next",
+        "ies",
+        "spend",
+        "quality",
+        "time",
+        "i'm",
+        "going"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 37,
+      "text": "_________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\nExample:\n5.16\n\nVALUE ACTIVITIES\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n5.17",
+      "topics": [
+        "example",
+        "value",
+        "activities"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 38,
+      "text": "_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n_________________\n5.17\n\nPleasure\nHobbies, Interests, and other \"play\"\n\u2022\u202f Reading\n\u2022\u202f TV, movies, plays\n\u2022\u202f Dancing\n\u2022\u202f Playing or listening to\n music\n\u2022\u202f Board games or cards\n\u2022\u202f Arts and crafts, sewing, painting\n\u2022\u202f Cooking\n\u2022\u202f Walking, hiking, enjoying nature,\n fishing\n\u2022\u202f Sports (basketball, softball,\n swimming, etc.) or going as a\n spectator\n\u2022\u202f Martial arts (karate, etc.)\n\u2022\u202f Museums/zoos\n\u2022\u202f Video games\n\u2022\u202f Traveling, sightseeing, going\n to the beach, sunbathing\n\u2022\u202f Shopping\n\u2022\u202f Gardening/decorating\n\u2022\u202f Photography\n\u2022\u202f Comedy: TV, recordings, live\n\u2022\u202f Religion or spirituality\nSocial activities\n\u2022\u202f Spending time with family\n\u2022\u202f Enjoying own children and/or young\n relatives\n\u2022\u202f Enjoying close friends\n\u2022\u202f Hanging out with large\n groups of friends/acquaintances\n\u2022\u202f Parties, meeting",
+      "topics": [
+        "enjoying",
+        "games",
+        "arts",
+        "etc",
+        "going",
+        "friends",
+        "pleasure",
+        "hobbies"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 39,
+      "text": "njoying own children and/or young\n relatives\n\u2022\u202f Enjoying close friends\n\u2022\u202f Hanging out with large\n groups of friends/acquaintances\n\u2022\u202f Parties, meeting new people\n\u2022\u202f Romance\n\u2022\u202f Pets\n\u2022\u202f Clubs: meeting people with similar\n interests\n\u2022\u202f Enjoying food and drink with others\nPleasure involves activities that we enjoy for the sake of the activity itself. There are many different\nkinds of pleasure. Those that are most sustainable involve \"play\" such as hobbies and other\nrecreational activities. Social activities can also involve pleasure. Other types of pleasure, such as\nsensory experiences (food, drink, images, touch, etc.) can also be enjoyable if done in moderation.\nBelow are examples of enjoyable activities that are enjoyed by many.",
+      "topics": [
+        "pleasure",
+        "activities",
+        "enjoying",
+        "friends",
+        "meeting",
+        "people",
+        "food",
+        "drink"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 40,
+      "text": "s (food, drink, images, touch, etc.) can also be enjoyable if done in moderation.\nBelow are examples of enjoyable activities that are enjoyed by many. Circle the ones that apply to you,\nand add others that aren't included below.\nSensory experiences\n\u2022\u202f Pleasant smells, images, sounds,\n physical touch, tastes\n\u2022\u202f Taking a bath\n\u2022\u202f Listening to soothing music\n\u2022\u202f Mindful tasting\nOther?\n____________________________________________\n_____________________________________________\n_____________________________________________\n5.18\n\nMastery\nMastery involves activities, such as work or sports, that involve the development of\nskills; we are able to accomplish things and feel a sense of mastery over our\nenvironment.",
+      "topics": [
+        "mastery",
+        "images",
+        "touch",
+        "enjoyable",
+        "below",
+        "activities",
+        "food",
+        "drink"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 41,
+      "text": "es, such as work or sports, that involve the development of\nskills; we are able to accomplish things and feel a sense of mastery over our\nenvironment. When enjoyed in moderation and diversified well with other activities,\nthey can increase positive emotions and improve how we feel about ourselves.\nHere are some examples of how people experience mastery to experience fulfillment\nin their lives. Circle the ones that apply to you, and add others that aren't included\nbelow.\nJob or Meaningful Daytime Activity\nLook for or attempt to develop some of these\nqualities in your occupation volunteer work, or\nother meaningful daytime activity:\n\u2022\u202f Enjoyment\n\u2022\u202f Creativity\n\u2022\u202f Feelings of competence (able to\n accomplish tasks satisfactorily)\n\u2022\u202f Potential for development of skills\n\u2022\u202f Ability to \"move up\" in the organization or\n take on more responsibility, if this is\n desired\n\u2022\u202f Social contact with coworke",
+      "topics": [
+        "work",
+        "development",
+        "skills",
+        "able",
+        "accomplish",
+        "feel",
+        "mastery",
+        "experience"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 42,
+      "text": "development of skills\n\u2022\u202f Ability to \"move up\" in the organization or\n take on more responsibility, if this is\n desired\n\u2022\u202f Social contact with coworkers, colleagues,\n others in the field\nOther skill-based activities\n\u2022\u202f Sports\n\u2022\u202f Music practice and performance\n\u2022\u202f Home improvement/building\n\u2022\u202f Woodworking\n\u2022\u202f Visual art (painting, drawing,\n pottery, sewing, knitting\n\u2022\u202f Learning about interests\n (history, politics, food,\n language, culture, etc.)\n\u2022\u202f Crafting, pottery, and other\n creative skills\nOther?\n____________________________________________________________________________\n___________________________________________________________________________\n___________________________________________________________________________\n5.19\n\n1. Soaking in the bathtub\n2. Planning my career\n3. Collecting things (coins, shells, etc.)\n4. Going for a vacation\n5. Recycling old items\n6. Relaxing\n7.",
+      "topics": [
+        "skills",
+        "pottery",
+        "etc",
+        "development",
+        "ability",
+        "move",
+        "organization",
+        "take"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 43,
+      "text": "Soaking in the bathtub\n2. Planning my career\n3. Collecting things (coins, shells, etc.)\n4. Going for a vacation\n5. Recycling old items\n6. Relaxing\n7. Going on a date\n8. Going to a movie\n9. Jogging, walking\n10. Listening to music\n11. Thinking I have done a full day's work\n12. Recalling past parties\n13. Buying household gadgets\n14. Lying in the sun\n15. Planning a career change\n16. Laughing\n17. Thinking about my past trips\n18. Listening to others\n19. Reading magazines or newspapers\n20. Hobbies (stamp collecting, model building,\netc.)\n21. Spending an evening with good friends\n22. Planning a day's activities\n23. Meeting new people\n24. Remembering beautiful scenery\n25. Saving money\n26. Gambling\n27. Going to the gym, doing aerobics\n28. Eating\n29. Thinking how it will be when I finish school\n30. Getting out of debt/paying debts\n31. Practicing karate, judo, yoga\n32.",
+      "topics": [
+        "going",
+        "planning",
+        "thinking",
+        "career",
+        "collecting",
+        "etc",
+        "listening",
+        "day's"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 44,
+      "text": "doing aerobics\n28. Eating\n29. Thinking how it will be when I finish school\n30. Getting out of debt/paying debts\n31. Practicing karate, judo, yoga\n32. Thinking about retirement\n33. Repairing things around the house\n34. Working on my car (bicycle)\n35. Remembering the words and deeds of\nloving people\n36. Wearing sexy clothes\n37. Having quiet evenings\n38. Taking care of my plants\n39. Buying, selling stocks and shares\n40. Going swimming\n41. Doodling\n42. Exercising\n43. Collecting old things\n44. Going to a party\n45. Thinking about buying things\n46. Playing golf\n47. Playing soccer\n48. Flying kites\n49. Having discussions with friends\n50. Having family get-togethers\n51. Riding a motorbike\n52. Sex\n53. Playing squash\n54. Going camping\n55. Singing around the house\n56. Arranging flowers\n57. Going to church, praying (practicing\nreligion)\n58. Losing weight\n59. Going to the beach\n60.",
+      "topics": [
+        "going",
+        "thinking",
+        "things",
+        "having",
+        "playing",
+        "practicing",
+        "around",
+        "house"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 45,
+      "text": "ing\n55. Singing around the house\n56. Arranging flowers\n57. Going to church, praying (practicing\nreligion)\n58. Losing weight\n59. Going to the beach\n60. Thinking I'm an OK person\n61. A day with nothing to do\n62. Having class reunions\n63. Going ice skating, roller skating/blading\n64. Going sailing\n65.Travelling abroad, interstate or within the\nstate\n66. Sketching, painting\n67. Blowing bubbles\n68. Doing embroidery, cross stitching\n69. Sleeping\n70.Driving\n71.Entertaining\n72. Going to clubs (garden, sewing, etc.)\n73. Thinking about getting married\n74. Going bird watching\n75. Singing with groups\n76. Flirting\n77. Playing musical instruments\n78. Doing arts and crafts\n79. Making a gift for someone\n80. Buying CDs, tapes, records\n81. Watching boxing, wrestling\n82. Planning parties\n83. Cooking, baking\n84. Going hiking, bush walking\n85. Writing books (poems, articles)\n86. Sewing\n87.",
+      "topics": [
+        "going",
+        "singing",
+        "thinking",
+        "skating",
+        "sewing",
+        "watching",
+        "ing",
+        "around"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 46,
+      "text": "Watching boxing, wrestling\n82. Planning parties\n83. Cooking, baking\n84. Going hiking, bush walking\n85. Writing books (poems, articles)\n86. Sewing\n87. Buying clothes\n88. Working\n89. Going out to dinner\n90. Discussing books\n91. Sightseeing\n92. Gardening\n93. Going to the beauty salon\n94. Early morning coffee and newspaper\n95. Playing tennis\n96. Kissing\n97. Watching my children (play)\n98. Thinking I have a lot going for me\n99. Going to plays and concerts\n100. Daydreaming\n101. Planning to go to college or university\nHere are some examples of activities that tend to increase pleasure and mastery. You might think of more\nthat are not listed. Circle the ones that you think could lead to enjoyment or mastery for yourself.\n5.20\n\n102. Going for a drive\n103. Listening to a stereo\n104. Refinishing furniture\n105. Watching videos or DVDs\n106. Making lists of tasks\n107. Going bike riding\n108.",
+      "topics": [
+        "going",
+        "watching",
+        "planning",
+        "books",
+        "mastery",
+        "think",
+        "boxing",
+        "wrestling"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 47,
+      "text": "for a drive\n103. Listening to a stereo\n104. Refinishing furniture\n105. Watching videos or DVDs\n106. Making lists of tasks\n107. Going bike riding\n108. Walks on the riverfront/shoreline\n109. Buying gifts\n110. Travelling to national parks\n111. Completing a task\n112. Thinking about my achievements\n113. Going to a sporting event\n114. Eating gooey, fattening foods\n115. Exchanging emails, chatting on the\ninternet\n116. Photography\n117. Going fishing\n118. Thinking about pleasant events\n119. Staying on a diet\n120. Star gazing\n121. Flying a plane\n122. Reading fiction\n123. Acting\n124. Being alone\n125. Writing diary/journal entries or letters\n126. Cleaning\n127. Reading non-fiction\n128. Taking children places\n129. Dancing\n130. Going on a picnic\n131. Thinking \"I did that pretty well\" after\ndoing something\n132. Meditating/ Mindfulness exercises\n133. Playing volleyball\n134.",
+      "topics": [
+        "going",
+        "thinking",
+        "reading",
+        "drive",
+        "listening",
+        "stereo",
+        "refinishing",
+        "furniture"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 48,
+      "text": "30. Going on a picnic\n131. Thinking \"I did that pretty well\" after\ndoing something\n132. Meditating/ Mindfulness exercises\n133. Playing volleyball\n134. Having lunch with a friend\n135. Making a gratitude list\n136. Thinking about having a family\n137. Thoughts about happy moments in my\nchildhood\n138. Splurging\n139. Playing cards\n140. Having a political discussion\n141. Solving riddles mentally\n142. Playing tennis\n143. Seeing and/or showing photos or slides\n144. Knitting/crocheting/quilting\n145. Doing crossword puzzles\n146. Shooting pool/Playing billiards\n147. Dressing up and looking nice\n148. Reflecting on how I've improved\n149. Buying things for myself\n150. Talking on the phone\n151. Going to museums, art galleries\n152. Thinking religious thoughts\n153. Surfing the internet\n154. Lighting candles\n155. Listening to the radio\n156. Spending time in nature\n157. Having coffee at a cafe\n158.",
+      "topics": [
+        "playing",
+        "having",
+        "thinking",
+        "going",
+        "thoughts",
+        "picnic",
+        "pretty",
+        "well"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 49,
+      "text": "us thoughts\n153. Surfing the internet\n154. Lighting candles\n155. Listening to the radio\n156. Spending time in nature\n157. Having coffee at a cafe\n158. Getting/giving a massage\n159. Saying \"I love you\"\n160. Thinking about my good qualities\n161. Buying books\n162. Having a spa, or sauna\n163. Going skiing\n164. Going canoeing or white-water rafting\n165. Going bowling\n166. Doing woodworking\n167. Fantasizing about the future\n168. Doing ballet, jazz/tap dancing\n169. Debating\n170. Playing computer games\n171. Having an aquarium\n172. Erotica (sex books, movies)\n173. Going horseback riding\n174. Going rock climbing\n175. Thinking about becoming active in the\ncommunity\n176. Doing something new\n177. Making jigsaw puzzles\n178. Thinking I'm a person who can cope\n179. Playing with my pets\n180. Having a barbecue\n181. Rearranging the furniture in my house\n182. Buying new furniture\n183.",
+      "topics": [
+        "going",
+        "having",
+        "thinking",
+        "buying",
+        "books",
+        "playing",
+        "new",
+        "furniture"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 50,
+      "text": "g I'm a person who can cope\n179. Playing with my pets\n180. Having a barbecue\n181. Rearranging the furniture in my house\n182. Buying new furniture\n183. Going window shopping\n184. Saying yes to an opportunity\n5.21\n\nValues, Pleasure, and Mastery Activities List\nPleasure\n1.\u202f_____________________________________\n2.\u202f______________________________________\n3.\u202f______________________________________\n4.\u202f______________________________________\n5.\u202f______________________________________\n6.\u202f______________________________________\n7. ______________________________________\n8. ______________________________________\n9. ______________________________________\n10.\u202f____________________________________\nLook back at the last 6 pages and write down the activities you came up with to form a\nmaster list of possible activities that fit with your life aims.",
+      "topics": [
+        "activities",
+        "furniture",
+        "pleasure",
+        "list",
+        "i'm",
+        "person",
+        "cope",
+        "playing"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 51,
+      "text": "ook back at the last 6 pages and write down the activities you came up with to form a\nmaster list of possible activities that fit with your life aims. We'll use these to start to\nget more active with Behavioral Activation.\nMastery\n1.\u202f_____________________________________\n2.\u202f______________________________________\n3.\u202f______________________________________\n4.\u202f______________________________________\n5.\u202f______________________________________\n6.\u202f______________________________________\n7. ______________________________________\n8. ______________________________________\n9.",
+      "topics": [
+        "activities",
+        "ook",
+        "back",
+        "last",
+        "pages",
+        "write",
+        "came",
+        "form"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 52,
+      "text": "_____________________\n6.\u202f______________________________________\n7. ______________________________________\n8. ______________________________________\n9. ______________________________________\n10.\u202f____________________________________\nValued Activities\n1.\u202f__________________________________________________________________________\n2.\u202f__________________________________________________________________________\n3.\u202f__________________________________________________________________________\n4.\u202f__________________________________________________________________________\n5.\u202f__________________________________________________________________________\n6.\u202f__________________________________________________________________________\n7. __________________________________________________________________________\n8. __________________________________________________________________________\n5.22",
+      "topics": [
+        "valued",
+        "activities"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 53,
+      "text": "__________________________________________________________________\n8. __________________________________________________________________________\n5.22\n\nGoal Setting\nIn order for goals to be achieved, they must be \"SMART:\"\nSpecific: when creating a goal, state exactly what you want to achieve.\nThink about how and when you are going to achieve your goal. For\nexample, \"I want to lose ten pounds in two months by counting calories.\"\nMeasurable: in order to say you met a goal, one must be able to\nmeasure it. Stating that \"I want to eat more fruits and vegetables\" is not\nas measurable as stating \"I want to eat a combination of 5 fruits and\nvegetables a day.\"\nAttainable: Is the goal possible? If the goal is to get into shape by\nswimming 30 laps a day and you have never swum for exercise, you will\nbe setting yourself up for avoidance and discouragement.",
+      "topics": [
+        "goal",
+        "want",
+        "setting",
+        "order",
+        "must",
+        "achieve",
+        "measurable",
+        "stating"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 54,
+      "text": "is to get into shape by\nswimming 30 laps a day and you have never swum for exercise, you will\nbe setting yourself up for avoidance and discouragement. Choose a\nsmaller goal, like taking a few swimming lessons or just swimming a few\nlaps to start.\nRealistic: is the goal realistic? If you have had a knee injury or chronic\npain, it is probably not realistic to set a goal for yourself of joining a\nkickboxing class. Perhaps joining a walking program would be more\nrealistic.\nTrackable: tracking your progress helps us notice improvement. When\nwe recognize our improvement, it motivates us to continue our good\nwork. It can also help in creating future goals.\nGoals are how we make our values, pleasure, and mastery\nactivities real and practical. On the next few pages we will\nstart to schedule the activities that we recorded on the\nValues, Pleasure, and Mastery Activities List.",
+      "topics": [
+        "realistic",
+        "swimming",
+        "goal",
+        "activities",
+        "laps",
+        "will",
+        "yourself",
+        "start"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 55,
+      "text": "l and practical. On the next few pages we will\nstart to schedule the activities that we recorded on the\nValues, Pleasure, and Mastery Activities List. Before we do,\nit is important to be sure we are being \"SMART\" about\nsetting these goals. Use the following tips to increase the\nchances of reaching your goals.\n5.23\n\nSo far, we have\u2026\n\u2022\u202f \u2026determined how you spend your\ntime and how your current activities are\nassociated with your mood.\n\u2022\u202f \u2026started to understand your values,\nenjoyable activities, and activities that\nmake you feel a sense of mastery and\naccomplishment.",
+      "topics": [
+        "activities",
+        "values",
+        "mastery",
+        "goals",
+        "practical",
+        "next",
+        "pages",
+        "will"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 56,
+      "text": "with your mood.\n\u2022\u202f \u2026started to understand your values,\nenjoyable activities, and activities that\nmake you feel a sense of mastery and\naccomplishment. We've connected\nthese with specific activities that you\nwrote on the Values, Pleasure, and\nMastery Activities List.\n\u2022\u202f \u2026learned how to be smart about\nsetting goals.\nNow it's time to start activating! One way to make Behavioral Activation work is\nto simply start to schedule activities and then rate how our mood corresponds\nto each activity. Use the chart on the following page to choose some activities\nwith which to start. You'll check the ones you complete and then rate your\nmood during the activity.\nActivity Planning Tips:\n\u2022\u202fStart with 2-3 of the easiest activities.\n\u2022\u202fSchedule activities on the day and time you think you could reasonably complete them.",
+      "topics": [
+        "activities",
+        "start",
+        "mood",
+        "activity",
+        "values",
+        "make",
+        "mastery",
+        "time"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 57,
+      "text": "ity Planning Tips:\n\u2022\u202fStart with 2-3 of the easiest activities.\n\u2022\u202fSchedule activities on the day and time you think you could reasonably complete them. For\nexample, if my activity is \"play with my daughter\" I might enter that activity at 11 am on\nMonday, 10 am on Wednesday, and 9 am on Thursday.\n\u2022\u202fConsider whether you are ready for a particular activity and consider any barriers. For\nexample, if my activity is \"exercise,\" one barrier might be that I don't have any gym clothes.\nPerhaps I need to first complete the activity \"purchase gym clothes\" before I'll be ready to hit\nthe gym.\n\u2022\u202fIf you are unable to do an activity on the day or time that you first planned, just cross it out,\nwrite the activity that you did that that time, and try to reschedule your planned activity.\n\u2022\u202fRemember not to get discouraged if you aren't able to complete all of the activities.",
+      "topics": [
+        "activity",
+        "activities",
+        "time",
+        "complete",
+        "gym",
+        "day",
+        "example",
+        "consider"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 58,
+      "text": "d that that time, and try to reschedule your planned activity.\n\u2022\u202fRemember not to get discouraged if you aren't able to complete all of the activities. Try to\ncontinue to move forward with the activity anyway, even if it isn't going as you hoped.\n5.24\n\n Activity Completed Mood rating\n5-7:00 am\n __________________________________________________________________________________________________________\n7:00 am\n __________________________________________________________________________________________________________\n8:00 am\n __________________________________________________________________________________________________________\n9:00 am\n __________________________________________________________________________________________________________\n10:00 am\n __________________________________________________________________________________________________________\n11:00 am\n _______________________",
+      "topics": [
+        "activity",
+        "try",
+        "time",
+        "reschedule",
+        "planned",
+        "remember",
+        "get",
+        "discouraged"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 59,
+      "text": "10:00 am\n __________________________________________________________________________________________________________\n11:00 am\n __________________________________________________________________________________________________________\n12:00 pm\n __________________________________________________________________________________________________________\n1:00 pm\n __________________________________________________________________________________________________________\n2:00 pm\n __________________________________________________________________________________________________________\n3:00 pm\n __________________________________________________________________________________________________________\n4:00 pm\n __________________________________________________________________________________________________________\n5:00 pm\n ____________________________________________________________________________",
+      "topics": []
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 60,
+      "text": "________________________________________________________________\n5:00 pm\n __________________________________________________________________________________________________________\n6:00 pm\n __________________________________________________________________________________________________________\n7:00 pm\n __________________________________________________________________________________________________________\n8:00 pm\n __________________________________________________________________________________________________________\n9:00 pm\n __________________________________________________________________________________________________________\n10:00 pm\n __________________________________________________________________________________________________________\n11:00 pm\n __________________________________________________________________________________________________________\nScheduled Activities",
+      "topics": [
+        "scheduled",
+        "activities"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 61,
+      "text": "___________\n11:00 pm\n __________________________________________________________________________________________________________\nScheduled Activities for (name): ___ Day of week/date _______\nInstructions: Write some specific activities that you recorded on the \"Values, Pleasure, and Mastery Activities List\" in\nthe \"activity\" column. Place a check in the \"completed\" column to indicate if you completed the scheduled activity.\nRecord a mood rating in the last row; mood is rated between 0-10 (\"0\" indicating \"most negative\" and \"10\"\nindicating \"most positive.\"\n5.25\n\nPleasure Predicting\nWe are depressed we often anticipate getting little to no pleasure or\nmastery out of an activity. Depression clouds our judgment and colors\nour predictions about the future.\nAs an experiment, we can \"pleasure predict\" how much pleasure or\nmastery we feel after a given activity.",
+      "topics": [
+        "pleasure",
+        "activity",
+        "activities",
+        "mastery",
+        "scheduled",
+        "column",
+        "completed",
+        "mood"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 62,
+      "text": "and colors\nour predictions about the future.\nAs an experiment, we can \"pleasure predict\" how much pleasure or\nmastery we feel after a given activity. This is one way that we can mix\nBehavioral Activation with the Cognitive Skills we learned in Chapter 4.\nWe perform a \"behavioral experiment,\" which means that we see what\nhappens when we plan an activity, recording the \"data,\" to see what we\nlearn. People tend to learn that activities are more enjoyable than they\nhad predicted. See what happens for you!\nUse the sheet on the following page\nto \"pleasure predict\" some activities\nthis week.\nFirst, pick an achievable activity,\nespecially one that you predict may\nnot be enjoyable. Schedule the\nactivity using the Activity Planning\nWorksheet on the previous page.\nFill in the form on the next page,\nrecording your \"prediction\" before\nyou start the activity on a scale of\n0-10.",
+      "topics": [
+        "activity",
+        "pleasure",
+        "predict",
+        "see",
+        "page",
+        "experiment",
+        "one",
+        "behavioral"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 63,
+      "text": "nning\nWorksheet on the previous page.\nFill in the form on the next page,\nrecording your \"prediction\" before\nyou start the activity on a scale of\n0-10. Right after the activity is\nfinished, record how much you\nactually enjoyed it.\n5.26\n\nActivity\n(Schedule activities with a\npotential for pleasure or\npersonal growth)\n_______________________\n_______________________\n_______________________\n_______________________\nCompanion(s)\n(If alone, specify \"self\"- do\nnot put the word \"alone\" in\nthis column)\n_______________________\n_______________________\n_______________________\n_______________________\nSatisfaction (rate on scale of 0-10)\nPredicted Actual___\n___________________\nActivity\n_______________________\n_______________________\n_______________________\n_______________________\nActivity\n_______________________\n_______________________\n_______________________\n_______________________\nCompanion(s)\n________",
+      "topics": [
+        "activity",
+        "page",
+        "scale",
+        "companion",
+        "alone",
+        "nning",
+        "worksheet",
+        "previous"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 64,
+      "text": "_______________________\nActivity\n_______________________\n_______________________\n_______________________\n_______________________\nCompanion(s)\n_______________________\n_______________________\n_______________________\n_______________________\nCompanion(s)\n_______________________\n_______________________\n_______________________\n_______________________\nSatisfaction (rate on scale of 0-10)\nPredicted Actual___\n___________________\nSatisfaction (rate on scale of 0-10)\nPredicted Actual___\n___________________\n5.27\n\nWhen a problem arises, there many possible responses. As we have discussed throughout this manual,\nsome responses to depression and problems can help to solve these problems; others can serve to\nmake things worse. Below we describe three ways of addressing a problem. One approach may work\nbest, or all three may apply.",
+      "topics": [
+        "companion",
+        "satisfaction",
+        "rate",
+        "scale",
+        "predicted",
+        "actual",
+        "problem",
+        "responses"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 65,
+      "text": "lems; others can serve to\nmake things worse. Below we describe three ways of addressing a problem. One approach may work\nbest, or all three may apply. The \"take home point\" here is that all situations are different, and require\ndifferent types of approaches to help you meet your life aims.\nAdaptive Response #2: Problem solving (actions/behaviors)\nSometimes the best answer to a problem is working to \"solve\" the problem\nsomehow-it is not a problem with our thinking or behavior, it is a problem with\nthe external circumstances. For example, if someone is consistently aggressive\nor abusive of us, we may want to find a way to set firm limits with that person or\nleave the relationship altogether.",
+      "topics": [
+        "problem",
+        "may",
+        "three",
+        "best",
+        "different",
+        "lems",
+        "others",
+        "serve"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 66,
+      "text": "meone is consistently aggressive\nor abusive of us, we may want to find a way to set firm limits with that person or\nleave the relationship altogether. There are many problem solving skills, some of\nwhich are outlined below:\n -Behavioral Activation skills to address avoidance\n -Assertively address interpersonal conflicts\n -Take small steps to make progress on long-term projects\n -Plan for the future\n -Manage your time effectively\n -many others\u2026\nTalk to your therapist or group leader about other behavioral skills to directly\naddress problems that arise.\nAdaptive Response #1: Get the facts (thinking)\nUse cognitive skills to better understand the \"facts\" of a situation. Perhaps there\nis a problem, and perhaps there is not.",
+      "topics": [
+        "skills",
+        "there",
+        "address",
+        "problem",
+        "behavioral",
+        "facts",
+        "perhaps",
+        "meone"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 67,
+      "text": ": Get the facts (thinking)\nUse cognitive skills to better understand the \"facts\" of a situation. Perhaps there\nis a problem, and perhaps there is not. Sometimes the first step is to understand\nthe facts of a situation, and then decide whether or not to use problem solving\nskills (below) or accept things that are outside of our control. Also see the earlier\nsection on \"Cognitive Therapy Skills.\"\nAdaptive Response #3: Accept what cannot be controlled (letting go)\nThere are times that we believe we should be able to control something,\nyet our consistent attempts to do so are met with failure. This \"beating a\ndead horse\" makes us more and more frustrated, angry, anxious, and\ndepressed. Sometimes letting go of things we cannot control is\nnecessary to prevent problems from getting even worse; we also lift\nsome of the burden of failing over and over.\nHow to take action\nto solve a problem\n1.",
+      "topics": [
+        "facts",
+        "skills",
+        "there",
+        "problem",
+        "control",
+        "use",
+        "cognitive",
+        "understand"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 68,
+      "text": "essary to prevent problems from getting even worse; we also lift\nsome of the burden of failing over and over.\nHow to take action\nto solve a problem\n1. Write down clearly what\nthe problem is.\n 2. Brainstorm about ways\nto solve the problem, even\n\"ridiculous\" ways, writing\ndown all possibilities.\n3. Rank the possible\nsolutions in order, from\nbest to worst. Think \"how\nlikely is it for this approach\nto work?\"\n4. Decide on a plan of\naction for each reasonable\nsolution. Rate how\nprobable it would be each\neach plan to work.\n5. Pick the most reasonable\nplan and put the plan into\naction. If it doesn't work,\ngo to the next best\nsolution and try that one.\nContinue to try until you\nsolve the problem.\nHow do I know what to do to make it better?\nSometimes it is difficult to know which approach to take to make a situation better.",
+      "topics": [
+        "problem",
+        "plan",
+        "action",
+        "solve",
+        "work",
+        "even",
+        "take",
+        "ways"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 69,
+      "text": "ou\nsolve the problem.\nHow do I know what to do to make it better?\nSometimes it is difficult to know which approach to take to make a situation better. While it is\nultimately an individual decision, one that may take trial and error, therapy is a place to work out\nsome of these difficult choices. The various skills in CBT are meant to help us get some clarity\naround some of these decisions. While we don't have room in this manual to discuss in detail how to\nmake these decisions, this is something to discuss with your group or individual therapist as you\nmove through treatment.\n5.28\n\nFrom the outside-in\u2026\nAs we discussed in the \"Action Precedes Emotion?\" section earlier, one reason we\nstruggle with motivation is that we are looking to our internal emotional state\n(happy, energized, excited) to cue us to start a task.",
+      "topics": [
+        "make",
+        "know",
+        "better",
+        "difficult",
+        "take",
+        "while",
+        "individual",
+        "one"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 70,
+      "text": ", one reason we\nstruggle with motivation is that we are looking to our internal emotional state\n(happy, energized, excited) to cue us to start a task. This is an \"inside-out\" way of\nthinking which is problematic with depression, because for most people, low\nmotivation/energy is a pervasive symptom that typically takes some time to resolve.\nIn Behavioral Activation we ask people to work from the outside-in, acting\naccording to a plan rather than waiting to feel ready. We can jump-start our mood\nby starting with an action and letting our mood follow. This is hard at first, but over\ntime, most people recognize that their actions can actually have an impact on their\nmood, so they feel less at the mercy of their depression.\nLittle by little\u2026\nWorking on doing things that you have been avoiding can sometimes feel\npainful or even cause some anxiety.",
+      "topics": [
+        "people",
+        "feel",
+        "mood",
+        "motivation",
+        "depression",
+        "most",
+        "time",
+        "little"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 71,
+      "text": "ercy of their depression.\nLittle by little\u2026\nWorking on doing things that you have been avoiding can sometimes feel\npainful or even cause some anxiety. While plunging into these behaviors\nmight seem ideal, you will likely have more success if you commit to taking\nsmall steps.\nIf you are experiencing depression, chances are you're\ndealing with motivational difficulties. Frequently we hear\npeople (depressed or not) talk about waiting to make\nchanges when they are \"ready\" as if there is a particular\nday that they will wake up and suddenly feel different\nand able to face whatever it is they are avoiding.",
+      "topics": [
+        "depression",
+        "little",
+        "avoiding",
+        "feel",
+        "will",
+        "ercy",
+        "working",
+        "things"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 72,
+      "text": "they are \"ready\" as if there is a particular\nday that they will wake up and suddenly feel different\nand able to face whatever it is they are avoiding. We put\noff exercise routines, diets, getting homework done,\ncalling back important people, etc., because we feel\nunmotivated.\nFor example, if you and your therapist identify exercise as a goal, you might break this down into\nsteps.\nIf you'd like to run, but you've been inactive for months, chances are you're not going to just start\nrunning. By breaking this down into smaller goals you will likely have more success. Let's say you\nset a goal to put on your shoes and walk for 10 minutes, then 20, then 30, etc. Once you've built\nsome momentum, you then might begin to run.\nUse the \"Motivation Tips\" on the following page to help you get unstuck when low motivation\nstrikes.\n5.29",
+      "topics": [
+        "will",
+        "feel",
+        "put",
+        "exercise",
+        "etc",
+        "goal",
+        "run",
+        "you've"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 73,
+      "text": "some momentum, you then might begin to run.\nUse the \"Motivation Tips\" on the following page to help you get unstuck when low motivation\nstrikes.\n5.29\n\n1.\u202fKeep it simple\n2.\u202fBreak it into smaller pieces\n3.\u202fDo one thing at a time\n4.\u202fSet realistic goals\n5.\u202fSchedule activities at times when you are most\nlikely to succeed\n6.\u202fUse self-compassion\n7.\u202fAnticipate setbacks\n8.\u202fReinforce and reward healthy behavior choices\n9.\u202fReflect on what works and what doesn't work\n10.\u202fChange your environment\n11.\u202fMinimize distractions\n12.\u202fUse visual reminders\n13.\u202fTalk yourself into it-challenge negative\nthinking!\n14.\u202fUse a timer-start with just five minutes\n15.\u202fUse reminders/alarms\n16.\u202fHave an accountability partner\n17.\u202fFocus on long-term benefits\n18.\u202fCommit to making decisions based on what we\nknow, not on what we feel\n5.30",
+      "topics": [
+        "use",
+        "motivation",
+        "reminders",
+        "momentum",
+        "begin",
+        "run",
+        "tips",
+        "following"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 74,
+      "text": "rms\n16.\u202fHave an accountability partner\n17.\u202fFocus on long-term benefits\n18.\u202fCommit to making decisions based on what we\nknow, not on what we feel\n5.30\n\nBehavioral Activation Tips\nBehavioral Activation can be challenging! It\nis common to run into roadblocks during this\nprocess and have moments in which we\nwant to give up. We can honestly say that\nthe only barrier to improvement is giving up\ncompletely; if you continue to learn about\nyour valued life course and stay \"out there,\"\nchances are that things will improve.\n1.\u202fBe prepared for a challenge: because we are working against our brain's\nattempts to protect us, it takes effort and some discomfort to get results\nfrom Behavioral Activation in the long run.\n2.\u202fGet \"back on the horse:\" when failures inevitably happen, be prepared to\nrespond actively.",
+      "topics": [
+        "behavioral",
+        "activation",
+        "run",
+        "prepared",
+        "get",
+        "rms",
+        "accountability",
+        "partner"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 75,
+      "text": "get results\nfrom Behavioral Activation in the long run.\n2.\u202fGet \"back on the horse:\" when failures inevitably happen, be prepared to\nrespond actively. Depression will tell us to give up when things don't go\nwell\u2026 and try to convince us that all of those negative thoughts are the\ntruth. Prove the depression wrong by getting back out there and moving\ntoward what you really value.\n3.\u202fMove one step at a time: retraining the brain takes time, one small step at\na time. Trying to move too quickly is a recipe for failure and\ndisappointment, and overwhelms us so that we want to give up.\n4.\u202fAddress negative thinking: go back and review the Cognitive Therapy\nSkills chapter and continue to address the thinking that tries to keep us\nisolated.",
+      "topics": [
+        "back",
+        "time",
+        "get",
+        "depression",
+        "give",
+        "negative",
+        "move",
+        "one"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 76,
+      "text": "ddress negative thinking: go back and review the Cognitive Therapy\nSkills chapter and continue to address the thinking that tries to keep us\nisolated. Especially address self-critical thoughts and develop selfcompassion.\n5.\u202fFocus on valued action, not just on \"symptom reduction.\" Gauge success\naccording to the extent that you are living a valued life, not whether or\nnot you have emotions. While one aim of CBT is to improve mood and\nhave fewer negative emotions in the long run, in the short run we must\nremember that emotions are a part of life and we cannot get rid of them\ncompletely. But\u2026 we can improve life and how we feel by moving toward\nvalued actions.\nUse the tips below to help navigate barriers that come up during the course of\nBehavioral Activation treatment.\nContinued on the next page\u2026 5.31",
+      "topics": [
+        "valued",
+        "life",
+        "emotions",
+        "negative",
+        "thinking",
+        "address",
+        "improve",
+        "run"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 77,
+      "text": "ons.\nUse the tips below to help navigate barriers that come up during the course of\nBehavioral Activation treatment.\nContinued on the next page\u2026 5.31\n\nBehavioral Activation Tips, con.\n6.\u202fMonitor your activities and mood as specifically as you can. We often\nmiss important clues to treating depression when we don't pay enough\nattention to the details of our activity.\n7.\u202fSolve problems that could be leading to further depressive symptoms,\nand work to accept those things that cannot be solved, while continuing\nto move toward life aims to the best of your ability.\n8.\u202fBe sure your activities line up with your true values. Sometimes we think\nwe are living a valued life and we are not; this leads to continual\ndisappointments. Continue to explore your values.",
+      "topics": [
+        "tips",
+        "behavioral",
+        "activation",
+        "activities",
+        "life",
+        "values",
+        "ons",
+        "use"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 78,
+      "text": "true values. Sometimes we think\nwe are living a valued life and we are not; this leads to continual\ndisappointments. Continue to explore your values. Remember that\nvalues are not internal states, how people treat us, or specific things to\nachieve.\n9.\u202fBe sure you have the skills you need to be successful. Trying to do\nsomething in which we don't have the necessary skills sets us up for\nfailure. Some people learn that they are \"incompetent,\" only because\nthey continue to try to do things for which they are not ready. Find out\nwhat skills are necessary to be successful at a given task, and then, given\nthe amount of work it would take to learn the necessary skills, decide if it\nmakes sense to continue to pursue that activity.\n10.\u202fUnderstand the principles of Behavioral Activation and why each part of\nit is necessary.",
+      "topics": [
+        "skills",
+        "necessary",
+        "values",
+        "continue",
+        "people",
+        "things",
+        "successful",
+        "learn"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 79,
+      "text": "de if it\nmakes sense to continue to pursue that activity.\n10.\u202fUnderstand the principles of Behavioral Activation and why each part of\nit is necessary. Sometimes we are confused about why we are doing\nsomething; this potentially leads to resistance to trying new things, and\nwe miss out on the possible benefits.\n11.\u202fPractice mindfulness: review Chapter 3 and practice mindfulness.\nResearch shows that enjoyment is much more likely when we are present\nand mindful. Use Behavioral Activation as an opportunity to practice\nbeing mindful of potentially pleasurable experiences as they occur.\n12.\u202fReward yourself for your achievements. Depression and self-criticism try\nto take away the \"kudos\" we deserve when we achieve something. Make\nan explicit effort to reward yourself instead.\n5.32\n\nBarriers and Resources Worksheet\nUse the following worksheet to determine the specifics of some of your\ngoals.",
+      "topics": [
+        "practice",
+        "behavioral",
+        "activation",
+        "something",
+        "potentially",
+        "mindfulness",
+        "mindful",
+        "use"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 80,
+      "text": "ffort to reward yourself instead.\n5.32\n\nBarriers and Resources Worksheet\nUse the following worksheet to determine the specifics of some of your\ngoals. Think about possible barriers and resources you might have to\nhurdle them.\nGoal: _____________________________________________________________\nWhen I want to achieve it:___________________________________________\n__________________________________________________________________\nHow I am going to do it:_____________________________________________\n__________________________________________________________________\nHow I am going to measure it:_______________________________________\n__________________________________________________________________\nWhat are possible barriers?__________________________________________\n__________________________________________________________________\nWhat are the possible resources?___________________________",
+      "topics": [
+        "barriers",
+        "resources",
+        "possible",
+        "worksheet",
+        "going",
+        "ffort",
+        "reward",
+        "yourself"
+      ]
+    },
+    {
+      "doc_id": "ba-Behavioral-Activation-for-Depression",
+      "modality": "ba",
+      "label": "Behavioral Activation for Depression",
+      "i": 81,
+      "text": "_______________________\n__________________________________________________________________\nWhat are the possible resources?_____________________________________\n__________________________________________________________________\n5.33",
+      "topics": [
+        "possible",
+        "resources"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 0,
+      "text": "1\nGraded\nExposure\n\n 2\nWhen to use this workbook\nGraded Exposure is an evidence based intervention for the treatment of anxiety and phobias.\nThis workbook can be used either alone as a self help resource or with the support of a Psychological\nWellbeing Practitioner.\n\nHow to use this workbook.\nGraded Exposure has three steps.\nIt is important to work through one step at a time, only move on to the next step of Graded Exposure\nonce you are comfortable with using the previous step. It is key to follow all three steps of Graded\nExposure in sequence.\nIt can take some time for an intervention to become effective and to show improvement. It is\nimportant to allow enough time for the intervention to be effective.\n\nHelpful Resources: https://www.talkplus.org.uk/graded-exposure-video-module",
+      "topics": [
+        "graded",
+        "exposure",
+        "workbook",
+        "intervention",
+        "step",
+        "time",
+        "use",
+        "three"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 1,
+      "text": "is\nimportant to allow enough time for the intervention to be effective.\n\nHelpful Resources: https://www.talkplus.org.uk/graded-exposure-video-module\n\nExposure and Habituation https://talkchanges.org.uk/wp-content/uploads/2020/05/ExposureHabituation.pdf\nFacing Your Fears https://www.anxietycanada.com/strategies-and-techniques/facing-fears/\nAnxiety UK https://www.anxietyuk.org.uk/\n\nEvidence Base for Graded Exposure:\nNHS Phobias https://www.nhs.uk/mental-health/conditions/phobias/treatment/\nNHS Agoraphobia https://www.nhs.uk/mental-health/conditions/agoraphobia/treatment/\nNICE Guidance https://www.nice.org.uk/guidance/cg123/chapter/1-Guidance#steps-2-and-3treatment-and-referral-for-treatment\n\nGraded Exposure",
+      "topics": [
+        "https",
+        "www",
+        "org",
+        "nhs",
+        "exposure",
+        "guidance",
+        "graded",
+        "phobias"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 2,
+      "text": "treatment/\nNICE Guidance https://www.nice.org.uk/guidance/cg123/chapter/1-Guidance#steps-2-and-3treatment-and-referral-for-treatment\n\nGraded Exposure\n\n 3\nJo's Story\nJo is 32, and has struggled with a fear of driving that has developed in the last few months following a\nperiod of not driving the car.\nThey said \"I never used to be scared of driving, I used to drive everywhere, an hour to work, in the\ncountryside and on motorways! But now even the thought of getting in a car makes my heart race. I\nfeel sweaty, shaky and even get light headed. It is having a huge impact on my life.\"\nJo began avoiding driving completely, they opted to work from home, asked friends to pick them up\nand wouldn't go anywhere that involved driving.",
+      "topics": [
+        "driving",
+        "guidance",
+        "nice",
+        "car",
+        "used",
+        "work",
+        "even",
+        "treatment"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 3,
+      "text": "fe.\"\nJo began avoiding driving completely, they opted to work from home, asked friends to pick them up\nand wouldn't go anywhere that involved driving. This meant that Jo even became fearful of being a\npassenger in someone else's car.\nJo knew that this couldn't carry on, so Jo googled \"ways to overcome driving phobia\" and found out\nabout graded exposure. When looking on the NHS website, Jo saw that graded exposure could be done\nin a type of therapy called CBT. Jo looked at their local area and found TalkPlus provided this.\n\"When I referred to TalkPlus, I really wanted a quick fix but soon learnt that graded exposure, was going to take hard work and lots of practice.\"\nJo worked with a psychological wellbeing-practitioner in 30 minute sessions of guided self-help on driving phobia. They used the vicious cycle to work out what was maintaining Jo's problem.",
+      "topics": [
+        "driving",
+        "work",
+        "graded",
+        "exposure",
+        "phobia",
+        "found",
+        "talkplus",
+        "began"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 4,
+      "text": "g-practitioner in 30 minute sessions of guided self-help on driving phobia. They used the vicious cycle to work out what was maintaining Jo's problem. It seemed that\nbecause Jo was avoiding, they were never allowing the anxiety to lessen therefore each time they got in\na car they felt just as scared as before.\nJo set goals for treatment to be able to drive to and from work, twice a week and began with step one of\ngraded exposure by identifying \"anxiety provoking situations\", after this they were able to rank them in\na hierarchy from least feared to most feared.\nThey could then begin planning their first exposure, keeping in mind the four conditions to successfully\ncomplete graded exposure.",
+      "topics": [
+        "exposure",
+        "work",
+        "anxiety",
+        "able",
+        "graded",
+        "feared",
+        "g-practitioner",
+        "minute"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 5,
+      "text": "red to most feared.\nThey could then begin planning their first exposure, keeping in mind the four conditions to successfully\ncomplete graded exposure. They found the first activities fairly straight forward and noticed the anxiety\nbegan to drop as they stayed in the anxiety provoking situation.\nHowever, Jo decided to skip some activities on the ladder and jump to a more feared activity without\nrepeating previous exposures. Jo found this flooded them with fight or flight anxiety symptoms which\nknocked their confidence.",
+      "topics": [
+        "anxiety",
+        "feared",
+        "first",
+        "exposure",
+        "found",
+        "activities",
+        "red",
+        "most"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 6,
+      "text": "feared activity without\nrepeating previous exposures. Jo found this flooded them with fight or flight anxiety symptoms which\nknocked their confidence. Despite this Jo returned to the less feared activities, and continued to repeat them in a graded manner without distraction making them prolonged enough to habituate.\nJo completed all 6 sessions of graded exposure and now feels comfortable driving to and from work\nagain.\n\"Using graded exposure, I was able to get my independence back! Although I still have some anxiety\naround driving, I know that I can continue to use graded exposure to make myself feel more comfortable and achieve my goals.\"\n\nYou can find Jo's example sheets before each\nblank template\n\n 4",
+      "topics": [
+        "graded",
+        "exposure",
+        "feared",
+        "without",
+        "anxiety",
+        "comfortable",
+        "driving",
+        "activity"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 7,
+      "text": "e to use graded exposure to make myself feel more comfortable and achieve my goals.\"\n\nYou can find Jo's example sheets before each\nblank template\n\n 4\n\nThe CBT or vicious cycle below gives an example of some worries and how this can be maintained.\nWhat is anxiety?\nWe can feel anxiety in different ways, it can be an emotion, or we can experience feelings of anxiety\nin our bodies. This is the fight/fight/freeze reflex which serves to protect us when we are threatened\nwith dangerous situations. Adrenaline is pumped into our body to help prepare us and blood is\ndirected to the large muscle groups ready to fight or run away.\nThis can cause symptoms like the physical ones listed below.\nThe Vicious Cycle of Anxiety and Avoidance",
+      "topics": [
+        "anxiety",
+        "fight",
+        "feel",
+        "example",
+        "vicious",
+        "cycle",
+        "below",
+        "use"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 8,
+      "text": "rge muscle groups ready to fight or run away.\nThis can cause symptoms like the physical ones listed below.\nThe Vicious Cycle of Anxiety and Avoidance\n\nHow does avoidance affect Anxiety?\nWhen we fear certain situations, objects or activities, we either avoid or leave the situation or use\nsafety behaviours in order to reduce our anxiety.\nAlthough this may be helpful in reducing our distress in the short term, avoidance can help to\nmaintain this pattern of fear and anxiety as shown above.",
+      "topics": [
+        "anxiety",
+        "avoidance",
+        "fear",
+        "rge",
+        "muscle",
+        "groups",
+        "ready",
+        "fight"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 9,
+      "text": "though this may be helpful in reducing our distress in the short term, avoidance can help to\nmaintain this pattern of fear and anxiety as shown above. Therefore each time we go into a feared\nsituation we experience the same high level of anxiety\ntime after time, by experiencing physical symptoms and\nthe anxious emotions as well as unhelpful thoughts\naround the situation.\nWhat is Graded Exposure?\nAvoid anxiety provoking\nsituation or things\nUse safety behaviour to\ncope with anxiety\nHeart pounding\nSweaty palms\nFeeling sick\nTunnel vision\nRestlessness\nAnxious\nPanicked\nScared\nUpset\n\n'I won't be able to cope'\n'Something bad might\nhappen'\n'need to get out of here'\n\n 5",
+      "topics": [
+        "anxiety",
+        "time",
+        "situation",
+        "anxious",
+        "though",
+        "may",
+        "helpful",
+        "reducing"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 10,
+      "text": "g sick\nTunnel vision\nRestlessness\nAnxious\nPanicked\nScared\nUpset\n\n'I won't be able to cope'\n'Something bad might\nhappen'\n'need to get out of here'\n\n 5\n\nWrite down anxious thoughts that you have experienced recently in the box and then see how that made you feel emotionally, how it\nchanged what you did or didn't do (your behaviour) and also what you felt in your body like anxiety symptoms.\nWhat does your vicious cycle look like?\n\n 6\n\nWhy set goals?\nGoal setting is an evidence based way of helping ourselves to decide on things you would like to\nachieve and what you will do to get there as well as work toward them.\nThis helps us to stay focused on achieving things that matter most to us.\n\nGoals should be:\n\uf0de Focused on short term objectives to begin with\n\uf0de Limited to no more than 3 goals\n\uf0de Positive in nature\n\nYou can use SMART to help you consider your goals:",
+      "topics": [
+        "goals",
+        "like",
+        "anxious",
+        "get",
+        "things",
+        "focused",
+        "sick",
+        "tunnel"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 11,
+      "text": "sed on short term objectives to begin with\n\uf0de Limited to no more than 3 goals\n\uf0de Positive in nature\n\nYou can use SMART to help you consider your goals:\n\nSpecific Try and be specific with a time, date or anything you'll need to\nachieve the goal\nMeasurable Goals should be able to be measured on a scale\nAchievable Goals should not 'set you up to fail' and should be feel within\nreach\nRelevant Goals should be relevant to your life or current\nproblem\nTime specific Set a specific time or deadline to achieve your goal\nSetting Goals\n\n 7\n\nHave a go at creating your own goals and rating how much you have achieved\nyour goal so far:\n\n0 2 4 6 8 10\n= Not\nachieved this\ngoal at all\n= slightly\nachieved this\ngoal\n= somewhat\nachieved this\ngoal\n= markedly\nachieved this\ngoal\n= mostly\nachieved this\ngoal\n= completely\nachieved this\ngoal\nSetting Goals\n\nGoal 1\nWrite your goal here:\n\nGoal rating:\n /10",
+      "topics": [
+        "goal",
+        "goals",
+        "achieved",
+        "specific",
+        "time",
+        "achieve",
+        "set",
+        "relevant"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 12,
+      "text": "arkedly\nachieved this\ngoal\n= mostly\nachieved this\ngoal\n= completely\nachieved this\ngoal\nSetting Goals\n\nGoal 1\nWrite your goal here:\n\nGoal rating:\n /10\n\nGoal 2\nWrite your goal here:\n\nGoal rating:\n /10\n\nGoal 3\nWrite your goal here:\n\nGoal rating:\n /10\n\n 8\nTackling Avoidance in Feared Situations\nGraded Exposure is an evidence based treatment used to tackle avoidance of feared situations,\nactivities or objects due to anxiety. It works through a process called habituation, a gradual\nreduction in the physical sensations of anxiety. This is achieved through identifying feared\nsituations or objects and gradually exposing ourselves to them whilst following four conditions.\nHabituation\nAs shown in the left graph, when we leave a situation our anxiety immediately reduces,\nhowever the next time we enter that situation our anxiety becomes just as high.",
+      "topics": [
+        "goal",
+        "achieved",
+        "anxiety",
+        "write",
+        "here",
+        "rating",
+        "feared",
+        "situations"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 13,
+      "text": "left graph, when we leave a situation our anxiety immediately reduces,\nhowever the next time we enter that situation our anxiety becomes just as high. As in the past we\nhave found relief in leaving, this is what we often continue to do to reduce the distress we\nexperience.\nThe anxiety we experience is part of the 'fight or flight' response, a biological system to prepare us to\nrespond to frightening or dangerous situations. However physiologically we cannot remain at this\nhigh level of anxiety, so by exposing ourselves to the situation, and remaining in it, our anxiety\nnaturally reduces, this is the process of habituation.\nGraded exposure works by gradually exposing ourselves to the feared situation, beginning only with\nsituations that we feel we are able to tolerate, this can be seen in the graph on the right.",
+      "topics": [
+        "anxiety",
+        "situation",
+        "graph",
+        "reduces",
+        "however",
+        "high",
+        "experience",
+        "situations"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 14,
+      "text": "ng ourselves to the feared situation, beginning only with\nsituations that we feel we are able to tolerate, this can be seen in the graph on the right. This allows\nthe process of habituation to occur in order to reduce our\nfear and reduce our anxiety response in the long term.\nGraded Exposure\n\n 9\nIdentifying anxiety-provoking situations\n\nThe first step of Graded Exposure is to identify all the activities that cause you anxiety so that you are\neither avoiding them, leaving them or distracting yourself to try and cope. It may be that you have a\nnumber of different feared situations, objects or activities, it is then important to separate these fears\ninto different lists and select one specific fear to tackle at a time.",
+      "topics": [
+        "situations",
+        "feared",
+        "reduce",
+        "fear",
+        "anxiety",
+        "graded",
+        "exposure",
+        "activities"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 15,
+      "text": "ituations, objects or activities, it is then important to separate these fears\ninto different lists and select one specific fear to tackle at a time.\n\n\u2022 Avoiding or leaving a situation are just two things we might do to make ourselves feel safer and to\nreduce our anxiety.\n\u2022 There are often more subtle ways in which we avoid fully experiencing anxiety in situations.\nThese include distraction and safety behaviours, see the box on the next page below for\nexamples, to help identify the subtle behaviours we use to minimise distress.\n\u2022 Engaging in distraction and safety behaviours also maintains our fear of the situation in the long\nterm, much as avoiding or leaving it does. Therefore it is important to include these in our list, for\nexample going shopping with a friend instead of alone so we feel safer and experience less\nanxiety.",
+      "topics": [
+        "anxiety",
+        "behaviours",
+        "important",
+        "fear",
+        "avoiding",
+        "leaving",
+        "situation",
+        "feel"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 16,
+      "text": "it is important to include these in our list, for\nexample going shopping with a friend instead of alone so we feel safer and experience less\nanxiety.\n\nBe specific\nWhilst making the list of anxiety provoking situations, including when we distract ourselves, it is\nimportant to be specific.\nInclude in the list what, where, when and with whom each situation occurs.\nIt may be that there are a number of similar situations that cause anxiety, for example going\nshopping with a friend at 8am or going shopping with a friend at 4pm, due to the fact that these\nsmall differences cause different levels of anxiety.\n\nStep One\n\n 10\nIdentifying safety behaviours\n\nTo complete Step 1 use Worksheet 1 on page 12.\nFill in the worksheet with activities that provoke your\nanxiety.\nStep One (continued)",
+      "topics": [
+        "anxiety",
+        "list",
+        "going",
+        "shopping",
+        "friend",
+        "step",
+        "important",
+        "include"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 17,
+      "text": "fety behaviours\n\nTo complete Step 1 use Worksheet 1 on page 12.\nFill in the worksheet with activities that provoke your\nanxiety.\nStep One (continued)\n\nListening to Music Taking a friend or family member or partner\nWearing head/ear phones Carrying a bottle of water\nTalking on the phone Staying near an exit\nDrinking Alcohol Sitting/Staying next to someone you know\nPlanning your route before hand Overplanning before events\nCarrying Anxiety medication Having to do certain routines or follow plans\n Common distraction techniques and safety behaviours\n\nTry writing some of the safety behaviours you do below:",
+      "topics": [
+        "behaviours",
+        "step",
+        "worksheet",
+        "anxiety",
+        "carrying",
+        "staying",
+        "before",
+        "safety"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 18,
+      "text": "to do certain routines or follow plans\n Common distraction techniques and safety behaviours\n\nTry writing some of the safety behaviours you do below:\n\n 11\nAnxiety-Provoking Situations\n\u2022 Sitting in the car\n\u2022 Driving anywhere round the local area\n\u2022 Parking the car in a public carpark\n\u2022 Driving to unknow places or new towns\n\u2022 Being in a situation where I could have a car crash\n\u2022 Sitting in someone else's car\n\u2022 Driving with someone else in case I crash\n\u2022 Driving down windy country lanes\n\u2022 Driving on the motorway because it's fast\n\u2022 Someone driving close behind me\nBe Specific: What? When? Where? Who?\nJO'S EXAMPLE: WORKSHEET ONE\n\n 12\nAnxiety-Provoking Situations\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\nBe Specific: What? When? Where? Who?\nWORKSHEET ONE: Identifying anxiety-\nprovoking situations\n\n 13\nDeveloping a hierarchy",
+      "topics": [
+        "driving",
+        "car",
+        "situations",
+        "someone",
+        "safety",
+        "behaviours",
+        "anxiety-provoking",
+        "sitting"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 19,
+      "text": "uations\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\n\u2022\nBe Specific: What? When? Where? Who?\nWORKSHEET ONE: Identifying anxiety-\nprovoking situations\n\n 13\nDeveloping a hierarchy\n\nHaving identified a specific fear to work on, the second step of Graded Exposure is to rank the\nsituations identified in Worksheet 1 in order of the level of anxiety you experience. Ranking\nactivities from least anxiety-provoking, to most anxiety-provoking means that Graded Exposure can\nbe carried out gradually, without experiencing levels of anxiety that are overwhelming.\n\nActivities are ranked from those that would provoke the highest level of anxiety to those that provoke\nthe least intense anxiety. It is useful to think about the situation that would be easiest to remain in\nfirst and the situation that would be the most difficult, and then fill in situations in between.",
+      "topics": [
+        "anxiety",
+        "situations",
+        "specific",
+        "worksheet",
+        "identified",
+        "graded",
+        "exposure",
+        "level"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 20,
+      "text": "out the situation that would be easiest to remain in\nfirst and the situation that would be the most difficult, and then fill in situations in between. This\nprocess can seem very daunting or overwhelming at first therefore this stage of developing a\nhierarchy is very important. Sometimes it can be difficult to think of what would be more or less\nanxiety-provoking, therefore it is useful to;\n\nRate predicted anxiety levels\nIt can be helpful to mark on Worksheet 1 next to each situation how much anxiety it would provoke\nfrom 0-100%. This will then make it easier to place the situations or activities in a hierarchy, from the\nlowest to the highest percentage.\n\nStep Two\n\n 14\n\nBreak it down\nSometimes it is difficult to come up with several different variations of the same situation, especially\nas the feelings it causes are so overwhelming.",
+      "topics": [
+        "situation",
+        "difficult",
+        "first",
+        "situations",
+        "overwhelming",
+        "therefore",
+        "hierarchy",
+        "sometimes"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 21,
+      "text": "ometimes it is difficult to come up with several different variations of the same situation, especially\nas the feelings it causes are so overwhelming. By thinking of what, where, when and with whom each\nsituation occurs we can then break down the situations into many variations that cause different\nlevels of anxiety. The box below gives some examples of this, also see example sheets at the back.\nTo complete Step 2 use Worksheet 2 on page 16.\nRank the activities in order of how much anxiety they\nprovoke.\n\n\u2022 Different times of the day\n\u2022 With safety behaviours and without\n\u2022 Looking at a photograph\n\n\u2022 Watching a video\n\u2022 Larger or smaller locations\n\u2022 Alone or with a friend\n Breaking down your fears\nStep Two (continued)\n When What\nWhere Who",
+      "topics": [
+        "different",
+        "variations",
+        "situation",
+        "anxiety",
+        "step",
+        "ometimes",
+        "difficult",
+        "come"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 22,
+      "text": "ograph\n\n\u2022 Watching a video\n\u2022 Larger or smaller locations\n\u2022 Alone or with a friend\n Breaking down your fears\nStep Two (continued)\n When What\nWhere Who\n\n 15\nJO'S EXAMPLE: WORKSHEET TWO\nMost anxiety-provoking % Rating\nDrive on the motorway at rush hour 100%\nDrive on the motorway in light traffic 90%\nDrive on the dual carriage way 80%\nDrive on a country road 70%\nDrive to a new place in heavier traffic 60%\nDrive to a new place in light traffic 50%\nDrive around the local neighbourhood for 30 mins 40%\nDrive to around the local neighbour hood for 15 30%\nPull out of the driveway and drive a lap of the road 20%\nSit in the car with the ignition on 10%\nLeast anxiety-provoking\n\n 16\nWORKSHEET TWO: Developing a hierarchy\n\nMost anxiety-provoking % Rating\n\nLeast anxiety-provoking",
+      "topics": [
+        "drive",
+        "anxiety-provoking",
+        "two",
+        "traffic",
+        "worksheet",
+        "most",
+        "rating",
+        "motorway"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 23,
+      "text": "with the ignition on 10%\nLeast anxiety-provoking\n\n 16\nWORKSHEET TWO: Developing a hierarchy\n\nMost anxiety-provoking % Rating\n\nLeast anxiety-provoking\n\n 17\nPlanning exposures\nThe third step of Graded Exposure is to begin exposing yourself to feared situations, starting with\nthe least anxiety -provoking activity. When planning exposures it is important to make a specific\nplan to carry them out based on the four conditions of Graded Exposure. These conditions are\nGraded, Prolonged, Without Distraction and Repeated.\n\n1. Graded\nFacing fears can be a very difficult and overwhelming challenge,\ntherefore it is important to start by exposing yourself to a situation\nwhich causes some level of anxiety but is not too much. This is\nachieved by using the hierarchy developed in Step 2. In this way you\ncan move up the hierarchy only when you feel confident enough to do\nso.\n\n2.",
+      "topics": [
+        "graded",
+        "least",
+        "anxiety-provoking",
+        "hierarchy",
+        "planning",
+        "exposures",
+        "step",
+        "exposure"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 24,
+      "text": "is is\nachieved by using the hierarchy developed in Step 2. In this way you\ncan move up the hierarchy only when you feel confident enough to do\nso.\n\n2. Prolonged\nIt is important that we remain in the feared situation for long\nenough until anxiety naturally reduces through the process of\nhabituation. This process can take anywhere from 5 minutes to\n2 hours. It can be difficult to stay in the situation for this length\nof time, however if you leave before beginning to feel a\nreduction in anxiety you will continue to avoid the situations,\nand use this unhelpful strategy in the future.\n\nStep Three\n\n 18\n\n3. Without Distraction\nEngaging in safety behaviours or distraction whilst in an\nanxiety-provoking situation means we do not fully\nexperience the symptoms of anxiety.",
+      "topics": [
+        "situation",
+        "anxiety",
+        "hierarchy",
+        "step",
+        "feel",
+        "enough",
+        "process",
+        "distraction"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 25,
+      "text": "action\nEngaging in safety behaviours or distraction whilst in an\nanxiety-provoking situation means we do not fully\nexperience the symptoms of anxiety. Habituation cannot\noccur if we are reducing our anxiety in other ways,\ntherefore it is important to plan your exposure to ensure\nyou are not distracted in any way. It may be that to start\nwith it is too anxiety -provoking not to use any safety\nbehaviours that you might have been using for a long time.\nIn this case you can begin exposing yourself with these\nbehaviours, and then gradually reducing them.\n\n4. Repeated\nIn order for habituation to occur in a specific situation\nwe need to repeatedly expose ourselves. It is\nrecommended that an exposure to one situation is\nrepeated 4-5 times in one week. This may be difficult\nto achieve if the situations you are exposing yourself to\nare expensive, rare or involve others.",
+      "topics": [
+        "behaviours",
+        "situation",
+        "anxiety",
+        "safety",
+        "habituation",
+        "occur",
+        "reducing",
+        "exposure"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 26,
+      "text": "repeated 4-5 times in one week. This may be difficult\nto achieve if the situations you are exposing yourself to\nare expensive, rare or involve others. In these cases it\nis important to be creative, e.g. watch a video, and try\nto carry out as many exposures as possible.\n\nTo complete Step 3 use Worksheet 3 on page 20.\nWhen planning exposure in the diary be specific about what, where, when and with whom you will carry out the exposure.\nRate your level of anxiety, from 0 -100% before, during and after each\nexposure to monitor reductions in your anxiety levels. There is a\nspace to make any comments or record any reactions during each\nrepeated exposure.\n\nStep Three (continued)",
+      "topics": [
+        "exposure",
+        "repeated",
+        "carry",
+        "step",
+        "anxiety",
+        "during",
+        "times",
+        "one"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 27,
+      "text": "ductions in your anxiety levels. There is a\nspace to make any comments or record any reactions during each\nrepeated exposure.\n\nStep Three (continued)\n\n 19\n Date &\nTime\nDuration Exposure Anxiety Rating Comments\nBefore During After\n1 Saturday\n2pm\n30 minutes Driving round the local neighbourhood 60% 75% 40% It was hard to get back to\ndriving locally, but after I felt\nquite good about myself\n2 Sunday\n9.15am\n25 minutes Drive round the local neighbourhood 55% 65% 80% I felt very anxious during this\ndrive and I felt vey nervous I\nmight have a crash\n3 Tuesday\n4.15pm\n40 minutes Drive round the local neighbourhood 50% 55% 40% I was still nervous from\nSunday's drive but it went\nbetter than expected\n4 Wednesday\n3pm\n55 minutes Drive to new town 55% 50% 30% I'm was very scared about\ndriving somewhere unknown\nbut it went quite well\n5 Friday\n12.30pm\n60 minutes Drive to another new town 40% 30% 15% Found",
+      "topics": [
+        "drive",
+        "minutes",
+        "during",
+        "driving",
+        "round",
+        "local",
+        "neighbourhood",
+        "felt"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 28,
+      "text": "30% I'm was very scared about\ndriving somewhere unknown\nbut it went quite well\n5 Friday\n12.30pm\n60 minutes Drive to another new town 40% 30% 15% Found it really easy after\nyesterdays drive, even drove\na bit longer than before\n 0% 25% 50% 75% 100%\nNo Anxiety Mild Anxiety Moderate Anxiety Severe Anxiety Panic\nJO'S EXAMPLE: WORKSHEET THREE\n\n 20\n Date &\nTime\nDuration Exposure Anxiety Rating Comments\nBefore During After\n1\n2\n3\n4\n5\n 0% 25% 50% 75% 100%\nNo Anxiety Mild Anxiety Moderate Anxiety Severe Anxiety Panic\nWORKSHEET THREE: Planning Exposure\n\n 21\n\nWhat techniques have been most helpful?\nWhat are my early warning signs?\nAre there any future obstacles coming up?\n\nHow can I prepare for these?\n\nWhat are my future goals?\n(see next page for a goal sheet)\nMaintaining Progress\n\n 22",
+      "topics": [
+        "anxiety",
+        "drive",
+        "after",
+        "before",
+        "mild",
+        "moderate",
+        "severe",
+        "panic"
+      ]
+    },
+    {
+      "doc_id": "ivex-Graded-Exposure",
+      "modality": "ivex",
+      "label": "In-Vivo Graded Exposure",
+      "i": 29,
+      "text": "e any future obstacles coming up?\n\nHow can I prepare for these?\n\nWhat are my future goals?\n(see next page for a goal sheet)\nMaintaining Progress\n\n 22\n\nHave a go at creating your own goals to continue your progress and rate how\nmuch you have achieved your goal so far:\n\n0 2 4 6 8 10\n= Not\nachieved this\ngoal at all\n= slightly\nachieved this\ngoal\n= somewhat\nachieved this\ngoal\n= markedly\nachieved this\ngoal\n= mostly\nachieved this\ngoal\n= completely\nachieved this\ngoal\nSetting Future Goals\n\nGoal 1\nWrite your goal here:\n\nGoal rating:\n /10\n\nGoal 2\nWrite your goal here:\n\nGoal rating:\n /10\n\nGoal 3\nWrite your goal here:\n\nGoal rating:\n /10\n\n 23\nBooklet created: August 2023\nReview due: August 2024",
+      "topics": [
+        "goal",
+        "achieved",
+        "future",
+        "goals",
+        "write",
+        "here",
+        "rating",
+        "progress"
+      ]
+    }
+  ]
+}
