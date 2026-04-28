@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BA App — a warm space for behavioral activation</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <div class="brand-name">BA</div>
+          <div class="brand-sub">a warm space for action</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Main">
+        <button class="nav-item" data-route="home">Home</button>
+        <button class="nav-item" data-route="calendar">Calendar</button>
+        <button class="nav-item" data-route="create">Create</button>
+        <button class="nav-item" data-route="help">Help</button>
+      </nav>
+
+      <div class="topbar-right">
+        <button id="open-coach" class="coach-pill" aria-label="Open coach">
+          <span class="coach-dot"></span> Coach
+        </button>
+      </div>
+    </header>
+
+    <main id="app" class="app-main" aria-live="polite"></main>
+
+    <aside id="coach" class="coach-drawer" aria-label="Coach" hidden>
+      <header class="coach-head">
+        <div>
+          <div class="coach-title">Coach</div>
+          <div class="coach-sub" id="coach-sub">A patient, learning companion</div>
+        </div>
+        <button id="close-coach" class="ghost" aria-label="Close coach">Close</button>
+      </header>
+
+      <div id="coach-log" class="coach-log" role="log" aria-live="polite"></div>
+
+      <div class="coach-suggestions" id="coach-suggestions"></div>
+
+      <form id="coach-form" class="coach-form">
+        <textarea
+          id="coach-input"
+          rows="2"
+          placeholder="Tell me what you noticed today, or ask me to add something."
+          aria-label="Talk to your coach"></textarea>
+        <button class="primary" type="submit">Send</button>
+      </form>
+
+      <footer class="coach-foot">
+        <span id="coach-stat">indexing 0 memories</span>
+        <button id="coach-reset" class="ghost small">Forget recent</button>
+      </footer>
+    </aside>
+  </div>
+
+  <template id="tpl-home">
+    <section class="page page-home">
+      <header class="page-head">
+        <div>
+          <div class="eyebrow">Today</div>
+          <h1 id="home-greeting">Welcome back.</h1>
+          <p class="lede" id="home-lede">A small, kind action counts. Choose any door below.</p>
+        </div>
+        <button class="primary" data-action="quick-checkin">Quick check-in</button>
+      </header>
+
+      <div class="grid grid-3">
+        <article class="card preview" data-route="calendar">
+          <div class="preview-head">
+            <span class="eyebrow">Calendar</span>
+            <span class="chev">→</span>
+          </div>
+          <h2>This week at a glance</h2>
+          <div id="home-calendar" class="mini-cal"></div>
+          <div class="muted" id="home-calendar-foot">Recent + upcoming, in one breath.</div>
+        </article>
+
+        <article class="card preview" data-route="create">
+          <div class="preview-head">
+            <span class="eyebrow">Create</span>
+            <span class="chev">→</span>
+          </div>
+          <h2>Design a small step</h2>
+          <ul class="bullet" id="home-create-tips">
+            <li>Pick something small and concrete</li>
+            <li>Tie it to a value you care about</li>
+            <li>Choose a kind time of day</li>
+          </ul>
+          <div class="muted" id="home-create-stat">No plans yet.</div>
+        </article>
+
+        <article class="card preview" data-route="help">
+          <div class="preview-head">
+            <span class="eyebrow">Help</span>
+            <span class="chev">→</span>
+          </div>
+          <h2>If today feels heavy</h2>
+          <p id="home-help-quote" class="quote">
+            “Action doesn't have to feel like motivation. It can be the smallest, gentlest move.”
+          </p>
+          <div class="muted">Stuck? The Coach can sit with you.</div>
+        </article>
+      </div>
+
+      <section class="grid grid-2">
+        <article class="card">
+          <div class="card-head">
+            <h3>Recent reflections</h3>
+            <button class="ghost small" data-route="create">Add one</button>
+          </div>
+          <div id="home-recent" class="stream"></div>
+        </article>
+
+        <article class="card warm-card">
+          <div class="card-head">
+            <h3>From your Coach</h3>
+            <button class="ghost small" id="home-open-coach">Open chat</button>
+          </div>
+          <p id="home-coach-note" class="quote">I'm here. Tell me what you noticed today.</p>
+          <div class="chip-row" id="home-coach-chips"></div>
+        </article>
+      </section>
+    </section>
+  </template>
+
+  <template id="tpl-calendar">
+    <section class="page page-calendar">
+      <header class="page-head">
+        <div>
+          <div class="eyebrow">Calendar</div>
+          <h1>Your rhythm, gently</h1>
+          <p class="lede">Recent moves and what's coming. Tap a day to see, or add, an activation.</p>
+        </div>
+        <div class="cal-controls">
+          <button class="ghost" id="cal-prev" aria-label="Previous month">‹</button>
+          <div id="cal-label" class="cal-label">Month</div>
+          <button class="ghost" id="cal-next" aria-label="Next month">›</button>
+        </div>
+      </header>
+
+      <div class="grid grid-2 stretch">
+        <article class="card">
+          <div id="cal-grid" class="cal-grid"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h3 id="cal-day-title">Agenda</h3>
+            <button class="ghost small" data-route="create">Add activation</button>
+          </div>
+          <div id="cal-day-list" class="stream"></div>
+
+          <div class="card-head" style="margin-top: 18px">
+            <h3>Goals on the horizon</h3>
+          </div>
+          <div id="cal-goals" class="stream"></div>
+        </article>
+      </div>
+    </section>
+  </template>
+
+  <template id="tpl-create">
+    <section class="page page-create">
+      <header class="page-head">
+        <div>
+          <div class="eyebrow">Create</div>
+          <h1>Design a behavioral activation</h1>
+          <p class="lede">Small, specific, and tied to something you care about.</p>
+        </div>
+      </header>
+
+      <div class="grid grid-2 stretch">
+        <article class="card">
+          <form id="create-form" class="form">
+            <label>
+              <span>What is the action?</span>
+              <input name="title" required placeholder="e.g. step outside for 5 minutes" />
+            </label>
+
+            <label>
+              <span>Why does it matter to you?</span>
+              <input name="value" placeholder="e.g. feeling connected to my body" />
+            </label>
+
+            <div class="row">
+              <label>
+                <span>Category</span>
+                <select name="category">
+                  <option>Movement</option>
+                  <option>Connection</option>
+                  <option>Care</option>
+                  <option>Pleasure</option>
+                  <option>Mastery</option>
+                  <option>Meaning</option>
+                </select>
+              </label>
+              <label>
+                <span>Energy needed</span>
+                <select name="energy">
+                  <option value="1">1 — almost none</option>
+                  <option value="2">2 — small</option>
+                  <option value="3" selected>3 — moderate</option>
+                  <option value="4">4 — meaningful</option>
+                  <option value="5">5 — big</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="row">
+              <label>
+                <span>When</span>
+                <input name="when" type="datetime-local" />
+              </label>
+              <label>
+                <span>Duration (min)</span>
+                <input name="duration" type="number" min="1" max="240" value="15" />
+              </label>
+            </div>
+
+            <label>
+              <span>Tied to a goal (optional)</span>
+              <select name="goalId" id="create-goal-select"><option value="">—</option></select>
+            </label>
+
+            <label>
+              <span>A kind note to your future self</span>
+              <textarea name="notes" rows="2" placeholder="It's okay if it's small. You're showing up."></textarea>
+            </label>
+
+            <div class="row">
+              <button class="primary" type="submit">Save activation</button>
+              <button class="ghost" type="button" id="create-add-goal">+ Add a goal</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h3>Your plans</h3>
+            <span class="muted" id="create-count">0 saved</span>
+          </div>
+          <div id="create-list" class="stream"></div>
+
+          <div class="card-head" style="margin-top: 18px">
+            <h3>Your goals</h3>
+          </div>
+          <div id="create-goals" class="stream"></div>
+        </article>
+      </div>
+    </section>
+  </template>
+
+  <template id="tpl-help">
+    <section class="page page-help">
+      <header class="page-head">
+        <div>
+          <div class="eyebrow">Help</div>
+          <h1>When the day pushes back</h1>
+          <p class="lede">Gentle scaffolding, on purpose. Pick what fits where you are.</p>
+        </div>
+      </header>
+
+      <div class="grid grid-3">
+        <article class="card">
+          <h3>If energy is low</h3>
+          <ul class="bullet">
+            <li>Shrink the action by half</li>
+            <li>Do it sitting, slow, or with music</li>
+            <li>Promise yourself only the first minute</li>
+          </ul>
+          <button class="ghost small" data-help="low-energy">Walk me through it</button>
+        </article>
+
+        <article class="card">
+          <h3>If avoidance shows up</h3>
+          <ul class="bullet">
+            <li>Name what you're moving away from</li>
+            <li>Pick the smallest opposite move</li>
+            <li>Set a 5-minute container, then stop</li>
+          </ul>
+          <button class="ghost small" data-help="avoidance">Walk me through it</button>
+        </article>
+
+        <article class="card">
+          <h3>If it didn't help</h3>
+          <ul class="bullet">
+            <li>Rate honestly — that's data, not failure</li>
+            <li>Try a different category next</li>
+            <li>Ask the Coach to suggest one</li>
+          </ul>
+          <button class="ghost small" data-help="didnt-help">Walk me through it</button>
+        </article>
+      </div>
+
+      <article class="card warm-card">
+        <h3>Patterns we're noticing</h3>
+        <div id="help-patterns" class="stream"></div>
+        <p class="muted small">Patterns are clues, not verdicts.</p>
+      </article>
+    </section>
+  </template>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
