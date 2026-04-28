@@ -103,6 +103,12 @@ function saveState() {
 }
 
 async function loadKnowledge() {
+  // Prefer an inlined corpus when available — single-file builds (BreakFree.html)
+  // ship with `window.__KNOWLEDGE_INLINE` so the app works without any fetch().
+  if (typeof window !== "undefined" && window.__KNOWLEDGE_INLINE) {
+    KNOWLEDGE = window.__KNOWLEDGE_INLINE;
+    return KNOWLEDGE;
+  }
   try {
     const r = await fetch(KNOWLEDGE_URL, { cache: "no-store" });
     if (!r.ok) throw new Error("knowledge fetch failed " + r.status);

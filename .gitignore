@@ -10,9 +10,12 @@ desktop.ini
 *~
 
 node_modules/
-dist/
 build/
 .cache/
+
+# dist/ is intentionally tracked — it ships shareable builds (BreakFree.html,
+# break-free-hosted.zip, SHARE.md) so the repo is a self-contained way to
+# distribute the app to friends.
 
 .env
 .env.local
