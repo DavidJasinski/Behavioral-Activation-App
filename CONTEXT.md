@@ -46,12 +46,39 @@ Break Free/
 
 ### Coach (drawer)
 
-A retrieval-augmented assistant that:
+A personalized, retrieval-augmented assistant that:
 
-1. **Remembers** — appends every exchange into `state.coach.memory`, plus a topic-frequency table and a short fact log.
-2. **Retrieves** — on each user message, ranks chunks from `knowledge.json` by topic overlap and substring matches, and pins the top hit into the reply with a source pill.
-3. **Acts** — parses intents (add activation, add exposure, add goal, summarize, suggest, explain modality, change tone, check in) and mutates the app state directly. Source citations appear as colored pills below the bubble (terracotta = BA, moss = IVEX).
-4. **Adapts** — tone preference (`warm` / `concise` / `detailed`), suggestion chips driven by current topics and unfinished plans.
+1. **Interviews** — when the user is new (or asks to be re-interviewed), runs an open-ended adaptive interview that captures name, communication style, current struggles, avoidances, values, energizers, past wins, best windows, and challenge tolerance. There is no fixed number of questions; the user can pause, skip, or finish at any time. Answers go into `state.profile` and shape every subsequent response. See "Interview engine" below.
+2. **Personalizes** — every reply, suggestion chip, and home greeting reads from `state.profile`. Examples: replies occasionally open with the user's name; suggestions reference their stated values, energizers, and avoidances by name; the `voice()` helper applies the user's `communicationStyle` (warm / concise / direct) and `challengeLevel` (gentle / moderate / push).
+3. **Remembers** — appends every exchange into `state.coach.memory`, plus a topic-frequency table and a short fact log. Light opportunistic profile inference also runs on free-chat messages (`inferProfileFromMessage`).
+4. **Retrieves silently** — on each user message, ranks chunks from `knowledge.json` by topic overlap and substring matches. The retrieved chunks are used to pick the **angle** of the reply (e.g. "this sounds more like avoidance — exposure tools fit better") and to ground the bot's reasoning. They are **never quoted verbatim** to the user, and there are no source pills in the chat.
+5. **Acts** — parses intents (add activation, add exposure, add goal, summarize, suggest, explain modality, change tone, check in) and mutates app state directly.
+
+### No-source-quoting policy
+
+The Coach treats `knowledge.json` as silent context. Replies must be in the bot's own voice. Concretely:
+- No verbatim chunk text in any reply.
+- No "From X:" prefixes, no quotation marks around source content.
+- No source pills under bubbles.
+- Knowledge can shape: which modality angle to emphasize (`dominantModality`), how to phrase advice for an "explain" intent (synthesized paraphrase, not quote), and whether to suggest activation vs exposure tools.
+
+This is a real product constraint — the workbooks are clinical material; the user's experience is a friend who has read them, not a search engine that hands back excerpts.
+
+### Interview engine
+
+Defined in `app.js` as an array of `INTERVIEW_TOPICS`. Each topic declares:
+- `id` — stable identifier persisted in `profile.interviewProgress.askedTopics`
+- `needs()` — predicate gating whether the topic is asked at all (e.g. only ask the "what are you avoiding" follow-up if the user reports anxiety/avoidance)
+- `ask()` — open question phrased in the bot's voice, often referencing the user's name once known
+- `parse(text)` — extracts structured fields onto `state.profile`
+- `confirm()` — short acknowledgment that gets prepended to the next question, so each handoff feels like a conversation, not a survey
+
+Control:
+- `startInterview()` flips `coach.mode = "interview"` and pushes the first eligible question.
+- `handleInterviewAnswer(text)` parses the current topic, advances, and either pushes the next question or — when `nextInterviewTopic()` returns null — flips `coach.mode = "free"` and pushes a personalized summary via `composeInterviewSummary()`.
+- The user can interrupt at any time with phrases like "enough", "stop", "pause", "later" → mode becomes `free`, progress is preserved, and "continue interview" resumes from the next eligible topic.
+- The Interview button in the drawer footer toggles start/pause directly without going through chat.
+- Suggestions adapt: in interview mode the chips become {skip this one, enough for now, ask me something else}.
 
 ## Data model (browser localStorage)
 
@@ -61,6 +88,29 @@ Storage key: `breakFree.v1` (legacy `baApp.v1` is migrated on load).
 {
   "user":        { "name": "" },
   "preferences": { "tone", "reminders", "theme" },
+  "profile": {
+    "name":               "first name as the user gave it",
+    "communicationStyle": "warm | concise | direct",
+    "challengeLevel":     "gentle | moderate | push",
+    "struggles":          ["depression", "anxiety", "avoidance", "stuck"],
+    "struggleNotes":      ["raw answers, last 5"],
+    "avoiding":           ["raw avoidance descriptions, last 6"],
+    "values":             ["topics extracted from values answer"],
+    "valueNotes":         ["raw values answers, last 5"],
+    "energizers":         ["topics extracted from energizers answer"],
+    "energizerNotes":     ["raw energizer answers, last 5"],
+    "pastWins":           ["raw past-wins answers, last 5"],
+    "bestTimes":          ["morning", "afternoon", "evening", "night", "variable"],
+    "interviewNotes":     ["open-close answers, last 5"],
+    "interviewStarted":   true,
+    "interviewComplete":  true,
+    "interviewSkipped":   false,
+    "interviewProgress": {
+      "askedTopics":     ["name", "style", ...],
+      "currentTopic":    "topic id during interview",
+      "openCloseAsked":  false
+    }
+  },
   "goals":       [{ "id", "title", "value", "targetDate", "createdAt", "status" }],
   "activations": [{
     "id", "modality" /* "ba" | "ivex" */,
@@ -73,7 +123,8 @@ Storage key: `breakFree.v1` (legacy `baApp.v1` is migrated on load).
   }],
   "logs": [{ "id", "type", "content", "ts", "moodAfter?" }],
   "coach": {
-    "memory":      [{ "ts", "role", "text", "topics", "sources?" }],
+    "mode":        "free | interview",
+    "memory":      [{ "ts", "role", "text", "topics" }],
     "topicCounts": { "topic": count },
     "facts":       [{ "ts", "fact" }]
   }
@@ -106,6 +157,8 @@ The Coach treats both modalities as authoritative. When extending the corpus, pr
 - Persist all new state additions through `STATE` and bump the storage key only on breaking schema changes; otherwise migrate on load.
 - Any new source PDF must be ingested via `scripts/ingest_pdfs.py` rather than hand-pasted into `knowledge.json`.
 - Avoid clinical-sounding language in user-facing copy; reserve precision for `CONTEXT.md`, code comments, and source citations.
+- **Never quote sources verbatim in chat.** Retrieved knowledge informs the bot's reasoning; the bot's voice does the talking. If you add a new intent that benefits from source content, paraphrase or synthesize — don't paste.
+- **Treat the interview as the primary learning path.** When you add a new piece of personalization (e.g. preferred reminder cadence), prefer to add a topic to `INTERVIEW_TOPICS` with `needs()` / `parse()` / `confirm()` rather than asking the user inline at point-of-use. Free-chat inference (`inferProfileFromMessage`) is supplementary.
 
 ## Run / deploy
 

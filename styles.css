@@ -665,6 +665,18 @@ p { margin: 0; line-height: 1.55; }
   padding: 6px 18px 14px;
   color: var(--muted);
   font-size: 12px;
+  gap: 10px;
+}
+
+.coach-foot-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.coach-foot-actions .ghost.small {
+  padding: 6px 10px;
+  font-size: 11px;
 }
 
 /* Stream items inside calendar */
