@@ -707,8 +707,12 @@ function renderHelp() {
     sources.innerHTML = "";
     const docs = (KNOWLEDGE && KNOWLEDGE.docs) || [];
     if (!docs.length) {
-      sources.innerHTML = `<li class="muted">Knowledge index loading…</li>`;
-      KNOWLEDGE_PROMISE.then(() => route === "help" && renderHelp());
+      if (!KNOWLEDGE) {
+        sources.innerHTML = `<li class="muted">Knowledge index loading…</li>`;
+        KNOWLEDGE_PROMISE.then(() => route === "help" && renderHelp());
+      } else {
+        sources.innerHTML = `<li class="muted">Knowledge index unavailable.</li>`;
+      }
     } else {
       docs.forEach((d) => {
         const li = document.createElement("li");
