@@ -707,8 +707,10 @@ function renderHelp() {
     sources.innerHTML = "";
     const docs = (KNOWLEDGE && KNOWLEDGE.docs) || [];
     if (!docs.length) {
-      sources.innerHTML = `<li class="muted">Knowledge index loading…</li>`;
-      KNOWLEDGE_PROMISE.then(() => route === "help" && renderHelp());
+      sources.innerHTML = `<li class="muted">${
+        KNOWLEDGE ? "Knowledge index unavailable." : "Knowledge index loading…"
+      }</li>`;
+      if (!KNOWLEDGE) KNOWLEDGE_PROMISE.then(() => route === "help" && renderHelp());
     } else {
       docs.forEach((d) => {
         const li = document.createElement("li");
