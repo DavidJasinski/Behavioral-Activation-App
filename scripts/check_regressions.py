@@ -5,6 +5,7 @@ Run from the repository root:
 """
 
 from pathlib import Path
+import subprocess
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -48,6 +49,9 @@ def assert_coach_refreshes_open_drawer(path: Path) -> None:
     assert "function refreshAfterCoachChange()" in text, (
         f"{path} does not centralize coach surface refreshes"
     )
+    assert 'if (route === "home") render();' in text, (
+        f"{path} no longer refreshes Home coach note/chips after coach changes"
+    )
     assert "if (drawer && !drawer.hidden) drawCoach();" in text, (
         f"{path} does not redraw the open coach drawer after coach changes"
     )
@@ -68,6 +72,12 @@ def assert_interview_controls_are_commands(path: Path) -> None:
 
 def assert_forget_recent_clears_recall(path: Path) -> None:
     text = path.read_text(encoding="utf-8")
+    assert 'STATE.coach.mode = "free";' in text, (
+        f"{path} can leave an invisible interview question active after reset"
+    )
+    assert "STATE.profile.interviewProgress.currentTopic = null;" in text, (
+        f"{path} does not clear hidden interview prompt state after reset"
+    )
     assert "STATE.coach.topicCounts = {};" in text, (
         f"{path} forgets visible chat but keeps topic recall metadata"
     )
@@ -87,6 +97,11 @@ def main() -> None:
         assert_coach_refreshes_open_drawer(path)
         assert_interview_controls_are_commands(path)
         assert_forget_recent_clears_recall(path)
+    subprocess.run(
+        ["node", str(ROOT / "scripts" / "behavior_regressions.js")],
+        check=True,
+        cwd=ROOT,
+    )
     print("OK regression checks passed")
 
 

@@ -823,7 +823,7 @@ function closeCoach() {
 }
 
 function refreshAfterCoachChange() {
-  render();
+  if (route === "home") render();
   const drawer = $("#coach");
   if (drawer && !drawer.hidden) drawCoach();
 }
@@ -1772,6 +1772,22 @@ function recallSnippets(text) {
   );
 }
 
+function forgetRecentCoachConversation() {
+  STATE.coach.mode = "free";
+  if (STATE.profile.interviewProgress) {
+    STATE.profile.interviewProgress.currentTopic = null;
+  }
+  STATE.coach.memory = [{
+    ts: new Date().toISOString(),
+    role: "coach",
+    text: "I've forgotten the recent conversation. Goals, plans, and your interview profile are still here.",
+    topics: ["reset"]
+  }];
+  STATE.coach.topicCounts = {};
+  STATE.coach.facts = [];
+  saveState();
+}
+
 /* ---------- Wire up ---------- */
 
 function wire() {
@@ -1811,15 +1827,7 @@ function wire() {
   $("#coach-reset").addEventListener("click", () => {
     if (!confirm("Forget the recent conversation only? (Goals, plans, and your interview profile stay.)"))
       return;
-    STATE.coach.memory = [{
-      ts: new Date().toISOString(),
-      role: "coach",
-      text: "I've forgotten the recent conversation. Goals, plans, and your interview profile are still here.",
-      topics: ["reset"]
-    }];
-    STATE.coach.topicCounts = {};
-    STATE.coach.facts = [];
-    saveState();
+    forgetRecentCoachConversation();
     drawCoach();
   });
 
