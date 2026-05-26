@@ -34,7 +34,7 @@ function runApp(extraSource, { storage = {}, setItem } = {}) {
   };
 
   vm.runInNewContext(`${SOURCE}\n${extraSource}`, context);
-  return { result: context.__result, storage: stored };
+  return { result: JSON.parse(JSON.stringify(context.__result)), storage: stored };
 }
 
 function testLegacyMigrationSurvivesQuotaFailure() {
