@@ -54,6 +54,7 @@ const STOPWORDS = new Set(
   )
 );
 
+let activeStorageKey = STORAGE_KEY;
 const STATE = loadState();
 let route = "home";
 let calendarCursor = startOfMonth(new Date());
@@ -69,11 +70,13 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 function loadState() {
   try {
     let raw = localStorage.getItem(STORAGE_KEY);
+    let loadedFromLegacy = false;
     if (!raw) {
       const legacy = localStorage.getItem(LEGACY_KEY);
       if (legacy) {
         raw = legacy;
-        localStorage.setItem(STORAGE_KEY, raw);
+        loadedFromLegacy = true;
+        activeStorageKey = LEGACY_KEY;
       }
     }
     if (!raw) return structuredClone(DEFAULT_STATE);
@@ -91,6 +94,7 @@ function loadState() {
     merged.activations = (merged.activations || []).map((a) =>
       Object.assign({ modality: "ba" }, a)
     );
+    if (loadedFromLegacy) migrateLegacyState(raw);
     return merged;
   } catch (e) {
     console.warn("Could not load state, starting fresh", e);
@@ -98,8 +102,26 @@ function loadState() {
   }
 }
 
+function migrateLegacyState(raw) {
+  try {
+    localStorage.setItem(STORAGE_KEY, raw);
+    localStorage.removeItem(LEGACY_KEY);
+    activeStorageKey = STORAGE_KEY;
+  } catch (e) {
+    console.warn("Could not migrate legacy state; continuing on legacy key", e);
+    activeStorageKey = LEGACY_KEY;
+  }
+}
+
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  const raw = JSON.stringify(STATE);
+  if (activeStorageKey === STORAGE_KEY) {
+    localStorage.setItem(STORAGE_KEY, raw);
+    return;
+  }
+
+  localStorage.setItem(LEGACY_KEY, raw);
+  migrateLegacyState(raw);
 }
 
 async function loadKnowledge() {
