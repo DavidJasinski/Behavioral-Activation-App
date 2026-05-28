@@ -836,6 +836,12 @@ function closeCoach() {
   $("#coach").hidden = true;
 }
 
+function refreshAfterCoachChange() {
+  if (route === "home") render();
+  const drawer = $("#coach");
+  if (drawer && !drawer.hidden) drawCoach();
+}
+
 function drawCoach() {
   const log = $("#coach-log");
   log.innerHTML = "";
@@ -921,8 +927,7 @@ async function coachSend(rawText, { silent = false } = {}) {
     inferProfileFromMessage(text);
     handleInterviewAnswer(text);
     saveState();
-    if (route === "home") render();
-    else drawCoach();
+    refreshAfterCoachChange();
     return;
   }
 
@@ -936,8 +941,7 @@ async function coachSend(rawText, { silent = false } = {}) {
   ) {
     startInterview();
     saveState();
-    if (route === "home") render();
-    else drawCoach();
+    refreshAfterCoachChange();
     return;
   }
   if (
@@ -947,8 +951,7 @@ async function coachSend(rawText, { silent = false } = {}) {
   ) {
     startInterview();
     saveState();
-    if (route === "home") render();
-    else drawCoach();
+    refreshAfterCoachChange();
     return;
   }
   if (/^(skip|not now|no thanks|maybe later|skip interview)$/i.test(lower) && !STATE.profile.interviewStarted) {
@@ -959,8 +962,7 @@ async function coachSend(rawText, { silent = false } = {}) {
         "No worries. I'll learn you the slow way — through what you tell me as we go. Whenever you want the structured version, just say \"interview me\"."
     });
     saveState();
-    if (route === "home") render();
-    else drawCoach();
+    refreshAfterCoachChange();
     return;
   }
 
@@ -973,8 +975,7 @@ async function coachSend(rawText, { silent = false } = {}) {
   pushMemory({ role: "coach", text: reply });
   saveState();
 
-  if (route === "home") render();
-  else drawCoach();
+  refreshAfterCoachChange();
 }
 
 function pushMemory(entry) {
@@ -1219,7 +1220,7 @@ function handleInterviewAnswer(text) {
   const lower = text.trim().toLowerCase();
 
   // Pause / abort signals.
-  if (/^(enough|that'?s enough|stop|pause|later|let'?s pick this up later)$/.test(lower)) {
+  if (/^(enough|enough for now|that'?s enough|stop|pause|later|let'?s pick this up later)$/.test(lower)) {
     STATE.coach.mode = "free";
     pushMemory({
       role: "coach",
@@ -1229,7 +1230,7 @@ function handleInterviewAnswer(text) {
   }
 
   // Skip signal — mark current topic and move on without parsing.
-  const skip = /^(skip|next|pass)$/.test(lower);
+  const skip = /^(skip|skip this one|next|pass|ask me something else)$/.test(lower);
 
   const currentId = STATE.profile.interviewProgress.currentTopic;
   const topic = INTERVIEW_TOPICS.find((t) => t.id === currentId);
@@ -1785,6 +1786,22 @@ function recallSnippets(text) {
   );
 }
 
+function forgetRecentCoachConversation() {
+  STATE.coach.mode = "free";
+  if (STATE.profile.interviewProgress) {
+    STATE.profile.interviewProgress.currentTopic = null;
+  }
+  STATE.coach.memory = [{
+    ts: new Date().toISOString(),
+    role: "coach",
+    text: "I've forgotten the recent conversation. Goals, plans, and your interview profile are still here.",
+    topics: ["reset"]
+  }];
+  STATE.coach.topicCounts = {};
+  STATE.coach.facts = [];
+  saveState();
+}
+
 /* ---------- Wire up ---------- */
 
 function wire() {
@@ -1824,8 +1841,7 @@ function wire() {
   $("#coach-reset").addEventListener("click", () => {
     if (!confirm("Forget the recent conversation only? (Goals, plans, and your interview profile stay.)"))
       return;
-    STATE.coach.memory = STATE.coach.memory.slice(-1);
-    saveState();
+    forgetRecentCoachConversation();
     drawCoach();
   });
 
