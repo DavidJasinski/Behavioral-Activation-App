@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-05-29T11:12:51Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1088,6 +1088,7 @@ window.__KNOWLEDGE_INLINE = {"version": 1, "modalities": {"ba": {"label": "Behav
 const STORAGE_KEY = "breakFree.v1";
 const LEGACY_KEY = "baApp.v1";
 const KNOWLEDGE_URL = "knowledge.json";
+let activeStorageKey = STORAGE_KEY;
 
 const WELCOME_TEXT =
   "Hi. I'm here whenever you want company. I'll be a lot more useful once I know you a little — what's heavy, what you care about, and how you like to be spoken to. I'd like to interview you a bit. There's no set number of questions and you can stop me anytime by saying \"enough\". Want to start? Just say yes, or jump into anything that's on your mind.";
@@ -1158,7 +1159,7 @@ function loadState() {
       const legacy = localStorage.getItem(LEGACY_KEY);
       if (legacy) {
         raw = legacy;
-        localStorage.setItem(STORAGE_KEY, raw);
+        promoteLegacyState(raw);
       }
     }
     if (!raw) return structuredClone(DEFAULT_STATE);
@@ -1183,8 +1184,24 @@ function loadState() {
   }
 }
 
+function promoteLegacyState(raw) {
+  try {
+    localStorage.setItem(STORAGE_KEY, raw);
+    localStorage.removeItem(LEGACY_KEY);
+    activeStorageKey = STORAGE_KEY;
+  } catch (e) {
+    console.warn("Could not promote legacy state; continuing with legacy storage", e);
+    activeStorageKey = LEGACY_KEY;
+  }
+}
+
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  const raw = JSON.stringify(STATE);
+  if (activeStorageKey === LEGACY_KEY) {
+    promoteLegacyState(raw);
+    if (activeStorageKey === STORAGE_KEY) return;
+  }
+  localStorage.setItem(activeStorageKey, raw);
 }
 
 async function loadKnowledge() {
