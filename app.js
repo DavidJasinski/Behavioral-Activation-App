@@ -54,6 +54,9 @@ const STOPWORDS = new Set(
   )
 );
 
+let loadedStateFromLegacy = false;
+let preserveLegacyOnSave = false;
+
 const STATE = loadState();
 let route = "home";
 let calendarCursor = startOfMonth(new Date());
@@ -66,17 +69,93 @@ let KNOWLEDGE_PROMISE = loadKnowledge();
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-function loadState() {
+function storedStatePayload() {
   try {
-    let raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      const legacy = localStorage.getItem(LEGACY_KEY);
-      if (legacy) {
-        raw = legacy;
-        localStorage.setItem(STORAGE_KEY, raw);
+    loadedStateFromLegacy = false;
+    preserveLegacyOnSave = false;
+
+    const current = localStorage.getItem(STORAGE_KEY);
+    const legacy = localStorage.getItem(LEGACY_KEY);
+
+    if (current && legacy && current !== legacy) {
+      if (storedStateScore(legacy) > storedStateScore(current)) {
+        return promoteLegacyState(legacy);
       }
+      preserveLegacyOnSave = true;
+      return current;
     }
-    if (!raw) return structuredClone(DEFAULT_STATE);
+
+    if (current) {
+      if (legacy === current) removeLegacyState();
+      return current;
+    }
+    if (!legacy) return null;
+
+    return promoteLegacyState(legacy);
+  } catch (e) {
+    console.warn("Could not read state, starting fresh", e);
+    return null;
+  }
+}
+
+function promoteLegacyState(legacy) {
+  loadedStateFromLegacy = true;
+  try {
+    localStorage.setItem(STORAGE_KEY, legacy);
+    removeLegacyState();
+  } catch (e) {
+    console.warn("Could not promote legacy state yet; using legacy data", e);
+  }
+  return legacy;
+}
+
+function storedStateScore(raw) {
+  try {
+    const state = JSON.parse(raw);
+    const profile = state.profile || {};
+    const coach = state.coach || {};
+    return (
+      countItems(state.activations) * 4 +
+      countItems(state.goals) * 3 +
+      countItems(state.logs) * 2 +
+      countItems(coach.memory) +
+      countItems(coach.facts) +
+      Object.keys(coach.topicCounts || {}).length +
+      countItems(profile.struggles) +
+      countItems(profile.struggleNotes) +
+      countItems(profile.avoiding) +
+      countItems(profile.values) +
+      countItems(profile.valueNotes) +
+      countItems(profile.energizers) +
+      countItems(profile.energizerNotes) +
+      countItems(profile.pastWins) +
+      countItems(profile.bestTimes) +
+      countItems(profile.interviewNotes) +
+      countItems(profile.interviewProgress?.askedTopics) +
+      (state.user?.name ? 2 : 0) +
+      (profile.name ? 2 : 0) +
+      (profile.communicationStyle ? 1 : 0) +
+      (profile.challengeLevel ? 1 : 0) +
+      (profile.interviewStarted ? 1 : 0) +
+      (profile.interviewComplete ? 1 : 0) +
+      (profile.interviewSkipped ? 1 : 0) +
+      (profile.interviewProgress?.currentTopic ? 1 : 0) +
+      (profile.interviewProgress?.openCloseAsked ? 1 : 0)
+    );
+  } catch {
+    return -1;
+  }
+}
+
+function countItems(value) {
+  return Array.isArray(value) ? value.length : 0;
+}
+
+function loadState() {
+  const raw = storedStatePayload();
+  if (!raw) return structuredClone(DEFAULT_STATE);
+
+  try {
     const parsed = JSON.parse(raw);
     const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
       profile: Object.assign(
@@ -99,7 +178,38 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  const raw = JSON.stringify(STATE);
+  try {
+    localStorage.setItem(STORAGE_KEY, raw);
+  } catch (e) {
+    if (loadedStateFromLegacy && storageItemExists(LEGACY_KEY)) {
+      localStorage.setItem(LEGACY_KEY, raw);
+      return;
+    }
+    if (!storageItemExists(STORAGE_KEY) && storageItemExists(LEGACY_KEY)) {
+      localStorage.setItem(LEGACY_KEY, raw);
+      return;
+    }
+    throw e;
+  }
+
+  if (!preserveLegacyOnSave || loadedStateFromLegacy) removeLegacyState();
+}
+
+function storageItemExists(key) {
+  try {
+    return localStorage.getItem(key) !== null;
+  } catch {
+    return false;
+  }
+}
+
+function removeLegacyState() {
+  try {
+    localStorage.removeItem(LEGACY_KEY);
+  } catch (e) {
+    console.warn("Could not remove legacy state", e);
+  }
 }
 
 async function loadKnowledge() {
