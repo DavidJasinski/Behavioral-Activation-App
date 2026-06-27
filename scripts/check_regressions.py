@@ -56,6 +56,7 @@ def assert_storage_migration_recovers_legacy_data() -> None:
             console: {{ warn() {{}}, log() {{}}, error() {{}} }},
             fetch: async () => {{ throw new Error("offline"); }},
             localStorage: new Storage(entries),
+            structuredClone,
             window: {{}},
             document: {{ addEventListener() {{}} }}
           }};
