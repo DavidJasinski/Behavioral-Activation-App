@@ -105,21 +105,25 @@ function normalizeState(parsed) {
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
     throw new Error("Stored state is not an object");
 
-  const base = structuredClone(DEFAULT_STATE);
+  const defaults = structuredClone(DEFAULT_STATE);
   const profileInput = objectOrEmpty(parsed.profile);
   const coachInput = objectOrEmpty(parsed.coach);
   const progressInput = objectOrEmpty(profileInput.interviewProgress);
 
-  const merged = Object.assign(base, parsed);
-  merged.user = Object.assign(base.user, objectOrEmpty(parsed.user));
-  merged.preferences = Object.assign(base.preferences, objectOrEmpty(parsed.preferences));
+  const merged = Object.assign({}, defaults, parsed);
+  merged.user = Object.assign({}, defaults.user, objectOrEmpty(parsed.user));
+  merged.preferences = Object.assign(
+    {},
+    defaults.preferences,
+    objectOrEmpty(parsed.preferences)
+  );
   merged.goals = arrayOrEmpty(parsed.goals);
   merged.logs = arrayOrEmpty(parsed.logs);
   merged.activations = arrayOrEmpty(parsed.activations).map((a) =>
     Object.assign({ modality: "ba" }, objectOrEmpty(a))
   );
 
-  merged.profile = Object.assign(base.profile, profileInput);
+  merged.profile = Object.assign({}, defaults.profile, profileInput);
   [
     "struggles",
     "struggleNotes",
@@ -135,7 +139,8 @@ function normalizeState(parsed) {
     merged.profile[key] = arrayOrEmpty(profileInput[key]);
   });
   merged.profile.interviewProgress = Object.assign(
-    base.profile.interviewProgress,
+    {},
+    defaults.profile.interviewProgress,
     progressInput
   );
   merged.profile.interviewProgress.askedTopics = arrayOrEmpty(
@@ -144,11 +149,11 @@ function normalizeState(parsed) {
   merged.profile.interviewProgress.openCloseAsked =
     !!merged.profile.interviewProgress.openCloseAsked;
 
-  merged.coach = Object.assign(base.coach, coachInput);
+  merged.coach = Object.assign({}, defaults.coach, coachInput);
   merged.coach.mode = merged.coach.mode || "free";
   merged.coach.memory = Array.isArray(coachInput.memory)
     ? coachInput.memory.map((m) => objectOrEmpty(m))
-    : base.coach.memory;
+    : defaults.coach.memory;
   merged.coach.topicCounts = objectOrEmpty(coachInput.topicCounts);
   merged.coach.facts = arrayOrEmpty(coachInput.facts).map((f) => objectOrEmpty(f));
 
