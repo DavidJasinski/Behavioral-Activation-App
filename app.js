@@ -228,6 +228,12 @@ function mergeRecords(primary = [], secondary = []) {
 
 function mergeProfile(primary = {}, secondary = {}) {
   const merged = Object.assign({}, secondary, primary);
+  ["name", "communicationStyle", "challengeLevel"].forEach((key) => {
+    merged[key] = meaningfulValue(primary[key], secondary[key]);
+  });
+  ["interviewStarted", "interviewComplete", "interviewSkipped"].forEach((key) => {
+    merged[key] = !!(primary[key] || secondary[key]);
+  });
   [
     "struggles",
     "struggleNotes",
@@ -247,6 +253,10 @@ function mergeProfile(primary = {}, secondary = {}) {
     secondary.interviewProgress || {},
     primary.interviewProgress || {}
   );
+  merged.interviewProgress.currentTopic = meaningfulValue(
+    primary.interviewProgress && primary.interviewProgress.currentTopic,
+    secondary.interviewProgress && secondary.interviewProgress.currentTopic
+  );
   merged.interviewProgress.askedTopics = mergeScalars(
     primary.interviewProgress && primary.interviewProgress.askedTopics,
     secondary.interviewProgress && secondary.interviewProgress.askedTopics
@@ -257,6 +267,11 @@ function mergeProfile(primary = {}, secondary = {}) {
       (secondary.interviewProgress && secondary.interviewProgress.openCloseAsked)
     );
   return merged;
+}
+
+function meaningfulValue(primary, secondary) {
+  if (primary !== undefined && primary !== null && primary !== "") return primary;
+  return secondary;
 }
 
 function mergeCoach(primary = {}, secondary = {}) {

@@ -99,6 +99,29 @@ def assert_storage_migration_recovers_legacy_data() -> None:
         assert(result.state.activations.some((a) => a.id === "a-current"), "current activation was lost during legacy recovery");
         assert(result.state.activations.some((a) => a.id === "a-legacy"), "legacy activation was not merged during recovery");
 
+        const legacyProfileOnly = {{
+          goals: [],
+          activations: [],
+          logs: [],
+          profile: {{
+            name: "Ada",
+            communicationStyle: "direct",
+            interviewStarted: true,
+            interviewProgress: {{ currentTopic: "values", askedTopics: ["style"] }}
+          }},
+          coach: {{ memory: [] }}
+        }};
+        result = load([
+          ["breakFree.v1", JSON.stringify(currentWithNewData)],
+          ["baApp.v1", JSON.stringify(legacyProfileOnly)]
+        ]);
+        assert(result.state.activations.some((a) => a.id === "a-current"), "current activation was lost while merging profile-only legacy data");
+        assert(result.state.profile.name === "Ada", "legacy profile name was shadowed by current default");
+        assert(result.state.profile.communicationStyle === "direct", "legacy communication style was shadowed by current default");
+        assert(result.state.profile.interviewStarted === true, "legacy interviewStarted was shadowed by current default");
+        assert(result.state.profile.interviewProgress.currentTopic === "values", "legacy current interview topic was shadowed by current default");
+        assert(result.state.profile.interviewProgress.askedTopics.includes("style"), "legacy asked interview topics were not merged");
+
         result = load([
           ["breakFree.v1", JSON.stringify({{
             goals: null,
