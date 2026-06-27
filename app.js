@@ -67,8 +67,15 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 function loadState() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  const legacyRaw = localStorage.getItem(LEGACY_KEY);
+  let raw = null;
+  let legacyRaw = null;
+  try {
+    raw = localStorage.getItem(STORAGE_KEY);
+    legacyRaw = localStorage.getItem(LEGACY_KEY);
+  } catch (e) {
+    console.warn("Could not read stored state, starting fresh", e);
+    return structuredClone(DEFAULT_STATE);
+  }
   const current = parseStoredState(raw, STORAGE_KEY);
   const legacy = parseStoredState(legacyRaw, LEGACY_KEY);
 

@@ -41,8 +41,14 @@ def assert_storage_migration_recovers_legacy_data() -> None:
         const code = fs.readFileSync({str(ROOT / "app.js")!r}, "utf8");
 
         class Storage {{
-          constructor(entries) {{ this.map = new Map(entries); }}
-          getItem(key) {{ return this.map.has(key) ? this.map.get(key) : null; }}
+          constructor(entries, options = {{}}) {{
+            this.map = new Map(entries);
+            this.options = options;
+          }}
+          getItem(key) {{
+            if (this.options.throwGet) throw new Error("storage blocked");
+            return this.map.has(key) ? this.map.get(key) : null;
+          }}
           setItem(key, value) {{ this.map.set(key, String(value)); }}
           removeItem(key) {{ this.map.delete(key); }}
         }}
@@ -51,11 +57,11 @@ def assert_storage_migration_recovers_legacy_data() -> None:
           if (!condition) throw new Error(message);
         }}
 
-        function load(entries) {{
+        function load(entries, options = {{}}) {{
           const context = {{
             console: {{ warn() {{}}, log() {{}}, error() {{}} }},
             fetch: async () => {{ throw new Error("offline"); }},
-            localStorage: new Storage(entries),
+            localStorage: new Storage(entries, options),
             structuredClone,
             window: {{}},
             document: {{ addEventListener() {{}} }}
@@ -135,6 +141,10 @@ def assert_storage_migration_recovers_legacy_data() -> None:
         assert(Array.isArray(result.state.activations), "invalid activations shape was not normalized");
         assert(Array.isArray(result.state.coach.memory), "invalid coach memory shape was not normalized");
         assert(Array.isArray(result.state.profile.values), "invalid profile values shape was not normalized");
+
+        result = load([], {{ throwGet: true }});
+        assert(Array.isArray(result.state.goals), "blocked storage read did not fall back to default state");
+        assert(result.state.coach.memory.length === 1, "blocked storage read did not preserve default coach welcome");
         """
     )
     with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as f:
