@@ -5,6 +5,9 @@ Run from the repository root:
 """
 
 from pathlib import Path
+import subprocess
+import tempfile
+import textwrap
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -30,9 +33,130 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_storage_migration_recovers_legacy_data() -> None:
+    script = textwrap.dedent(
+        f"""
+        const fs = require("fs");
+        const vm = require("vm");
+        const code = fs.readFileSync({str(ROOT / "app.js")!r}, "utf8");
+
+        class Storage {{
+          constructor(entries, options = {{}}) {{
+            this.map = new Map(entries);
+            this.options = options;
+          }}
+          getItem(key) {{
+            if (this.options.throwGet) throw new Error("storage blocked");
+            return this.map.has(key) ? this.map.get(key) : null;
+          }}
+          setItem(key, value) {{ this.map.set(key, String(value)); }}
+          removeItem(key) {{ this.map.delete(key); }}
+        }}
+
+        function assert(condition, message) {{
+          if (!condition) throw new Error(message);
+        }}
+
+        function load(entries, options = {{}}) {{
+          const context = {{
+            console: {{ warn() {{}}, log() {{}}, error() {{}} }},
+            fetch: async () => {{ throw new Error("offline"); }},
+            localStorage: new Storage(entries, options),
+            structuredClone,
+            window: {{}},
+            document: {{ addEventListener() {{}} }}
+          }};
+          vm.runInNewContext(code + "\\nglobalThis.__STATE = STATE;", context);
+          return {{ state: context.__STATE, storage: context.localStorage }};
+        }}
+
+        const legacyRich = {{
+          createdAt: "2026-04-01T00:00:00.000Z",
+          goals: [{{ id: "g-legacy", title: "legacy goal", createdAt: "2026-04-01T00:00:00.000Z" }}],
+          activations: [{{ id: "a-legacy", title: "legacy activation", createdAt: "2026-04-01T00:00:00.000Z" }}],
+          logs: [{{ id: "l-legacy", type: "reflection", content: "legacy log", ts: "2026-04-01T00:00:00.000Z" }}],
+          profile: {{ name: "Ada", values: ["health"] }},
+          coach: {{
+            memory: [{{ ts: "2026-04-01T00:00:00.000Z", role: "coach", text: "legacy coach" }}],
+            topicCounts: {{ health: 1 }},
+            facts: []
+          }}
+        }};
+
+        let result = load([
+          ["breakFree.v1", JSON.stringify({{ goals: [], activations: [], logs: [], profile: {{}}, coach: {{ memory: [] }} }})],
+          ["baApp.v1", JSON.stringify(legacyRich)]
+        ]);
+        assert(result.state.activations.some((a) => a.id === "a-legacy"), "richer legacy activation was not restored");
+        assert(result.state.goals.some((g) => g.id === "g-legacy"), "richer legacy goal was not restored");
+        assert(result.storage.getItem("baApp.v1") === null, "promoted duplicate legacy key was not removed");
+
+        const currentWithNewData = {{
+          goals: [],
+          activations: [{{ id: "a-current", title: "current activation", createdAt: "2026-05-01T00:00:00.000Z" }}],
+          logs: [],
+          profile: {{}},
+          coach: {{ memory: [] }}
+        }};
+        result = load([
+          ["breakFree.v1", JSON.stringify(currentWithNewData)],
+          ["baApp.v1", JSON.stringify(legacyRich)]
+        ]);
+        assert(result.state.activations.some((a) => a.id === "a-current"), "current activation was lost during legacy recovery");
+        assert(result.state.activations.some((a) => a.id === "a-legacy"), "legacy activation was not merged during recovery");
+
+        const legacyProfileOnly = {{
+          goals: [],
+          activations: [],
+          logs: [],
+          profile: {{
+            name: "Ada",
+            communicationStyle: "direct",
+            interviewStarted: true,
+            interviewProgress: {{ currentTopic: "values", askedTopics: ["style"] }}
+          }},
+          coach: {{ memory: [] }}
+        }};
+        result = load([
+          ["breakFree.v1", JSON.stringify(currentWithNewData)],
+          ["baApp.v1", JSON.stringify(legacyProfileOnly)]
+        ]);
+        assert(result.state.activations.some((a) => a.id === "a-current"), "current activation was lost while merging profile-only legacy data");
+        assert(result.state.profile.name === "Ada", "legacy profile name was shadowed by current default");
+        assert(result.state.profile.communicationStyle === "direct", "legacy communication style was shadowed by current default");
+        assert(result.state.profile.interviewStarted === true, "legacy interviewStarted was shadowed by current default");
+        assert(result.state.profile.interviewProgress.currentTopic === "values", "legacy current interview topic was shadowed by current default");
+        assert(result.state.profile.interviewProgress.askedTopics.includes("style"), "legacy asked interview topics were not merged");
+
+        result = load([
+          ["breakFree.v1", JSON.stringify({{
+            goals: null,
+            activations: {{}},
+            logs: null,
+            profile: {{ values: "bad", interviewProgress: {{ askedTopics: "bad" }} }},
+            coach: {{ memory: null, topicCounts: null, facts: null }}
+          }})]
+        ]);
+        assert(Array.isArray(result.state.goals), "invalid goals shape was not normalized");
+        assert(Array.isArray(result.state.activations), "invalid activations shape was not normalized");
+        assert(Array.isArray(result.state.coach.memory), "invalid coach memory shape was not normalized");
+        assert(Array.isArray(result.state.profile.values), "invalid profile values shape was not normalized");
+
+        result = load([], {{ throwGet: true }});
+        assert(Array.isArray(result.state.goals), "blocked storage read did not fall back to default state");
+        assert(result.state.coach.memory.length === 1, "blocked storage read did not preserve default coach welcome");
+        """
+    )
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as f:
+        f.write(script)
+        script_path = f.name
+    subprocess.run(["node", script_path], check=True)
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_storage_migration_recovers_legacy_data()
     print("OK regression checks passed")
 
 

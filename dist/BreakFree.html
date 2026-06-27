@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-06-27T11:14:26Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1152,35 +1152,230 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 function loadState() {
+  let raw = null;
+  let legacyRaw = null;
   try {
-    let raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      const legacy = localStorage.getItem(LEGACY_KEY);
-      if (legacy) {
-        raw = legacy;
-        localStorage.setItem(STORAGE_KEY, raw);
-      }
-    }
-    if (!raw) return structuredClone(DEFAULT_STATE);
-    const parsed = JSON.parse(raw);
-    const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
-      profile: Object.assign(
-        structuredClone(DEFAULT_STATE.profile),
-        parsed.profile || {}
-      ),
-      coach: Object.assign({}, DEFAULT_STATE.coach, parsed.coach || {})
-    });
-    if (!merged.coach.mode) merged.coach.mode = "free";
-    if (!merged.profile.interviewProgress)
-      merged.profile.interviewProgress = { askedTopics: [], currentTopic: null, openCloseAsked: false };
-    merged.activations = (merged.activations || []).map((a) =>
-      Object.assign({ modality: "ba" }, a)
-    );
-    return merged;
+    raw = localStorage.getItem(STORAGE_KEY);
+    legacyRaw = localStorage.getItem(LEGACY_KEY);
   } catch (e) {
-    console.warn("Could not load state, starting fresh", e);
+    console.warn("Could not read stored state, starting fresh", e);
     return structuredClone(DEFAULT_STATE);
   }
+  const current = parseStoredState(raw, STORAGE_KEY);
+  const legacy = parseStoredState(legacyRaw, LEGACY_KEY);
+
+  if (!current && !legacy) return structuredClone(DEFAULT_STATE);
+  if (!legacy) return current;
+
+  const currentScore = current ? stateRichness(current) : -1;
+  const legacyScore = stateRichness(legacy);
+  const preferred = legacyScore > currentScore ? legacy : current;
+  const fallback = preferred === legacy ? current : legacy;
+  const merged = fallback ? mergeStoredStates(preferred, fallback) : preferred;
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    localStorage.removeItem(LEGACY_KEY);
+  } catch (e) {
+    console.warn("Could not promote legacy state", e);
+  }
+
+  return merged;
+}
+
+function parseStoredState(raw, label) {
+  if (!raw) return null;
+  try {
+    return normalizeState(JSON.parse(raw));
+  } catch (e) {
+    console.warn(`Could not load ${label} state`, e);
+    return null;
+  }
+}
+
+function normalizeState(parsed) {
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
+    throw new Error("Stored state is not an object");
+
+  const defaults = structuredClone(DEFAULT_STATE);
+  const profileInput = objectOrEmpty(parsed.profile);
+  const coachInput = objectOrEmpty(parsed.coach);
+  const progressInput = objectOrEmpty(profileInput.interviewProgress);
+
+  const merged = Object.assign({}, defaults, parsed);
+  merged.user = Object.assign({}, defaults.user, objectOrEmpty(parsed.user));
+  merged.preferences = Object.assign(
+    {},
+    defaults.preferences,
+    objectOrEmpty(parsed.preferences)
+  );
+  merged.goals = arrayOrEmpty(parsed.goals);
+  merged.logs = arrayOrEmpty(parsed.logs);
+  merged.activations = arrayOrEmpty(parsed.activations).map((a) =>
+    Object.assign({ modality: "ba" }, objectOrEmpty(a))
+  );
+
+  merged.profile = Object.assign({}, defaults.profile, profileInput);
+  [
+    "struggles",
+    "struggleNotes",
+    "avoiding",
+    "values",
+    "valueNotes",
+    "energizers",
+    "energizerNotes",
+    "pastWins",
+    "bestTimes",
+    "interviewNotes"
+  ].forEach((key) => {
+    merged.profile[key] = arrayOrEmpty(profileInput[key]);
+  });
+  merged.profile.interviewProgress = Object.assign(
+    {},
+    defaults.profile.interviewProgress,
+    progressInput
+  );
+  merged.profile.interviewProgress.askedTopics = arrayOrEmpty(
+    progressInput.askedTopics
+  );
+  merged.profile.interviewProgress.openCloseAsked =
+    !!merged.profile.interviewProgress.openCloseAsked;
+
+  merged.coach = Object.assign({}, defaults.coach, coachInput);
+  merged.coach.mode = merged.coach.mode || "free";
+  merged.coach.memory = Array.isArray(coachInput.memory)
+    ? coachInput.memory.map((m) => objectOrEmpty(m))
+    : defaults.coach.memory;
+  merged.coach.topicCounts = objectOrEmpty(coachInput.topicCounts);
+  merged.coach.facts = arrayOrEmpty(coachInput.facts).map((f) => objectOrEmpty(f));
+
+  return merged;
+}
+
+function objectOrEmpty(value) {
+  return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+}
+
+function arrayOrEmpty(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function stateRichness(state) {
+  const p = state.profile || {};
+  const c = state.coach || {};
+  return (
+    state.goals.length * 4 +
+    state.activations.length * 4 +
+    state.logs.length * 2 +
+    (c.memory || []).length +
+    (c.facts || []).length +
+    Object.keys(c.topicCounts || {}).length +
+    [
+      p.name,
+      p.communicationStyle,
+      p.challengeLevel,
+      p.interviewStarted,
+      p.interviewComplete,
+      p.interviewSkipped
+    ].filter(Boolean).length +
+    [
+      "struggles",
+      "struggleNotes",
+      "avoiding",
+      "values",
+      "valueNotes",
+      "energizers",
+      "energizerNotes",
+      "pastWins",
+      "bestTimes",
+      "interviewNotes"
+    ].reduce((sum, key) => sum + (Array.isArray(p[key]) ? p[key].length : 0), 0)
+  );
+}
+
+function mergeStoredStates(preferred, fallback) {
+  const merged = structuredClone(preferred);
+  merged.goals = mergeRecords(preferred.goals, fallback.goals);
+  merged.activations = mergeRecords(preferred.activations, fallback.activations);
+  merged.logs = mergeRecords(preferred.logs, fallback.logs);
+
+  merged.profile = mergeProfile(preferred.profile, fallback.profile);
+  merged.user = Object.assign({}, fallback.user, preferred.user);
+  merged.preferences = Object.assign({}, fallback.preferences, preferred.preferences);
+  merged.coach = mergeCoach(preferred.coach, fallback.coach);
+  return normalizeState(merged);
+}
+
+function mergeRecords(primary = [], secondary = []) {
+  const out = [];
+  const seen = new Set();
+  [...primary, ...secondary].forEach((item) => {
+    const key = item && (item.id || `${item.ts || item.createdAt || ""}:${item.type || ""}:${item.content || item.title || ""}`);
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    out.push(item);
+  });
+  return out;
+}
+
+function mergeProfile(primary = {}, secondary = {}) {
+  const merged = Object.assign({}, secondary, primary);
+  ["name", "communicationStyle", "challengeLevel"].forEach((key) => {
+    merged[key] = meaningfulValue(primary[key], secondary[key]);
+  });
+  ["interviewStarted", "interviewComplete", "interviewSkipped"].forEach((key) => {
+    merged[key] = !!(primary[key] || secondary[key]);
+  });
+  [
+    "struggles",
+    "struggleNotes",
+    "avoiding",
+    "values",
+    "valueNotes",
+    "energizers",
+    "energizerNotes",
+    "pastWins",
+    "bestTimes",
+    "interviewNotes"
+  ].forEach((key) => {
+    merged[key] = mergeScalars(primary[key], secondary[key]);
+  });
+  merged.interviewProgress = Object.assign(
+    {},
+    secondary.interviewProgress || {},
+    primary.interviewProgress || {}
+  );
+  merged.interviewProgress.currentTopic = meaningfulValue(
+    primary.interviewProgress && primary.interviewProgress.currentTopic,
+    secondary.interviewProgress && secondary.interviewProgress.currentTopic
+  );
+  merged.interviewProgress.askedTopics = mergeScalars(
+    primary.interviewProgress && primary.interviewProgress.askedTopics,
+    secondary.interviewProgress && secondary.interviewProgress.askedTopics
+  );
+  merged.interviewProgress.openCloseAsked =
+    !!(
+      (primary.interviewProgress && primary.interviewProgress.openCloseAsked) ||
+      (secondary.interviewProgress && secondary.interviewProgress.openCloseAsked)
+    );
+  return merged;
+}
+
+function meaningfulValue(primary, secondary) {
+  if (primary !== undefined && primary !== null && primary !== "") return primary;
+  return secondary;
+}
+
+function mergeCoach(primary = {}, secondary = {}) {
+  return Object.assign({}, secondary, primary, {
+    memory: mergeRecords(primary.memory, secondary.memory),
+    facts: mergeRecords(primary.facts, secondary.facts),
+    topicCounts: Object.assign({}, secondary.topicCounts, primary.topicCounts)
+  });
+}
+
+function mergeScalars(primary = [], secondary = []) {
+  return Array.from(new Set([...(Array.isArray(primary) ? primary : []), ...(Array.isArray(secondary) ? secondary : [])]));
 }
 
 function saveState() {
