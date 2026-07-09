@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-07-09T11:15:14Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1139,6 +1139,7 @@ const STOPWORDS = new Set(
   )
 );
 
+let activeStorageKey = STORAGE_KEY;
 const STATE = loadState();
 let route = "home";
 let calendarCursor = startOfMonth(new Date());
@@ -1153,29 +1154,37 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 function loadState() {
   try {
-    let raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      const legacy = localStorage.getItem(LEGACY_KEY);
-      if (legacy) {
-        raw = legacy;
-        localStorage.setItem(STORAGE_KEY, raw);
+    const current = readStoredState(STORAGE_KEY);
+    const legacy = readStoredState(LEGACY_KEY);
+    let selected = current;
+    let carryForward = null;
+    if (legacy) {
+      if (!current) {
+        selected = legacy;
+      } else if (legacy.raw !== current.raw) {
+        const legacyScore = storedStateScore(legacy.parsed);
+        const currentScore = storedStateScore(current.parsed);
+        selected = legacyScore > currentScore ? legacy : current;
+        carryForward = selected === legacy ? current : legacy;
       }
     }
-    if (!raw) return structuredClone(DEFAULT_STATE);
-    const parsed = JSON.parse(raw);
-    const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
-      profile: Object.assign(
-        structuredClone(DEFAULT_STATE.profile),
-        parsed.profile || {}
-      ),
-      coach: Object.assign({}, DEFAULT_STATE.coach, parsed.coach || {})
-    });
-    if (!merged.coach.mode) merged.coach.mode = "free";
-    if (!merged.profile.interviewProgress)
-      merged.profile.interviewProgress = { askedTopics: [], currentTopic: null, openCloseAsked: false };
-    merged.activations = (merged.activations || []).map((a) =>
-      Object.assign({ modality: "ba" }, a)
-    );
+    if (!selected) return structuredClone(DEFAULT_STATE);
+
+    const merged = mergeStoredState(selected.parsed);
+    if (carryForward) mergeStateData(merged, mergeStoredState(carryForward.parsed));
+    activeStorageKey = selected.key;
+
+    if (selected.key === LEGACY_KEY || carryForward?.key === LEGACY_KEY) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        activeStorageKey = STORAGE_KEY;
+        try { localStorage.removeItem(LEGACY_KEY); } catch {}
+      } catch (e) {
+        console.warn("Could not promote legacy state; continuing with legacy fallback", e);
+        activeStorageKey = LEGACY_KEY;
+      }
+    }
+
     return merged;
   } catch (e) {
     console.warn("Could not load state, starting fresh", e);
@@ -1183,8 +1192,160 @@ function loadState() {
   }
 }
 
+function readStoredState(key) {
+  const raw = localStorage.getItem(key);
+  if (!raw) return null;
+  try {
+    return { key, raw, parsed: JSON.parse(raw) };
+  } catch (e) {
+    console.warn(`Could not parse state from ${key}`, e);
+    return null;
+  }
+}
+
+function mergeStoredState(parsed) {
+  const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
+    profile: Object.assign(
+      structuredClone(DEFAULT_STATE.profile),
+      parsed.profile || {}
+    ),
+    coach: Object.assign({}, DEFAULT_STATE.coach, parsed.coach || {})
+  });
+  if (!merged.coach.mode) merged.coach.mode = "free";
+  if (!merged.profile.interviewProgress)
+    merged.profile.interviewProgress = { askedTopics: [], currentTopic: null, openCloseAsked: false };
+  merged.activations = (merged.activations || []).map((a) =>
+    Object.assign({ modality: "ba" }, a)
+  );
+  return merged;
+}
+
+function storedStateScore(parsed) {
+  const p = parsed.profile || {};
+  const c = parsed.coach || {};
+  const arrays = [
+    parsed.goals,
+    parsed.activations,
+    parsed.logs,
+    c.memory,
+    c.facts,
+    p.struggles,
+    p.struggleNotes,
+    p.avoiding,
+    p.values,
+    p.valueNotes,
+    p.energizers,
+    p.energizerNotes,
+    p.pastWins,
+    p.bestTimes,
+    p.interviewNotes
+  ];
+  const collectionScore = arrays.reduce(
+    (sum, value) => sum + (Array.isArray(value) ? value.length : 0),
+    0
+  );
+  const topicScore = c.topicCounts ? Object.keys(c.topicCounts).length : 0;
+  const profileScore = [
+    p.name,
+    p.communicationStyle,
+    p.challengeLevel,
+    p.interviewStarted,
+    p.interviewComplete,
+    p.interviewSkipped,
+    p.interviewProgress?.currentTopic,
+    p.interviewProgress?.openCloseAsked
+  ].filter(Boolean).length;
+  return collectionScore + topicScore + profileScore;
+}
+
+function mergeStateData(base, other) {
+  base.goals = mergeUniqueItems(base.goals, other.goals);
+  base.activations = mergeUniqueItems(base.activations, other.activations);
+  base.logs = mergeUniqueItems(base.logs, other.logs);
+  base.coach.memory = mergeUniqueItems(base.coach.memory, other.coach.memory, memoryKey);
+  base.coach.facts = mergeUniqueItems(base.coach.facts, other.coach.facts, factKey);
+  base.coach.topicCounts = mergeTopicCounts(base.coach.topicCounts, other.coach.topicCounts);
+  base.preferences = Object.assign({}, other.preferences || {}, base.preferences);
+  base.user = Object.assign({}, other.user || {}, base.user);
+
+  mergeProfileData(base.profile, other.profile || {});
+  return base;
+}
+
+function mergeProfileData(base, other) {
+  [
+    "struggles",
+    "struggleNotes",
+    "avoiding",
+    "values",
+    "valueNotes",
+    "energizers",
+    "energizerNotes",
+    "pastWins",
+    "bestTimes",
+    "interviewNotes"
+  ].forEach((field) => {
+    base[field] = mergeUniqueItems(base[field], other[field]);
+  });
+  ["name", "communicationStyle", "challengeLevel"].forEach((field) => {
+    if (!base[field] && other[field]) base[field] = other[field];
+  });
+  base.interviewProgress = base.interviewProgress || { askedTopics: [], currentTopic: null, openCloseAsked: false };
+}
+
+function mergeUniqueItems(primary = [], secondary = [], keyFn = defaultMergeKey) {
+  const out = [];
+  const seen = new Set();
+  [primary || [], secondary || []].forEach((items) => {
+    if (!Array.isArray(items)) return;
+    items.forEach((item) => {
+      const key = keyFn(item);
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push(item);
+    });
+  });
+  return out;
+}
+
+function defaultMergeKey(item) {
+  return item && typeof item === "object" && item.id
+    ? `id:${item.id}`
+    : `value:${JSON.stringify(item)}`;
+}
+
+function memoryKey(item) {
+  return item && typeof item === "object"
+    ? `${item.ts || ""}|${item.role || ""}|${item.text || ""}`
+    : defaultMergeKey(item);
+}
+
+function factKey(item) {
+  return item && typeof item === "object"
+    ? `${item.ts || ""}|${item.fact || ""}`
+    : defaultMergeKey(item);
+}
+
+function mergeTopicCounts(primary = {}, secondary = {}) {
+  const merged = Object.assign({}, primary || {});
+  Object.entries(secondary || {}).forEach(([topic, count]) => {
+    merged[topic] = Math.max(Number(merged[topic]) || 0, Number(count) || 0);
+  });
+  return merged;
+}
+
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  const raw = JSON.stringify(STATE);
+  try {
+    localStorage.setItem(STORAGE_KEY, raw);
+    if (activeStorageKey === LEGACY_KEY) {
+      try { localStorage.removeItem(LEGACY_KEY); } catch {}
+    }
+    activeStorageKey = STORAGE_KEY;
+  } catch (e) {
+    if (activeStorageKey !== LEGACY_KEY) throw e;
+    localStorage.setItem(LEGACY_KEY, raw);
+  }
 }
 
 async function loadKnowledge() {
