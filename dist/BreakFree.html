@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-07-10T11:10:45Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1089,6 +1089,9 @@ const STORAGE_KEY = "breakFree.v1";
 const LEGACY_KEY = "baApp.v1";
 const KNOWLEDGE_URL = "knowledge.json";
 
+let activeStorageKey = STORAGE_KEY;
+let storageWarningShown = false;
+
 const WELCOME_TEXT =
   "Hi. I'm here whenever you want company. I'll be a lot more useful once I know you a little — what's heavy, what you care about, and how you like to be spoken to. I'd like to interview you a bit. There's no set number of questions and you can stop me anytime by saying \"enough\". Want to start? Just say yes, or jump into anything that's on your mind.";
 
@@ -1152,39 +1155,123 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 function loadState() {
-  try {
-    let raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      const legacy = localStorage.getItem(LEGACY_KEY);
-      if (legacy) {
-        raw = legacy;
-        localStorage.setItem(STORAGE_KEY, raw);
-      }
-    }
-    if (!raw) return structuredClone(DEFAULT_STATE);
-    const parsed = JSON.parse(raw);
-    const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
-      profile: Object.assign(
-        structuredClone(DEFAULT_STATE.profile),
-        parsed.profile || {}
-      ),
-      coach: Object.assign({}, DEFAULT_STATE.coach, parsed.coach || {})
-    });
-    if (!merged.coach.mode) merged.coach.mode = "free";
-    if (!merged.profile.interviewProgress)
-      merged.profile.interviewProgress = { askedTopics: [], currentTopic: null, openCloseAsked: false };
-    merged.activations = (merged.activations || []).map((a) =>
-      Object.assign({ modality: "ba" }, a)
-    );
-    return merged;
-  } catch (e) {
-    console.warn("Could not load state, starting fresh", e);
-    return structuredClone(DEFAULT_STATE);
+  const primary = readStoredState(STORAGE_KEY);
+  if (primary) {
+    activeStorageKey = STORAGE_KEY;
+    return primary;
   }
+
+  const legacyRaw = readStorage(LEGACY_KEY);
+  const legacy = parseStoredState(legacyRaw, LEGACY_KEY);
+  if (legacy) {
+    activeStorageKey = LEGACY_KEY;
+    // Promotion is best-effort. If quota or browser policy blocks the new key,
+    // keep using the readable legacy key instead of discarding local-only data.
+    if (writeStorage(STORAGE_KEY, legacyRaw)) {
+      activeStorageKey = STORAGE_KEY;
+      removeStorage(LEGACY_KEY);
+    }
+    return legacy;
+  }
+
+  return structuredClone(DEFAULT_STATE);
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  const raw = JSON.stringify(STATE);
+  if (activeStorageKey === LEGACY_KEY) {
+    if (!writeStorage(LEGACY_KEY, raw)) {
+      notifyStorageFailure();
+      return false;
+    }
+    if (writeStorage(STORAGE_KEY, raw)) {
+      activeStorageKey = STORAGE_KEY;
+      removeStorage(LEGACY_KEY);
+    }
+    return true;
+  }
+
+  if (!writeStorage(STORAGE_KEY, raw)) {
+    notifyStorageFailure();
+    return false;
+  }
+  return true;
+}
+
+function readStorage(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    console.warn(`Could not read state from ${key}`, e);
+    return null;
+  }
+}
+
+function writeStorage(key, raw) {
+  try {
+    localStorage.setItem(key, raw);
+    return true;
+  } catch (e) {
+    console.warn(`Could not write state to ${key}`, e);
+    return false;
+  }
+}
+
+function removeStorage(key) {
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {
+    console.warn(`Could not remove old state key ${key}`, e);
+  }
+}
+
+function readStoredState(key) {
+  return parseStoredState(readStorage(key), key);
+}
+
+function parseStoredState(raw, key) {
+  if (!raw) return null;
+  try {
+    return hydrateState(JSON.parse(raw));
+  } catch (e) {
+    console.warn(`Could not load state from ${key}`, e);
+    return null;
+  }
+}
+
+function hydrateState(parsed) {
+  const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
+    profile: Object.assign(
+      structuredClone(DEFAULT_STATE.profile),
+      parsed.profile || {}
+    ),
+    coach: Object.assign(
+      structuredClone(DEFAULT_STATE.coach),
+      parsed.coach || {}
+    )
+  });
+  if (!merged.coach.mode) merged.coach.mode = "free";
+  if (!merged.profile.interviewProgress)
+    merged.profile.interviewProgress = { askedTopics: [], currentTopic: null, openCloseAsked: false };
+  merged.activations = (merged.activations || []).map((a) =>
+    Object.assign({ modality: "ba" }, a)
+  );
+  if (!Array.isArray(merged.coach.memory))
+    merged.coach.memory = structuredClone(DEFAULT_STATE.coach.memory);
+  if (!Array.isArray(merged.coach.facts)) merged.coach.facts = [];
+  if (!merged.coach.topicCounts) merged.coach.topicCounts = {};
+  return merged;
+}
+
+function notifyStorageFailure() {
+  if (storageWarningShown) return;
+  storageWarningShown = true;
+  if (typeof window !== "undefined" && typeof window.alert === "function") {
+    window.alert(
+      "Break Free could not save changes in this browser storage area. " +
+        "Please export or copy anything important before closing this tab."
+    );
+  }
 }
 
 async function loadKnowledge() {
