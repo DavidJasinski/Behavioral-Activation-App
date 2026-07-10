@@ -3,7 +3,6 @@
 const STORAGE_KEY = "breakFree.v1";
 const LEGACY_KEY = "baApp.v1";
 const KNOWLEDGE_URL = "knowledge.json";
-const MAX_COACH_MEMORY = 160;
 
 let activeStorageKey = STORAGE_KEY;
 let storageWarningShown = false;
@@ -174,8 +173,6 @@ function hydrateState(parsed) {
   );
   if (!Array.isArray(merged.coach.memory))
     merged.coach.memory = structuredClone(DEFAULT_STATE.coach.memory);
-  if (merged.coach.memory.length > MAX_COACH_MEMORY)
-    merged.coach.memory = merged.coach.memory.slice(-MAX_COACH_MEMORY);
   if (!Array.isArray(merged.coach.facts)) merged.coach.facts = [];
   if (!merged.coach.topicCounts) merged.coach.topicCounts = {};
   return merged;
@@ -1066,8 +1063,6 @@ function pushMemory(entry) {
     if (STATE.coach.facts.length > 80)
       STATE.coach.facts = STATE.coach.facts.slice(-80);
   }
-  if (STATE.coach.memory.length > MAX_COACH_MEMORY)
-    STATE.coach.memory = STATE.coach.memory.slice(-MAX_COACH_MEMORY);
 }
 
 function extractTopics(text) {
