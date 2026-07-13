@@ -261,6 +261,39 @@ def assert_save_state_failure_is_contained() -> None:
     assert result["inMemoryIds"] == ["unsaved"], "failed persistence should not roll back in-memory edits"
 
 
+def assert_save_state_failure_keeps_legacy_backup() -> None:
+    result = run_app_storage_scenario(
+        """
+        const legacy = JSON.stringify({
+          activations: [{ id: "legacy-action", title: "Legacy action" }],
+          coach: { memory: [], topicCounts: {}, facts: [] }
+        });
+        const store = new Map([["baApp.v1", legacy]]);
+        context.localStorage = {
+          getItem: (key) => store.has(key) ? store.get(key) : null,
+          setItem: (key, value) => {
+            if (key === "breakFree.v1") throw new Error("QuotaExceededError");
+            store.set(key, value);
+          },
+          removeItem: (key) => store.delete(key)
+        };
+        vm.runInContext(app, context);
+        store.set("baApp.v1", vm.runInContext("JSON.stringify(STATE)", context));
+        const saveReturn = vm.runInContext("saveState()", context);
+        context.__result = {
+          saveReturn,
+          hasLegacy: context.localStorage.getItem("baApp.v1") !== null,
+          hasCurrent: context.localStorage.getItem("breakFree.v1") !== null,
+          activationIds: vm.runInContext("STATE.activations.map((a) => a.id)", context)
+        };
+        """
+    )
+    assert result["saveReturn"] is False, "saveState should report failed persistence"
+    assert result["hasLegacy"] is True, "failed save must keep the only legacy backup"
+    assert result["hasCurrent"] is False, "failed save should not create partial current state"
+    assert result["activationIds"] == ["legacy-action"], "in-memory legacy data should remain loaded"
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
@@ -269,6 +302,7 @@ def main() -> None:
     assert_sparse_current_state_merges_richer_legacy()
     assert_successful_legacy_promotion_removes_duplicate()
     assert_save_state_failure_is_contained()
+    assert_save_state_failure_keeps_legacy_backup()
     print("OK regression checks passed")
 
 

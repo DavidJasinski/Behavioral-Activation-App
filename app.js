@@ -99,8 +99,10 @@ function saveState() {
     return true;
   }
   if (readStoredRaw(LEGACY_KEY) === raw) {
-    removeStoredRaw(LEGACY_KEY);
-    return writeStoredRaw(STORAGE_KEY, raw);
+    if (writeStoredRaw(STORAGE_KEY, raw)) {
+      removeStoredRaw(LEGACY_KEY);
+      return true;
+    }
   }
   return false;
 }
