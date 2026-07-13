@@ -67,39 +67,210 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 function loadState() {
-  try {
-    let raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      const legacy = localStorage.getItem(LEGACY_KEY);
-      if (legacy) {
-        raw = legacy;
-        localStorage.setItem(STORAGE_KEY, raw);
-      }
+  const raw = readStoredRaw(STORAGE_KEY);
+  const legacy = readStoredRaw(LEGACY_KEY);
+  const parsed = parseStoredRaw(raw, STORAGE_KEY);
+  const legacyParsed = parseStoredRaw(legacy, LEGACY_KEY);
+
+  if (parsed) {
+    const currentState = hydrateState(parsed);
+    if (!legacyParsed) {
+      if (legacy === raw) removeStoredRaw(LEGACY_KEY);
+      return currentState;
     }
-    if (!raw) return structuredClone(DEFAULT_STATE);
-    const parsed = JSON.parse(raw);
-    const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
-      profile: Object.assign(
-        structuredClone(DEFAULT_STATE.profile),
-        parsed.profile || {}
-      ),
-      coach: Object.assign({}, DEFAULT_STATE.coach, parsed.coach || {})
-    });
-    if (!merged.coach.mode) merged.coach.mode = "free";
-    if (!merged.profile.interviewProgress)
-      merged.profile.interviewProgress = { askedTopics: [], currentTopic: null, openCloseAsked: false };
-    merged.activations = (merged.activations || []).map((a) =>
-      Object.assign({ modality: "ba" }, a)
-    );
+    const merged = mergeStoredStates(currentState, hydrateState(legacyParsed));
+    const mergedRaw = JSON.stringify(merged);
+    if (writeStoredRaw(STORAGE_KEY, mergedRaw)) removeStoredRaw(LEGACY_KEY);
     return merged;
-  } catch (e) {
-    console.warn("Could not load state, starting fresh", e);
-    return structuredClone(DEFAULT_STATE);
   }
+
+  if (legacyParsed) {
+    if (promoteStoredRaw(legacy)) removeStoredRaw(LEGACY_KEY);
+    return hydrateState(legacyParsed);
+  }
+
+  return structuredClone(DEFAULT_STATE);
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  const raw = JSON.stringify(STATE);
+  if (writeStoredRaw(STORAGE_KEY, raw)) {
+    if (readStoredRaw(LEGACY_KEY) === raw) removeStoredRaw(LEGACY_KEY);
+    return true;
+  }
+  if (readStoredRaw(LEGACY_KEY) === raw) {
+    if (writeStoredRaw(STORAGE_KEY, raw)) {
+      removeStoredRaw(LEGACY_KEY);
+      return true;
+    }
+  }
+  return false;
+}
+
+function hydrateState(parsed) {
+  const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
+    profile: Object.assign(
+      structuredClone(DEFAULT_STATE.profile),
+      parsed.profile || {}
+    ),
+    coach: Object.assign({}, DEFAULT_STATE.coach, parsed.coach || {})
+  });
+  if (!merged.coach.mode) merged.coach.mode = "free";
+  if (!merged.profile.interviewProgress)
+    merged.profile.interviewProgress = { askedTopics: [], currentTopic: null, openCloseAsked: false };
+  merged.activations = (merged.activations || []).map((a) =>
+    Object.assign({ modality: "ba" }, a)
+  );
+  return merged;
+}
+
+function parseStoredRaw(raw, label) {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn(`Could not parse ${label}; trying recovery`, e);
+    return null;
+  }
+}
+
+function readStoredRaw(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    console.warn(`Could not read ${key}`, e);
+    return null;
+  }
+}
+
+function writeStoredRaw(key, raw) {
+  try {
+    localStorage.setItem(key, raw);
+    return true;
+  } catch (e) {
+    console.warn(`Could not write ${key}`, e);
+    return false;
+  }
+}
+
+function removeStoredRaw(key) {
+  try {
+    localStorage.removeItem(key);
+    return true;
+  } catch (e) {
+    console.warn(`Could not remove ${key}`, e);
+    return false;
+  }
+}
+
+function promoteStoredRaw(raw) {
+  return writeStoredRaw(STORAGE_KEY, raw);
+}
+
+function mergeStoredStates(current, legacy) {
+  const merged = structuredClone(current);
+  merged.goals = mergeObjectsByStableKey(legacy.goals, current.goals);
+  merged.activations = mergeObjectsByStableKey(legacy.activations, current.activations);
+  merged.logs = mergeObjectsByStableKey(legacy.logs, current.logs);
+  merged.user = fillMissingScalars(current.user || {}, legacy.user || {});
+  merged.preferences = fillMissingScalars(current.preferences || {}, legacy.preferences || {});
+  merged.profile = mergeProfiles(current.profile || {}, legacy.profile || {});
+  merged.coach = mergeCoaches(current.coach || {}, legacy.coach || {});
+  return merged;
+}
+
+function mergeProfiles(current, legacy) {
+  const merged = fillMissingScalars(current, legacy);
+  [
+    "struggles",
+    "struggleNotes",
+    "avoiding",
+    "values",
+    "valueNotes",
+    "energizers",
+    "energizerNotes",
+    "pastWins",
+    "bestTimes",
+    "interviewNotes"
+  ].forEach((key) => {
+    merged[key] = mergeScalars(legacy[key], current[key]);
+  });
+
+  const currentProgress = current.interviewProgress || {};
+  const legacyProgress = legacy.interviewProgress || {};
+  merged.interviewStarted = Boolean(current.interviewStarted || legacy.interviewStarted);
+  merged.interviewComplete = Boolean(current.interviewComplete || legacy.interviewComplete);
+  merged.interviewSkipped = Boolean(current.interviewSkipped || legacy.interviewSkipped);
+  merged.interviewProgress = Object.assign({}, legacyProgress, currentProgress, {
+    askedTopics: mergeScalars(legacyProgress.askedTopics, currentProgress.askedTopics),
+    currentTopic: currentProgress.currentTopic || legacyProgress.currentTopic || null,
+    openCloseAsked: Boolean(currentProgress.openCloseAsked || legacyProgress.openCloseAsked)
+  });
+  return merged;
+}
+
+function mergeCoaches(current, legacy) {
+  const merged = fillMissingScalars(current, legacy);
+  merged.memory = mergeObjectsByStableKey(legacy.memory, current.memory, memoryKey);
+  merged.facts = mergeObjectsByStableKey(legacy.facts, current.facts, factKey);
+  merged.topicCounts = mergeTopicCounts(legacy.topicCounts, current.topicCounts);
+  return merged;
+}
+
+function fillMissingScalars(current, legacy) {
+  const merged = Object.assign({}, current);
+  Object.entries(legacy || {}).forEach(([key, value]) => {
+    if (Array.isArray(value) || (value && typeof value === "object")) return;
+    if (isEmptyScalar(merged[key]) && !isEmptyScalar(value)) merged[key] = value;
+  });
+  return merged;
+}
+
+function mergeScalars(legacy = [], current = []) {
+  const out = [];
+  [...(legacy || []), ...(current || [])].forEach((value) => {
+    if (value === undefined || value === null || value === "") return;
+    if (!out.some((existing) => JSON.stringify(existing) === JSON.stringify(value))) {
+      out.push(value);
+    }
+  });
+  return out;
+}
+
+function mergeObjectsByStableKey(legacy = [], current = [], getKey = itemKey) {
+  const merged = new Map();
+  [...(legacy || []), ...(current || [])].forEach((item) => {
+    const key = getKey(item);
+    if (key) merged.set(key, item);
+  });
+  return Array.from(merged.values());
+}
+
+function itemKey(item) {
+  if (!item || typeof item !== "object") return JSON.stringify(item);
+  return item.id || `${item.ts || ""}:${item.type || ""}:${item.content || item.title || JSON.stringify(item)}`;
+}
+
+function memoryKey(item) {
+  if (!item || typeof item !== "object") return JSON.stringify(item);
+  return `${item.ts || ""}:${item.role || ""}:${item.text || ""}`;
+}
+
+function factKey(item) {
+  if (!item || typeof item !== "object") return JSON.stringify(item);
+  return `${item.ts || ""}:${item.fact || ""}`;
+}
+
+function mergeTopicCounts(legacy = {}, current = {}) {
+  const merged = Object.assign({}, legacy || {});
+  Object.entries(current || {}).forEach(([key, value]) => {
+    merged[key] = Math.max(Number(merged[key]) || 0, Number(value) || 0);
+  });
+  return merged;
+}
+
+function isEmptyScalar(value) {
+  return value === undefined || value === null || value === "";
 }
 
 async function loadKnowledge() {
