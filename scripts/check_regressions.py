@@ -134,6 +134,75 @@ def assert_corrupt_current_state_recovers_from_legacy() -> None:
     assert result["hasLegacy"] is False, "successful recovery promotion should remove duplicate legacy data"
 
 
+def assert_sparse_current_state_merges_richer_legacy() -> None:
+    result = run_app_storage_scenario(
+        """
+        const current = JSON.stringify({
+          goals: [{ id: "current-goal", title: "Current goal" }],
+          activations: [],
+          logs: [],
+          profile: { name: "Current", values: ["music"] },
+          coach: {
+            mode: "free",
+            memory: [{ ts: "2026-01-02T00:00:00.000Z", role: "user", text: "current note", topics: ["music"] }],
+            topicCounts: { music: 1 },
+            facts: [{ ts: "2026-01-02T00:00:00.000Z", fact: "current fact" }]
+          }
+        });
+        const legacy = JSON.stringify({
+          goals: [{ id: "legacy-goal", title: "Legacy goal" }],
+          activations: [{ id: "legacy-action", title: "Legacy action" }],
+          logs: [{ id: "legacy-log", content: "Legacy log" }],
+          profile: { name: "Legacy", values: ["family"], pastWins: ["walked outside"] },
+          coach: {
+            mode: "free",
+            memory: [{ ts: "2026-01-01T00:00:00.000Z", role: "user", text: "legacy note", topics: ["family"] }],
+            topicCounts: { family: 1 },
+            facts: [{ ts: "2026-01-01T00:00:00.000Z", fact: "legacy fact" }]
+          }
+        });
+        const store = new Map([
+          ["breakFree.v1", current],
+          ["baApp.v1", legacy]
+        ]);
+        context.localStorage = {
+          getItem: (key) => store.has(key) ? store.get(key) : null,
+          setItem: (key, value) => store.set(key, value),
+          removeItem: (key) => store.delete(key)
+        };
+        vm.runInContext(app, context);
+        context.__result = vm.runInContext(`({
+          goalIds: STATE.goals.map((g) => g.id).sort(),
+          activationIds: STATE.activations.map((a) => a.id),
+          logIds: STATE.logs.map((l) => l.id),
+          profileName: STATE.profile.name,
+          profileValues: STATE.profile.values.slice().sort(),
+          pastWins: STATE.profile.pastWins,
+          memoryTexts: STATE.coach.memory.map((m) => m.text).sort(),
+          factTexts: STATE.coach.facts.map((f) => f.fact).sort(),
+          promotedGoalIds: JSON.parse(localStorage.getItem("breakFree.v1")).goals.map((g) => g.id).sort(),
+          hasLegacy: localStorage.getItem("baApp.v1") !== null
+        })`, context);
+        """
+    )
+    assert result["goalIds"] == ["current-goal", "legacy-goal"], (
+        "valid current and legacy goals should be unioned"
+    )
+    assert result["activationIds"] == ["legacy-action"], (
+        "sparse current state should not hide legacy activations"
+    )
+    assert result["logIds"] == ["legacy-log"], "sparse current state should not hide legacy logs"
+    assert result["profileName"] == "Current", "current scalar profile fields should remain canonical"
+    assert result["profileValues"] == ["family", "music"], "profile arrays should merge without truncation"
+    assert result["pastWins"] == ["walked outside"], "legacy-only profile arrays should be preserved"
+    assert result["memoryTexts"] == ["current note", "legacy note"], "coach memory should merge without truncation"
+    assert result["factTexts"] == ["current fact", "legacy fact"], "coach facts should merge without truncation"
+    assert result["promotedGoalIds"] == ["current-goal", "legacy-goal"], (
+        "merged data should be promoted to breakFree.v1"
+    )
+    assert result["hasLegacy"] is False, "legacy duplicate should be removed only after merged promotion succeeds"
+
+
 def assert_successful_legacy_promotion_removes_duplicate() -> None:
     result = run_app_storage_scenario(
         """
@@ -197,6 +266,7 @@ def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
     assert_legacy_state_loads_when_promotion_fails()
     assert_corrupt_current_state_recovers_from_legacy()
+    assert_sparse_current_state_merges_richer_legacy()
     assert_successful_legacy_promotion_removes_duplicate()
     assert_save_state_failure_is_contained()
     print("OK regression checks passed")
