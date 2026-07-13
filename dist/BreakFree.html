@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-07-13T11:06:08Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1152,39 +1152,95 @@ const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 function loadState() {
-  try {
-    let raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      const legacy = localStorage.getItem(LEGACY_KEY);
-      if (legacy) {
-        raw = legacy;
-        localStorage.setItem(STORAGE_KEY, raw);
-      }
-    }
-    if (!raw) return structuredClone(DEFAULT_STATE);
-    const parsed = JSON.parse(raw);
-    const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
-      profile: Object.assign(
-        structuredClone(DEFAULT_STATE.profile),
-        parsed.profile || {}
-      ),
-      coach: Object.assign({}, DEFAULT_STATE.coach, parsed.coach || {})
-    });
-    if (!merged.coach.mode) merged.coach.mode = "free";
-    if (!merged.profile.interviewProgress)
-      merged.profile.interviewProgress = { askedTopics: [], currentTopic: null, openCloseAsked: false };
-    merged.activations = (merged.activations || []).map((a) =>
-      Object.assign({ modality: "ba" }, a)
-    );
-    return merged;
-  } catch (e) {
-    console.warn("Could not load state, starting fresh", e);
-    return structuredClone(DEFAULT_STATE);
+  const raw = readStoredRaw(STORAGE_KEY);
+  const legacy = readStoredRaw(LEGACY_KEY);
+  const parsed = parseStoredRaw(raw, STORAGE_KEY);
+
+  if (parsed) {
+    if (legacy === raw) removeStoredRaw(LEGACY_KEY);
+    return hydrateState(parsed);
   }
+
+  const legacyParsed = parseStoredRaw(legacy, LEGACY_KEY);
+  if (legacyParsed) {
+    if (promoteStoredRaw(legacy)) removeStoredRaw(LEGACY_KEY);
+    return hydrateState(legacyParsed);
+  }
+
+  return structuredClone(DEFAULT_STATE);
 }
 
 function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  const raw = JSON.stringify(STATE);
+  if (writeStoredRaw(STORAGE_KEY, raw)) {
+    if (readStoredRaw(LEGACY_KEY) === raw) removeStoredRaw(LEGACY_KEY);
+    return true;
+  }
+  if (readStoredRaw(LEGACY_KEY) === raw) {
+    removeStoredRaw(LEGACY_KEY);
+    return writeStoredRaw(STORAGE_KEY, raw);
+  }
+  return false;
+}
+
+function hydrateState(parsed) {
+  const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed, {
+    profile: Object.assign(
+      structuredClone(DEFAULT_STATE.profile),
+      parsed.profile || {}
+    ),
+    coach: Object.assign({}, DEFAULT_STATE.coach, parsed.coach || {})
+  });
+  if (!merged.coach.mode) merged.coach.mode = "free";
+  if (!merged.profile.interviewProgress)
+    merged.profile.interviewProgress = { askedTopics: [], currentTopic: null, openCloseAsked: false };
+  merged.activations = (merged.activations || []).map((a) =>
+    Object.assign({ modality: "ba" }, a)
+  );
+  return merged;
+}
+
+function parseStoredRaw(raw, label) {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn(`Could not parse ${label}; trying recovery`, e);
+    return null;
+  }
+}
+
+function readStoredRaw(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    console.warn(`Could not read ${key}`, e);
+    return null;
+  }
+}
+
+function writeStoredRaw(key, raw) {
+  try {
+    localStorage.setItem(key, raw);
+    return true;
+  } catch (e) {
+    console.warn(`Could not write ${key}`, e);
+    return false;
+  }
+}
+
+function removeStoredRaw(key) {
+  try {
+    localStorage.removeItem(key);
+    return true;
+  } catch (e) {
+    console.warn(`Could not remove ${key}`, e);
+    return false;
+  }
+}
+
+function promoteStoredRaw(raw) {
+  return writeStoredRaw(STORAGE_KEY, raw);
 }
 
 async function loadKnowledge() {
