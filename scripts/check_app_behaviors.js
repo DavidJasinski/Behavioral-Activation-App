@@ -1,0 +1,174 @@
+"use strict";
+
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const vm = require("node:vm");
+
+const APP_SOURCE = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
+
+function runScenario(body) {
+  const storage = new Map();
+  const context = vm.createContext({
+    console,
+    structuredClone,
+    setTimeout,
+    clearTimeout,
+    window: {},
+    localStorage: {
+      getItem(key) {
+        return storage.get(key) ?? null;
+      },
+      setItem(key, value) {
+        storage.set(key, String(value));
+      }
+    },
+    fetch: async () => ({
+      ok: true,
+      json: async () => ({ modalities: {}, docs: [], chunks: [] })
+    }),
+    document: {
+      addEventListener() {}
+    }
+  });
+
+  return new Promise((resolve, reject) => {
+    context.__resolve = resolve;
+    context.__reject = reject;
+    vm.runInContext(
+      `${APP_SOURCE}\n(async () => {\n${body}\n})().then(__resolve, __reject);`,
+      context,
+      { filename: "app.js" }
+    );
+  });
+}
+
+async function assertHomeCoachRedraws() {
+  const result = await runScenario(`
+    route = "home";
+    let renderCalls = 0;
+    let drawCoachCalls = 0;
+    render = () => { renderCalls += 1; };
+    drawCoach = () => { drawCoachCalls += 1; };
+
+    await coachSend("hello coach");
+    return { renderCalls, drawCoachCalls };
+  `);
+
+  assert.equal(result.renderCalls, 1, "Home should still refresh its Coach preview");
+  assert.equal(
+    result.drawCoachCalls,
+    1,
+    "Sending from Home must redraw the open Coach drawer"
+  );
+}
+
+async function assertNonHomeCoachOnlyRedrawsDrawer() {
+  const result = await runScenario(`
+    route = "calendar";
+    let renderCalls = 0;
+    let drawCoachCalls = 0;
+    render = () => { renderCalls += 1; };
+    drawCoach = () => { drawCoachCalls += 1; };
+
+    await coachSend("hello coach");
+    return { renderCalls, drawCoachCalls };
+  `);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {
+    renderCalls: 0,
+    drawCoachCalls: 1
+  });
+}
+
+async function assertInterviewControl(label, expected) {
+  const result = await runScenario(`
+    route = "calendar";
+    render = () => {};
+    drawCoach = () => {};
+    STATE.coach.mode = "interview";
+    STATE.profile.interviewStarted = true;
+    STATE.profile.interviewProgress.currentTopic = "name";
+
+    await coachSend(${JSON.stringify(label)});
+    const persisted = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return {
+      name: persisted.profile.name,
+      values: persisted.profile.values,
+      mode: persisted.coach.mode,
+      currentTopic: persisted.profile.interviewProgress.currentTopic,
+      askedTopics: persisted.profile.interviewProgress.askedTopics
+    };
+  `);
+
+  const normalized = JSON.parse(JSON.stringify(result));
+  assert.deepEqual(normalized, expected, `"${label}" must behave as a control, not an answer`);
+}
+
+async function assertInterviewUsesOnlyCurrentTopicParser() {
+  const result = await runScenario(`
+    route = "calendar";
+    render = () => {};
+    drawCoach = () => {};
+    STATE.coach.mode = "interview";
+    STATE.profile.interviewStarted = true;
+    STATE.profile.interviewProgress.currentTopic = "whats_here";
+
+    await coachSend("I want to stop avoiding people");
+    const persisted = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return {
+      struggles: persisted.profile.struggles,
+      values: persisted.profile.values
+    };
+  `);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {
+    struggles: ["avoidance"],
+    values: []
+  }, "Interview answers must not also run through free-chat profile inference");
+}
+
+async function main() {
+  const checks = [
+    ["Home redraws Coach", assertHomeCoachRedraws],
+    ["non-Home redraws only Coach", assertNonHomeCoachOnlyRedrawsDrawer],
+    ["skip interview control", () => assertInterviewControl("skip this one", {
+      name: "",
+      values: [],
+      mode: "interview",
+      currentTopic: "style",
+      askedTopics: ["name"]
+    })],
+    ["alternate-question control", () => assertInterviewControl("ask me something else", {
+      name: "",
+      values: [],
+      mode: "interview",
+      currentTopic: "style",
+      askedTopics: ["name"]
+    })],
+    ["pause interview control", () => assertInterviewControl("enough for now", {
+      name: "",
+      values: [],
+      mode: "free",
+      currentTopic: "name",
+      askedTopics: []
+    })],
+    ["interview topic parser isolation", assertInterviewUsesOnlyCurrentTopicParser]
+  ];
+  const failures = [];
+  for (const [name, check] of checks) {
+    try {
+      await check();
+    } catch (error) {
+      failures.push(error);
+      console.error(`FAIL ${name}: ${error.message}`);
+    }
+  }
+  if (failures.length) throw new AggregateError(failures, "App behavior checks failed");
+  console.log("OK app behavior regression checks passed");
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
