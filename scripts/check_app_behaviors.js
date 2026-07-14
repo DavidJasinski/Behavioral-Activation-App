@@ -66,6 +66,8 @@ async function assertHomeCoachRedraws() {
 async function assertInterviewControl(label, expected) {
   const result = await runScenario(`
     route = "calendar";
+    render = () => {};
+    drawCoach = () => {};
     STATE.coach.mode = "interview";
     STATE.profile.interviewStarted = true;
     STATE.profile.interviewProgress.currentTopic = "name";
