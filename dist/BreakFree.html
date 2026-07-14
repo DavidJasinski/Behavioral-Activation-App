@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-07-14T11:14:44Z -->
+  <!-- BreakFree single-file build 2026-07-14T11:21:11Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1986,7 +1986,6 @@ async function coachSend(rawText, { silent = false } = {}) {
 
   // Interview takes precedence over normal chat.
   if (STATE.coach.mode === "interview") {
-    inferProfileFromMessage(text);
     handleInterviewAnswer(text);
     saveState();
     refreshAfterCoachChange();

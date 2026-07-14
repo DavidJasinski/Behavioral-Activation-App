@@ -901,7 +901,6 @@ async function coachSend(rawText, { silent = false } = {}) {
 
   // Interview takes precedence over normal chat.
   if (STATE.coach.mode === "interview") {
-    inferProfileFromMessage(text);
     handleInterviewAnswer(text);
     saveState();
     refreshAfterCoachChange();
