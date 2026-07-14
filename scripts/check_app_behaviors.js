@@ -63,6 +63,24 @@ async function assertHomeCoachRedraws() {
   );
 }
 
+async function assertNonHomeCoachOnlyRedrawsDrawer() {
+  const result = await runScenario(`
+    route = "calendar";
+    let renderCalls = 0;
+    let drawCoachCalls = 0;
+    render = () => { renderCalls += 1; };
+    drawCoach = () => { drawCoachCalls += 1; };
+
+    await coachSend("hello coach");
+    return { renderCalls, drawCoachCalls };
+  `);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {
+    renderCalls: 0,
+    drawCoachCalls: 1
+  });
+}
+
 async function assertInterviewControl(label, expected) {
   const result = await runScenario(`
     route = "calendar";
@@ -76,6 +94,7 @@ async function assertInterviewControl(label, expected) {
     const persisted = JSON.parse(localStorage.getItem(STORAGE_KEY));
     return {
       name: persisted.profile.name,
+      values: persisted.profile.values,
       mode: persisted.coach.mode,
       currentTopic: persisted.profile.interviewProgress.currentTopic,
       askedTopics: persisted.profile.interviewProgress.askedTopics
@@ -86,27 +105,55 @@ async function assertInterviewControl(label, expected) {
   assert.deepEqual(normalized, expected, `"${label}" must behave as a control, not an answer`);
 }
 
+async function assertInterviewUsesOnlyCurrentTopicParser() {
+  const result = await runScenario(`
+    route = "calendar";
+    render = () => {};
+    drawCoach = () => {};
+    STATE.coach.mode = "interview";
+    STATE.profile.interviewStarted = true;
+    STATE.profile.interviewProgress.currentTopic = "whats_here";
+
+    await coachSend("I want to stop avoiding people");
+    const persisted = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return {
+      struggles: persisted.profile.struggles,
+      values: persisted.profile.values
+    };
+  `);
+
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {
+    struggles: ["avoidance"],
+    values: []
+  }, "Interview answers must not also run through free-chat profile inference");
+}
+
 async function main() {
   const checks = [
     ["Home redraws Coach", assertHomeCoachRedraws],
+    ["non-Home redraws only Coach", assertNonHomeCoachOnlyRedrawsDrawer],
     ["skip interview control", () => assertInterviewControl("skip this one", {
       name: "",
+      values: [],
       mode: "interview",
       currentTopic: "style",
       askedTopics: ["name"]
     })],
     ["alternate-question control", () => assertInterviewControl("ask me something else", {
       name: "",
+      values: [],
       mode: "interview",
       currentTopic: "style",
       askedTopics: ["name"]
     })],
     ["pause interview control", () => assertInterviewControl("enough for now", {
       name: "",
+      values: [],
       mode: "free",
       currentTopic: "name",
       askedTopics: []
-    })]
+    })],
+    ["interview topic parser isolation", assertInterviewUsesOnlyCurrentTopicParser]
   ];
   const failures = [];
   for (const [name, check] of checks) {
