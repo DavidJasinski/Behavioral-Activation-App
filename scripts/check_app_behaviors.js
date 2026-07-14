@@ -82,7 +82,8 @@ async function assertInterviewControl(label, expected) {
     };
   `);
 
-  assert.deepEqual(result, expected, `"${label}" must behave as a control, not an answer`);
+  const normalized = JSON.parse(JSON.stringify(result));
+  assert.deepEqual(normalized, expected, `"${label}" must behave as a control, not an answer`);
 }
 
 async function main() {
