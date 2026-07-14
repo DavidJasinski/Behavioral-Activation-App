@@ -84,25 +84,37 @@ async function assertInterviewControl(label, expected) {
 }
 
 async function main() {
-  await assertHomeCoachRedraws();
-  await assertInterviewControl("skip this one", {
-    name: "",
-    mode: "interview",
-    currentTopic: "style",
-    askedTopics: ["name"]
-  });
-  await assertInterviewControl("ask me something else", {
-    name: "",
-    mode: "interview",
-    currentTopic: "style",
-    askedTopics: ["name"]
-  });
-  await assertInterviewControl("enough for now", {
-    name: "",
-    mode: "free",
-    currentTopic: "name",
-    askedTopics: []
-  });
+  const checks = [
+    ["Home redraws Coach", assertHomeCoachRedraws],
+    ["skip interview control", () => assertInterviewControl("skip this one", {
+      name: "",
+      mode: "interview",
+      currentTopic: "style",
+      askedTopics: ["name"]
+    })],
+    ["alternate-question control", () => assertInterviewControl("ask me something else", {
+      name: "",
+      mode: "interview",
+      currentTopic: "style",
+      askedTopics: ["name"]
+    })],
+    ["pause interview control", () => assertInterviewControl("enough for now", {
+      name: "",
+      mode: "free",
+      currentTopic: "name",
+      askedTopics: []
+    })]
+  ];
+  const failures = [];
+  for (const [name, check] of checks) {
+    try {
+      await check();
+    } catch (error) {
+      failures.push(error);
+      console.error(`FAIL ${name}: ${error.message}`);
+    }
+  }
+  if (failures.length) throw new AggregateError(failures, "App behavior checks failed");
   console.log("OK app behavior regression checks passed");
 }
 
