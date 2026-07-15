@@ -112,7 +112,11 @@ async function loadKnowledge() {
   try {
     const r = await fetch(KNOWLEDGE_URL, { cache: "no-store" });
     if (!r.ok) throw new Error("knowledge fetch failed " + r.status);
-    KNOWLEDGE = await r.json();
+    const payload = await r.json();
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+      throw new Error("knowledge payload invalid");
+    }
+    KNOWLEDGE = payload;
     return KNOWLEDGE;
   } catch (e) {
     console.warn("knowledge.json not loaded:", e);
