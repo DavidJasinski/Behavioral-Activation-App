@@ -5,9 +5,56 @@ Run from the repository root:
 """
 
 from pathlib import Path
+import subprocess
 
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def extract_load_knowledge(text: str, path: Path) -> str:
+    start_marker = "async function loadKnowledge() {"
+    end_marker = "\nfunction uid() {"
+    start = text.find(start_marker)
+    end = text.find(end_marker, start)
+    assert start >= 0 and end > start, f"{path} does not contain loadKnowledge()"
+    return text[start:end]
+
+
+def assert_falsy_payload_is_normalized(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    load_knowledge = extract_load_knowledge(text, path)
+    script = f"""
+const KNOWLEDGE_URL = "knowledge.json";
+let KNOWLEDGE = null;
+const window = {{}};
+global.fetch = async () => ({{
+  ok: true,
+  json: async () => null,
+}});
+
+{load_knowledge}
+
+loadKnowledge().then((result) => {{
+  if (!result || typeof result !== "object") {{
+    console.error("loadKnowledge left a falsy payload after settling");
+    process.exitCode = 1;
+  }}
+}}).catch((error) => {{
+  console.error(error);
+  process.exitCode = 1;
+}});
+"""
+    result = subprocess.run(
+        ["node", "-e", script],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, (
+        f"{path} does not normalize a falsy knowledge payload:\n"
+        f"{result.stdout}{result.stderr}"
+    )
 
 
 def assert_help_fallback_is_guarded(path: Path) -> None:
@@ -31,8 +78,10 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
 
 
 def main() -> None:
-    assert_help_fallback_is_guarded(ROOT / "app.js")
-    assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    paths = (ROOT / "app.js", ROOT / "dist" / "BreakFree.html")
+    for path in paths:
+        assert_help_fallback_is_guarded(path)
+        assert_falsy_payload_is_normalized(path)
     print("OK regression checks passed")
 
 
