@@ -240,7 +240,10 @@ function renderHome() {
   $("#home-open-coach").addEventListener("click", openCoach);
   $("[data-action='quick-checkin']").addEventListener("click", () => {
     openCoach();
-    coachSend("let's do a quick check-in", { silent: true });
+    coachSend("let's do a quick check-in", {
+      silent: true,
+      source: "shortcut"
+    });
   });
 
   $$(".card.preview").forEach((card) =>
@@ -680,7 +683,10 @@ function renderHelp() {
         "didnt-help":
           "What I tried didn't help. Help me look at the data without judging it, and decide whether to change category, shrink the step, or stay with it longer."
       };
-      coachSend(prompts[k] || "Help me get unstuck.", { silent: false });
+      coachSend(prompts[k] || "Help me get unstuck.", {
+        silent: false,
+        source: "shortcut"
+      });
     })
   );
 
@@ -887,14 +893,17 @@ function truncate(s, n) {
   return s.length > n ? s.slice(0, n - 1) + "…" : s;
 }
 
-async function coachSend(rawText, { silent = false } = {}) {
+async function coachSend(rawText, { silent = false, source = "user" } = {}) {
   const text = (rawText || "").trim();
   if (!text) return;
-  pushMemory({ role: "user", text });
+  const isShortcut = source === "shortcut";
+  if (isShortcut && STATE.coach.mode === "interview") {
+    STATE.coach.mode = "free";
+  }
+  pushMemory({ role: "user", text }, { remember: !isShortcut });
 
-  await KNOWLEDGE_PROMISE;
-
-  // Interview takes precedence over normal chat.
+  // Interview answers do not need the knowledge index. Handle them before
+  // awaiting I/O so later UI actions cannot change how this message is parsed.
   if (STATE.coach.mode === "interview") {
     inferProfileFromMessage(text);
     handleInterviewAnswer(text);
@@ -903,6 +912,8 @@ async function coachSend(rawText, { silent = false } = {}) {
     else drawCoach();
     return;
   }
+
+  await KNOWLEDGE_PROMISE;
 
   // Allow user to start / resume / abort the interview from free chat.
   const lower = text.toLowerCase();
@@ -942,7 +953,7 @@ async function coachSend(rawText, { silent = false } = {}) {
     return;
   }
 
-  inferProfileFromMessage(text);
+  if (!isShortcut) inferProfileFromMessage(text);
 
   const intent = classify(text);
   const action = await executeIntent(intent, text);
@@ -955,7 +966,7 @@ async function coachSend(rawText, { silent = false } = {}) {
   else drawCoach();
 }
 
-function pushMemory(entry) {
+function pushMemory(entry, { remember = true } = {}) {
   const topics = extractTopics(entry.text);
   STATE.coach.memory.push({
     ts: new Date().toISOString(),
@@ -963,7 +974,7 @@ function pushMemory(entry) {
     text: entry.text,
     topics
   });
-  if (entry.role === "user") {
+  if (entry.role === "user" && remember) {
     topics.forEach(
       (t) =>
         (STATE.coach.topicCounts[t] = (STATE.coach.topicCounts[t] || 0) + 1)
