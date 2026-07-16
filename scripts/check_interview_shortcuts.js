@@ -116,7 +116,7 @@ async function assertPendingFreeMessageKeepsSubmissionMode() {
       releaseKnowledge = () => resolve({ modalities: {}, docs: [], chunks: [] });
     });
 
-    const pendingSend = coachSend("add a goal to call mom");
+    const pendingSend = coachSend("set a goal to call mom");
     startInterview();
     releaseKnowledge();
     await pendingSend;
