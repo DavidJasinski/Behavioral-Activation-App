@@ -7,6 +7,29 @@ const vm = require("node:vm");
 
 const APP_SOURCE = fs.readFileSync(path.join(__dirname, "../app.js"), "utf8");
 
+function assertShortcutCallSitesAreMarked() {
+  const quickStart = APP_SOURCE.indexOf(`$("[data-action='quick-checkin']")`);
+  const quickEnd = APP_SOURCE.indexOf(`$$(".card.preview")`, quickStart);
+  const helpStart = APP_SOURCE.indexOf(`$$("[data-help]")`);
+  const helpEnd = APP_SOURCE.indexOf("const patterns = derivePatterns()", helpStart);
+
+  assert.notEqual(quickStart, -1, "Quick check-in handler must exist");
+  assert.notEqual(quickEnd, -1, "Quick check-in handler boundary must exist");
+  assert.match(
+    APP_SOURCE.slice(quickStart, quickEnd),
+    /source:\s*"shortcut"/,
+    "Quick check-in must be sent as a shortcut"
+  );
+
+  assert.notEqual(helpStart, -1, "Help shortcut handlers must exist");
+  assert.notEqual(helpEnd, -1, "Help shortcut handler boundary must exist");
+  assert.match(
+    APP_SOURCE.slice(helpStart, helpEnd),
+    /source:\s*"shortcut"/,
+    "Help prompts must be sent as shortcuts"
+  );
+}
+
 function runScenario(body) {
   const storage = new Map();
   const context = vm.createContext({
@@ -138,6 +161,7 @@ async function assertPendingFreeMessageKeepsSubmissionMode() {
 }
 
 async function main() {
+  assertShortcutCallSitesAreMarked();
   const checks = [
     assertQuickCheckinPreservesInterviewQuestion,
     assertHelpShortcutDoesNotBecomeProfileData,
