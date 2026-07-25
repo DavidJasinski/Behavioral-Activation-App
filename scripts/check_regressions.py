@@ -4,6 +4,10 @@ Run from the repository root:
   python3 scripts/check_regressions.py
 """
 
+from __future__ import annotations
+
+import subprocess
+import sys
 from pathlib import Path
 
 
@@ -30,9 +34,28 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_calendar_day_keys_are_local(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    assert "function coerceLocalDate(" in text, f"{path} missing coerceLocalDate helper"
+    assert "function isDateOnlyString(" in text, f"{path} missing isDateOnlyString helper"
+    assert "coerceLocalDate(calendarSelected)" in text, (
+        f"{path} day agenda does not coerce calendarSelected locally"
+    )
+    assert "activationsOnDay(new Date(calendarSelected))" not in text, (
+        f"{path} still constructs UTC-shifted Date from calendarSelected"
+    )
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_calendar_day_keys_are_local(ROOT / "app.js")
+    assert_calendar_day_keys_are_local(ROOT / "dist" / "BreakFree.html")
+    subprocess.run(
+        ["node", str(ROOT / "scripts" / "check_calendar_day_keys.js")],
+        check=True,
+        cwd=ROOT,
+    )
     print("OK regression checks passed")
 
 
