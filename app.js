@@ -125,10 +125,30 @@ function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+/** True for bare calendar dates like "2026-07-25" (no time / timezone). */
+function isDateOnlyString(value) {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+/**
+ * Coerce a Date, ISO datetime, or YYYY-MM-DD into a local Date.
+ * Date-only strings are midnight *local* (not UTC) to avoid off-by-one
+ * day shifts in western timezones when scheduling/displaying.
+ */
+function coerceLocalDate(value = new Date()) {
+  if (value instanceof Date) return value;
+  if (isDateOnlyString(value)) {
+    const [y, m, d] = value.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
+  return new Date(value);
+}
+
 function todayKey(d = new Date()) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
+  const dt = coerceLocalDate(d);
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, "0");
+  const day = String(dt.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
 
@@ -137,7 +157,7 @@ function startOfMonth(d) {
 }
 
 function fmtDate(d, opts = {}) {
-  return new Date(d).toLocaleString(undefined, {
+  return coerceLocalDate(d).toLocaleString(undefined, {
     month: "short",
     day: "numeric",
     ...opts
@@ -281,14 +301,14 @@ function greetingsByHour() {
 function activationsOnDay(d) {
   const key = todayKey(d);
   return STATE.activations.filter(
-    (a) => a.scheduledFor && todayKey(new Date(a.scheduledFor)) === key
+    (a) => a.scheduledFor && todayKey(a.scheduledFor) === key
   );
 }
 
 function goalsOnDay(d) {
   const key = todayKey(d);
   return STATE.goals.filter(
-    (g) => g.targetDate && todayKey(new Date(g.targetDate)) === key
+    (g) => g.targetDate && todayKey(g.targetDate) === key
   );
 }
 
@@ -469,10 +489,9 @@ function drawCalendar() {
 
   const list = $("#cal-day-list");
   list.innerHTML = "";
-  const items = activationsOnDay(new Date(calendarSelected));
-  $("#cal-day-title").textContent = `${new Date(
-    calendarSelected
-  ).toLocaleString(undefined, {
+  const selectedDay = coerceLocalDate(calendarSelected);
+  const items = activationsOnDay(selectedDay);
+  $("#cal-day-title").textContent = `${selectedDay.toLocaleString(undefined, {
     weekday: "long",
     month: "short",
     day: "numeric"
