@@ -4,6 +4,9 @@ Run from the repository root:
   python3 scripts/check_regressions.py
 """
 
+from __future__ import annotations
+
+import subprocess
 from pathlib import Path
 
 
@@ -30,9 +33,32 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_coach_home_refresh_is_wired(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    assert "function refreshAfterCoachChange(" in text, (
+        f"{path} missing refreshAfterCoachChange helper"
+    )
+    assert "refreshAfterCoachChange();" in text, (
+        f"{path} does not call refreshAfterCoachChange after coach updates"
+    )
+    assert 'if (route === "home") render();\n    else drawCoach();' not in text, (
+        f"{path} still skips drawCoach on the Home route"
+    )
+    assert "enough for now" in text, f"{path} missing pause chip phrasing"
+    assert "ask me something else" in text, f"{path} missing skip chip phrasing"
+
+
 def main() -> None:
-    assert_help_fallback_is_guarded(ROOT / "app.js")
-    assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    paths = (ROOT / "app.js", ROOT / "dist" / "BreakFree.html")
+    for path in paths:
+        assert_help_fallback_is_guarded(path)
+        assert_coach_home_refresh_is_wired(path)
+    result = subprocess.run(
+        ["node", str(ROOT / "scripts" / "check_coach_home_refresh.js")],
+        cwd=ROOT,
+        check=False,
+    )
+    assert result.returncode == 0, "check_coach_home_refresh.js failed"
     print("OK regression checks passed")
 
 
