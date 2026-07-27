@@ -15,6 +15,9 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     loading_marker = 'Knowledge index loading…'
     unavailable_marker = 'Knowledge index unavailable.'
     guarded_rerender = (
+        'if (!KNOWLEDGE) KNOWLEDGE_PROMISE.then(() => route === "help" && render());'
+    )
+    stacked_rerender = (
         'if (!KNOWLEDGE) KNOWLEDGE_PROMISE.then(() => route === "help" && renderHelp());'
     )
     unguarded_rerender = (
@@ -24,7 +27,12 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
 
     assert loading_marker in text, f"{path} no longer shows the loading state"
     assert unavailable_marker in text, f"{path} no longer shows the unavailable state"
-    assert guarded_rerender in text, f"{path} does not guard the Help-page rerender"
+    assert guarded_rerender in text, (
+        f"{path} does not refresh Help via render() after knowledge loads"
+    )
+    assert stacked_rerender not in text, (
+        f"{path} re-binds Help click handlers on existing DOM via renderHelp()"
+    )
     assert unguarded_rerender not in text, (
         f"{path} can re-enter renderHelp forever after knowledge loading fails"
     )

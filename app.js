@@ -710,7 +710,9 @@ function renderHelp() {
       sources.innerHTML = `<li class="muted">${
         KNOWLEDGE ? "Knowledge index unavailable." : "Knowledge index loading…"
       }</li>`;
-      if (!KNOWLEDGE) KNOWLEDGE_PROMISE.then(() => route === "help" && renderHelp());
+      // Use render() so Help DOM is replaced; calling renderHelp() here would
+      // stack another click listener on each data-help button.
+      if (!KNOWLEDGE) KNOWLEDGE_PROMISE.then(() => route === "help" && render());
     } else {
       docs.forEach((d) => {
         const li = document.createElement("li");
@@ -1289,8 +1291,16 @@ const INTENTS = [
   },
   {
     name: "add_activation",
+    // Require a verb-like "plan <activity>" shape so noun uses such as
+    // "today's plan into the smallest possible step" (Help low-energy) do
+    // not silently create activations.
     test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
+      /\b(add|schedule|create)\b.{0,40}\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        s
+      ) ||
+      /\bplan\s+(?:(?:an?|my|to)\s+)?(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        s
+      ) ||
       /^let'?s plan/i.test(s)
   },
   { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
@@ -1301,9 +1311,11 @@ const INTENTS = [
       /\b(suggest|recommend|what should i|give me|something to do|help me pick|first small step|easiest thing)\b/i.test(s)
   },
   { name: "checkin", test: (s) => /(check[\s-]?in|how am i|mood|feeling)/i.test(s) },
-  { name: "tone", test: (s) => /\b(tone|warmer|gentler|shorter|longer|less wordy|more direct|push me)\b/i.test(s) },
   { name: "stuck", test: (s) => /\b(stuck|avoid|avoiding|frozen|paralyz|can'?t start|can'?t do)\b/i.test(s) },
+  // Before tone: Help "didn't help" copy contains "longer", which would
+  // otherwise mutate communication preferences.
   { name: "help_didnt_help", test: (s) => /\b(didn'?t help|didn'?t work|made it worse)\b/i.test(s) },
+  { name: "tone", test: (s) => /\b(tone|warmer|gentler|shorter|longer|less wordy|more direct|push me)\b/i.test(s) },
   {
     name: "explain_modality",
     test: (s) =>
@@ -1829,7 +1841,7 @@ function init() {
   wire();
   navigate("home");
   KNOWLEDGE_PROMISE.then(() => {
-    if (route === "help") renderHelp();
+    if (route === "help") render();
     drawCoach();
   });
 }
