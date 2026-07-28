@@ -30,9 +30,27 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_coach_reset_clears_derived_state(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    assert "function resetCoachConversation(" in text, (
+        f"{path} is missing resetCoachConversation"
+    )
+    assert "STATE.coach.facts = []" in text, (
+        f"{path} coach reset does not clear facts"
+    )
+    assert "STATE.coach.topicCounts = {}" in text, (
+        f"{path} coach reset does not clear topicCounts"
+    )
+    assert 'STATE.coach.mode = "free"' in text, (
+        f"{path} coach reset does not exit interview mode"
+    )
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_coach_reset_clears_derived_state(ROOT / "app.js")
+    assert_coach_reset_clears_derived_state(ROOT / "dist" / "BreakFree.html")
     print("OK regression checks passed")
 
 
