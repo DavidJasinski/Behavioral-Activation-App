@@ -814,6 +814,22 @@ function closeCoach() {
   $("#coach").hidden = true;
 }
 
+/**
+ * Forget recent conversation text while keeping goals, plans, and interview
+ * profile fields. Clears derived recall indexes and pauses an active interview
+ * so the next message is not treated as an interview answer.
+ */
+function resetCoachConversation() {
+  STATE.coach.memory = STATE.coach.memory.slice(-1);
+  STATE.coach.facts = [];
+  STATE.coach.topicCounts = {};
+  if (STATE.coach.mode === "interview") {
+    STATE.coach.mode = "free";
+    if (STATE.profile.interviewProgress)
+      STATE.profile.interviewProgress.currentTopic = null;
+  }
+}
+
 function drawCoach() {
   const log = $("#coach-log");
   log.innerHTML = "";
@@ -1802,7 +1818,7 @@ function wire() {
   $("#coach-reset").addEventListener("click", () => {
     if (!confirm("Forget the recent conversation only? (Goals, plans, and your interview profile stay.)"))
       return;
-    STATE.coach.memory = STATE.coach.memory.slice(-1);
+    resetCoachConversation();
     saveState();
     drawCoach();
   });

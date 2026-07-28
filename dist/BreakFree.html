@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-07-28T11:03:41Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1899,6 +1899,22 @@ function closeCoach() {
   $("#coach").hidden = true;
 }
 
+/**
+ * Forget recent conversation text while keeping goals, plans, and interview
+ * profile fields. Clears derived recall indexes and pauses an active interview
+ * so the next message is not treated as an interview answer.
+ */
+function resetCoachConversation() {
+  STATE.coach.memory = STATE.coach.memory.slice(-1);
+  STATE.coach.facts = [];
+  STATE.coach.topicCounts = {};
+  if (STATE.coach.mode === "interview") {
+    STATE.coach.mode = "free";
+    if (STATE.profile.interviewProgress)
+      STATE.profile.interviewProgress.currentTopic = null;
+  }
+}
+
 function drawCoach() {
   const log = $("#coach-log");
   log.innerHTML = "";
@@ -2887,7 +2903,7 @@ function wire() {
   $("#coach-reset").addEventListener("click", () => {
     if (!confirm("Forget the recent conversation only? (Goals, plans, and your interview profile stay.)"))
       return;
-    STATE.coach.memory = STATE.coach.memory.slice(-1);
+    resetCoachConversation();
     saveState();
     drawCoach();
   });
