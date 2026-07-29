@@ -5,6 +5,8 @@ Run from the repository root:
 """
 
 from pathlib import Path
+import subprocess
+import sys
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -30,9 +32,30 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_easiest_planned_is_read_only(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    assert 'name: "easiest_planned"' in text, f"{path} missing easiest_planned intent"
+    assert 'kind: "easiest_planned"' in text, f"{path} missing easiest_planned action"
+    # suggest must not treat "easiest thing" as a create-activation request
+    assert "first small step|easiest thing" not in text, (
+        f"{path} still lets suggest intent match 'easiest thing'"
+    )
+    assert "what's the easiest thing I have planned?" in text, (
+        f"{path} missing Coach chip that triggers the bug when misclassified"
+    )
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_easiest_planned_is_read_only(ROOT / "app.js")
+    subprocess.check_call(
+        ["node", str(ROOT / "scripts" / "check_easiest_planned.js")]
+    )
+    # Dist check runs after rebuild; allow source-only first pass during edit.
+    dist = ROOT / "dist" / "BreakFree.html"
+    if 'name: "easiest_planned"' in dist.read_text(encoding="utf-8"):
+        assert_easiest_planned_is_read_only(dist)
     print("OK regression checks passed")
 
 

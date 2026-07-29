@@ -1296,9 +1296,17 @@ const INTENTS = [
   { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
   { name: "summarize", test: (s) => /\b(summarize|summary|recap|how (have|did) i)\b/i.test(s) },
   {
+    // Review an existing incomplete plan item — must NOT create a new activation.
+    // Matches the Coach chip "what's the easiest thing I have planned?".
+    name: "easiest_planned",
+    test: (s) =>
+      /\beasiest thing\b.*\bplanned\b/i.test(s) ||
+      /\bwhat'?s the easiest\b.*\b(planned|plan|have)\b/i.test(s)
+  },
+  {
     name: "suggest",
     test: (s) =>
-      /\b(suggest|recommend|what should i|give me|something to do|help me pick|first small step|easiest thing)\b/i.test(s)
+      /\b(suggest|recommend|what should i|give me|something to do|help me pick|first small step)\b/i.test(s)
   },
   { name: "checkin", test: (s) => /(check[\s-]?in|how am i|mood|feeling)/i.test(s) },
   { name: "tone", test: (s) => /\b(tone|warmer|gentler|shorter|longer|less wordy|more direct|push me)\b/i.test(s) },
@@ -1393,6 +1401,16 @@ async function executeIntent(intent, text) {
   }
 
   if (intent === "summarize") return { kind: "summary", data: weekSummary() };
+  if (intent === "easiest_planned") {
+    const open = STATE.activations.filter((a) => !a.completed);
+    if (!open.length) return { kind: "easiest_planned", a: null };
+    open.sort(
+      (a, b) =>
+        (Number(a.energy) || 99) - (Number(b.energy) || 99) ||
+        (Number(a.duration) || 999) - (Number(b.duration) || 999)
+    );
+    return { kind: "easiest_planned", a: open[0] };
+  }
   if (intent === "suggest") return { kind: "suggestion", a: suggestActivation(text) };
   if (intent === "tone") {
     if (/short|less wordy|direct|push/i.test(text)) {
@@ -1626,6 +1644,18 @@ function composeReply(intent, action, text, retrieved) {
         ? " Worth noting — no exposures yet this week. Want me to scaffold a small one?"
         : "";
     return voice(nameOpener + main + personal);
+  }
+
+  if (action.kind === "easiest_planned") {
+    if (!action.a) {
+      return voice(
+        `${nameOpener}you don't have anything open on the plan yet. Want me to suggest a tiny first step?`
+      );
+    }
+    const tag = action.a.modality === "ivex" ? "exposure" : "activation";
+    return voice(
+      `${nameOpener}easiest open ${tag} looks like "${action.a.title}" (${action.a.duration} min, energy ${action.a.energy}/5). Want to mark it done or shrink it further?`
+    );
   }
 
   if (action.kind === "suggestion") {
