@@ -49,13 +49,10 @@ def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
     assert_easiest_planned_is_read_only(ROOT / "app.js")
+    assert_easiest_planned_is_read_only(ROOT / "dist" / "BreakFree.html")
     subprocess.check_call(
         ["node", str(ROOT / "scripts" / "check_easiest_planned.js")]
     )
-    # Dist check runs after rebuild; allow source-only first pass during edit.
-    dist = ROOT / "dist" / "BreakFree.html"
-    if 'name: "easiest_planned"' in dist.read_text(encoding="utf-8"):
-        assert_easiest_planned_is_read_only(dist)
     print("OK regression checks passed")
 
 
