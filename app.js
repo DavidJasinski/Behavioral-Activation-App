@@ -1297,8 +1297,21 @@ const INTENTS = [
   { name: "summarize", test: (s) => /\b(summarize|summary|recap|how (have|did) i)\b/i.test(s) },
   {
     name: "suggest",
+    // Keep this request-shaped. Bare "give me" / "what should i" / reflective
+    // "first small step" used to match and composeReply always persists a new
+    // activation — so "give me a minute" silently polluted the user's plan.
     test: (s) =>
-      /\b(suggest|recommend|what should i|give me|something to do|help me pick|first small step|easiest thing)\b/i.test(s)
+      /\b(suggest|recommend)\b.{0,48}\b(activation|activity|step|exposure|idea|option|something)\b/i.test(
+        s
+      ) ||
+      /\bwhat should i\s+(do|try|plan|start|work on)\b/i.test(s) ||
+      /\bgive me\s+(?:an?\s+|a\s+)?(suggestion|idea|option|activation|step|task|something)\b/i.test(
+        s
+      ) ||
+      /\bhelp me pick\b/i.test(s) ||
+      /\bsomething to do\b(?!\s+with\b)/i.test(s) ||
+      /\b(want|need|try|for|suggest|give me|about).{0,40}\bfirst small step\b/i.test(s) ||
+      /\beasiest thing\b/i.test(s)
   },
   { name: "checkin", test: (s) => /(check[\s-]?in|how am i|mood|feeling)/i.test(s) },
   { name: "tone", test: (s) => /\b(tone|warmer|gentler|shorter|longer|less wordy|more direct|push me)\b/i.test(s) },
