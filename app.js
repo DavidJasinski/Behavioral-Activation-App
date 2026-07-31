@@ -1283,9 +1283,14 @@ function inferProfileFromMessage(text) {
 const INTENTS = [
   {
     name: "add_exposure",
+    // SUDS is a rating parameter, not a create signal on its own. A bare
+    // /\bsuds\b/ match made questions like "what does suds mean?" silently
+    // persist a new exposure via executeIntent + composeReply.
     test: (s) =>
-      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(s) ||
-      /\bsuds\b/i.test(s)
+      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(
+        s
+      ) ||
+      /\b(add|schedule|plan|create|build)\b.*\bsuds\b/i.test(s)
   },
   {
     name: "add_activation",

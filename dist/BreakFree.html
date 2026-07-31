@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-07-31T11:02:13Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2368,9 +2368,14 @@ function inferProfileFromMessage(text) {
 const INTENTS = [
   {
     name: "add_exposure",
+    // SUDS is a rating parameter, not a create signal on its own. A bare
+    // /\bsuds\b/ match made questions like "what does suds mean?" silently
+    // persist a new exposure via executeIntent + composeReply.
     test: (s) =>
-      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(s) ||
-      /\bsuds\b/i.test(s)
+      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(
+        s
+      ) ||
+      /\b(add|schedule|plan|create|build)\b.*\bsuds\b/i.test(s)
   },
   {
     name: "add_activation",
