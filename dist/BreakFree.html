@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-08-01T11:04:39Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2374,11 +2374,48 @@ const INTENTS = [
   },
   {
     name: "add_activation",
+    // Do not steal clear goal-create requests ("add a goal to walk more").
     test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
-      /^let'?s plan/i.test(s)
+      !/\bgoals?\b/i.test(s) &&
+      (/\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        s
+      ) ||
+        /^let'?s plan/i.test(s))
   },
-  { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
+  {
+    name: "add_goal",
+    // Keep this request-shaped. Narrative "I set a goal…" / "should set a goal"
+    // used to match and executeIntent always persists — so recounting therapy
+    // goals silently polluted STATE.goals.
+    test: (s) => {
+      const t = String(s || "").trim();
+      // First-person completed narrative is not a create request.
+      // Allow "can/could/may I set a goal…".
+      if (
+        /\b(i|we)\s+(already\s+)?(set|added|created)\b/i.test(t) &&
+        !/\b(can|could|may)\s+i\b/i.test(t)
+      ) {
+        return false;
+      }
+      // Recounting advice is not a create request.
+      if (
+        /\b(said|told|mentioned|therapist|therapy)\b/i.test(t) &&
+        /\b(set|add|create)\b.{0,32}\bgoal\b/i.test(t)
+      ) {
+        return false;
+      }
+      return (
+        /\b(add|create|set)\s+(me\s+)?(an?\s+)?goal(?:\s*[:\-–]|\s+(?:to|of|about|for|around)\b|\s*$)/i.test(
+          t
+        ) ||
+        /\b(please|can you|could you|help me|let'?s)\s+(add|create|set)\s+(me\s+)?(an?\s+)?goal\b/i.test(
+          t
+        ) ||
+        /\bi (?:want|need) to\s+(add|create|set)\s+(an?\s+)?goal\b/i.test(t) ||
+        /\bi'?d like to\s+(add|create|set)\s+(an?\s+)?goal\b/i.test(t)
+      );
+    }
+  },
   { name: "summarize", test: (s) => /\b(summarize|summary|recap|how (have|did) i)\b/i.test(s) },
   {
     name: "suggest",
