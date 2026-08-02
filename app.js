@@ -1280,20 +1280,62 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// Create intents always persist via executeIntent/composeReply. Reject clear
+// refusals ("don't create a goal") so casual chat cannot invent plan items.
+function refusesCreateRequest(s) {
+  const t = String(s || "");
+  if (
+    /\b(do\s*not|don'?t|dont|never)\b.{0,48}\b(add|create|set|schedule|plan|build)\b/i.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  if (
+    /\b(not|never)\s+(going\s+to\s+|gonna\s+)?(add|create|set|schedule|plan|build)\b/i.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  if (/\bstop\s+(add|creat|set|schedul|build|plann)\w*\b/i.test(t)) return true;
+  return false;
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
     test: (s) =>
-      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(s) ||
-      /\bsuds\b/i.test(s)
+      !refusesCreateRequest(s) &&
+      (/\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(
+        s
+      ) ||
+        /\bsuds\b/i.test(s))
   },
   {
     name: "add_activation",
-    test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
-      /^let'?s plan/i.test(s)
+    // First-person "I plan to cook…" is narrative, not a Coach create request.
+    // Bare "let's plan" without an activity word used to invent "small kind step".
+    test: (s) => {
+      if (refusesCreateRequest(s)) return false;
+      if (/\bgoals?\b/i.test(s)) return false;
+      if (/(?:^|[.!?]\s*)(i|we)\s+plan\s+to\b/i.test(s)) return false;
+      if (/\bi should plan\b/i.test(s)) return false;
+      return (
+        /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+          s
+        ) ||
+        /^let'?s plan\b.+\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+          s
+        )
+      );
+    }
   },
-  { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
+  {
+    name: "add_goal",
+    test: (s) =>
+      !refusesCreateRequest(s) && /\b(add|create|set)\b.*\bgoal\b/i.test(s)
+  },
   { name: "summarize", test: (s) => /\b(summarize|summary|recap|how (have|did) i)\b/i.test(s) },
   {
     name: "suggest",
