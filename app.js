@@ -1280,18 +1280,54 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// Create intents always persist via executeIntent/composeReply. Recounting
+// therapist/doctor advice ("they told me to schedule a walk") is not a request
+// to invent a plan item in this app.
+function isAdviceRecount(s) {
+  const t = String(s || "");
+  if (
+    /\b(therapist|therapy|doctor|clinician|counselor|counsellor)\b.{0,48}\b(said|told|mentioned|advised|wants?|wanted|suggested)\b/i.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  if (/\b(said|told|advised|suggested)\s+me\s+to\b/i.test(t)) return true;
+  if (/\bi was (told|advised|asked)\s+to\b/i.test(t)) return true;
+  if (/\bthey (told|want|wanted|asked)\s+me\s+to\b/i.test(t)) return true;
+  return false;
+}
+
+function matchesExposureCreate(s) {
+  const t = String(s || "");
+  if (
+    /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo)\b/i.test(t)
+  ) {
+    return true;
+  }
+  // "hierarchy" alone matches Maslow / needs talk; require exposure framing.
+  if (
+    /\b(add|schedule|plan|create|build)\b.*\bhierarchy\b/i.test(t) &&
+    /\b(exposure|fears?|avoid\w*|anxiety|suds|phobia|graded|in[\s-]?vivo)\b/i.test(t)
+  ) {
+    return true;
+  }
+  return /\bsuds\b/i.test(t);
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
-    test: (s) =>
-      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(s) ||
-      /\bsuds\b/i.test(s)
+    test: (s) => !isAdviceRecount(s) && matchesExposureCreate(s)
   },
   {
     name: "add_activation",
     test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
-      /^let'?s plan/i.test(s)
+      !isAdviceRecount(s) &&
+      (/\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        s
+      ) ||
+        /^let'?s plan/i.test(s))
   },
   { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
   { name: "summarize", test: (s) => /\b(summarize|summary|recap|how (have|did) i)\b/i.test(s) },
