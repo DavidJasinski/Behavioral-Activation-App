@@ -4,6 +4,9 @@ Run from the repository root:
   python3 scripts/check_regressions.py
 """
 
+from __future__ import annotations
+
+import subprocess
 from pathlib import Path
 
 
@@ -30,9 +33,16 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_narrative_schedule_creates_script() -> None:
+    script = ROOT / "scripts" / "check_narrative_schedule_creates.js"
+    assert script.is_file(), f"missing {script}"
+    subprocess.run(["node", str(script)], check=True, cwd=ROOT)
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_narrative_schedule_creates_script()
     print("OK regression checks passed")
 
 
