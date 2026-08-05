@@ -1280,18 +1280,53 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// Create intents always persist via executeIntent/composeReply. First-person
+// narrative / self-talk about scheduling ("I already schedule a walk") is not
+// a Coach create request — neither are past-tense questions or "remind me".
+function isNarrativeCreate(s) {
+  const t = String(s || "");
+  if (
+    /\b(i|we)\s+(already|always|usually|often|sometimes|used\s+to)\s+(add|create|set|schedule|plan|build)\b/i.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  if (/\b(i|we)\s+should\s+(add|create|set|schedule|plan|build)\b/i.test(t)) {
+    return true;
+  }
+  // "I need/have to schedule…" without addressing the Coach.
+  if (
+    /\b(i|we)\s+(need\s+to|have\s+to|gotta|got\s+to)\s+(add|create|set|schedule|plan|build)\b/i.test(
+      t
+    ) &&
+    !/\b(you|coach|please|help)\b/i.test(t)
+  ) {
+    return true;
+  }
+  if (/\b(did you|have you|did i|have i)\b.{0,40}\b(add|schedule|plan|create|build)\b/i.test(t)) {
+    return true;
+  }
+  if (/\bremind me\b/i.test(t)) return true;
+  return false;
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
     test: (s) =>
-      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(s) ||
-      /\bsuds\b/i.test(s)
+      !isNarrativeCreate(s) &&
+      (/\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(s) ||
+        /\bsuds\b/i.test(s))
   },
   {
     name: "add_activation",
     test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
-      /^let'?s plan/i.test(s)
+      !isNarrativeCreate(s) &&
+      (/\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        s
+      ) ||
+        /^let'?s plan/i.test(s))
   },
   { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
   { name: "summarize", test: (s) => /\b(summarize|summary|recap|how (have|did) i)\b/i.test(s) },
