@@ -1280,6 +1280,35 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// Tone intent always mutates preferences + communicationStyle. Bare words like
+// "longer" / "warmer" / "push me" in ordinary chat are not preference requests.
+function isToneRequest(s) {
+  const t = String(s || "");
+  if (/\b(tone|less wordy|more direct)\b/i.test(t)) return true;
+  if (/^(warmer|gentler|shorter|longer|more direct|push me)\b/i.test(t.trim())) return true;
+  if (
+    /\b(be|speak|talk|sound|reply|replies|respond|responses?|keep (it|replies)|make (it|replies|them|your replies)|use a?|go)\b.{0,24}\b(warmer|gentler|shorter|longer|direct|concise|detailed)\b/i.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  if (
+    /\b(warmer|gentler|shorter|longer|more direct)\b.{0,24}\b(tone|replies|responses?|please)\b/i.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  if (
+    /\bpush me\b/i.test(t) &&
+    /\b(please|can you|could you|i want|i'?d like|prefer|will you)\b/i.test(t)
+  ) {
+    return true;
+  }
+  return false;
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
@@ -1301,9 +1330,10 @@ const INTENTS = [
       /\b(suggest|recommend|what should i|give me|something to do|help me pick|first small step|easiest thing)\b/i.test(s)
   },
   { name: "checkin", test: (s) => /(check[\s-]?in|how am i|mood|feeling)/i.test(s) },
-  { name: "tone", test: (s) => /\b(tone|warmer|gentler|shorter|longer|less wordy|more direct|push me)\b/i.test(s) },
-  { name: "stuck", test: (s) => /\b(stuck|avoid|avoiding|frozen|paralyz|can'?t start|can'?t do)\b/i.test(s) },
+  // Prefer help_didnt_help before tone: Help "didn't help" copy contains "longer".
   { name: "help_didnt_help", test: (s) => /\b(didn'?t help|didn'?t work|made it worse)\b/i.test(s) },
+  { name: "tone", test: (s) => isToneRequest(s) },
+  { name: "stuck", test: (s) => /\b(stuck|avoid|avoiding|frozen|paralyz|can'?t start|can'?t do)\b/i.test(s) },
   {
     name: "explain_modality",
     test: (s) =>
