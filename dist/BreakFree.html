@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-08-08T11:05:00Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2365,20 +2365,55 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// Create intents always persist via executeIntent/composeReply. Educational or
+// self-advice questions ("how do I create…", "should I schedule…") are not
+// Coach write commands — they must not invent plan items.
+function isCreateQuestion(s) {
+  const t = String(s || "");
+  if (
+    /\b(how (do|can|should|would) (i|you|one|we)|how does one|how to)\b/i.test(t)
+  ) {
+    return true;
+  }
+  if (/\bwhat('?s| is) the (best )?way to\b/i.test(t)) return true;
+  if (/\bwhat does it mean to\b/i.test(t)) return true;
+  // Self-directed advice questions without addressing the Coach as actor.
+  if (
+    /\b(should|shouldn'?t) (i|we)\b/i.test(t) &&
+    !/\b(you|coach|please)\b/i.test(t)
+  ) {
+    return true;
+  }
+  if (/\b(is it better|would it help|does it help|do i need) to\b/i.test(t)) {
+    return true;
+  }
+  return false;
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
     test: (s) =>
-      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(s) ||
-      /\bsuds\b/i.test(s)
+      !isCreateQuestion(s) &&
+      (/\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(
+        s
+      ) ||
+        /\bsuds\b/i.test(s))
   },
   {
     name: "add_activation",
     test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
-      /^let'?s plan/i.test(s)
+      !isCreateQuestion(s) &&
+      (/\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        s
+      ) ||
+        /^let'?s plan/i.test(s))
   },
-  { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
+  {
+    name: "add_goal",
+    test: (s) =>
+      !isCreateQuestion(s) && /\b(add|create|set)\b.*\bgoal\b/i.test(s)
+  },
   { name: "summarize", test: (s) => /\b(summarize|summary|recap|how (have|did) i)\b/i.test(s) },
   {
     name: "suggest",
