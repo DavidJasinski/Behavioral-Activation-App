@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-08-09T11:02:48Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2365,20 +2365,61 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// Create intents always persist via executeIntent/composeReply. Noun uses of
+// "plan" and first-person future intentions are not Coach write commands —
+// they must not invent plan items.
+function isNonRequestCreate(s) {
+  const t = String(s || "");
+
+  // Noun "plan": "my plan is to walk", "the plan includes a walk",
+  // "I have a plan to cook", "talk about my plan, not walk yet".
+  if (/\b(my|the|our|a|this|that|your)\s+plan\b/i.test(t)) return true;
+  if (/\bplan\s+(is|was|includes|involves|for)\b/i.test(t)) return true;
+
+  // First-person future intention without addressing the Coach as actor.
+  // "I will add a walk later", "I'm going to schedule a walk",
+  // "I'll create an exposure for that".
+  if (
+    /\b(i|we)('ll|\s+will|\s+am\s+going\s+to|\s+are\s+going\s+to|'m\s+going\s+to)\s+(add|create|set|schedule|plan|build)\b/i.test(
+      t
+    ) &&
+    !/\b(you|coach|please|help)\b/i.test(t)
+  ) {
+    return true;
+  }
+
+  // Conditional / habitual self-talk: "when I plan a walk I feel pressure".
+  if (/\b(when|if|whenever)\s+(i|we)\s+(add|create|set|schedule|plan|build)\b/i.test(t)) {
+    return true;
+  }
+
+  return false;
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
     test: (s) =>
-      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(s) ||
-      /\bsuds\b/i.test(s)
+      !isNonRequestCreate(s) &&
+      (/\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(
+        s
+      ) ||
+        /\bsuds\b/i.test(s))
   },
   {
     name: "add_activation",
     test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
-      /^let'?s plan/i.test(s)
+      !isNonRequestCreate(s) &&
+      (/\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        s
+      ) ||
+        /^let'?s plan/i.test(s))
   },
-  { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
+  {
+    name: "add_goal",
+    test: (s) =>
+      !isNonRequestCreate(s) && /\b(add|create|set)\b.*\bgoal\b/i.test(s)
+  },
   { name: "summarize", test: (s) => /\b(summarize|summary|recap|how (have|did) i)\b/i.test(s) },
   {
     name: "suggest",
