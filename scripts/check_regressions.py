@@ -30,9 +30,28 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_noun_plan_future_guard_script() -> None:
+    import subprocess
+
+    script = ROOT / "scripts" / "check_noun_plan_future_creates.js"
+    assert script.is_file(), f"missing {script}"
+    result = subprocess.run(
+        ["node", str(script)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise AssertionError(
+            "noun-plan / future-intention create checks failed:\n"
+            f"{result.stdout}\n{result.stderr}"
+        )
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_noun_plan_future_guard_script()
     print("OK regression checks passed")
 
 
