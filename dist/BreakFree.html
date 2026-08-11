@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-08-11T11:02:57Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2365,20 +2365,132 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// Create intents always persist via executeIntent/composeReply. Hedged,
+// inability, attempt, past-emphatic, and first-person desire talk is not a
+// Coach write command — e.g. "I can't schedule a walk" must not invent one.
+function isTentativeCreate(s) {
+  const t = String(s || "");
+  const createVerb = "(add|create|set|schedule|plan|build)";
+
+  // Modal hedges: "I might schedule…", "maybe schedule…", "I could create…"
+  if (
+    new RegExp(`\\b(i|we)\\s+(might|could|may)\\s+${createVerb}\\b`, "i").test(t) ||
+    new RegExp(`\\bmaybe\\s+(i\\s+|we\\s+)?${createVerb}\\b`, "i").test(t)
+  ) {
+    return true;
+  }
+
+  // Abandoned / prior intention: "I was going to schedule…"
+  if (
+    new RegExp(
+      `\\b(i|we)\\s+(was|were)\\s+(going\\s+to|about\\s+to)\\s+${createVerb}\\b`,
+      "i"
+    ).test(t)
+  ) {
+    return true;
+  }
+
+  // Attempt / failure: "I'm trying to schedule…", "I failed to create…"
+  if (
+    new RegExp(
+      `\\b(i'?m|we'?re|i\\s+am|we\\s+are)\\s+trying\\s+to\\s+${createVerb}\\b`,
+      "i"
+    ).test(t) ||
+    new RegExp(`\\b(i|we)\\s+(tried|failed)\\s+to\\s+${createVerb}\\b`, "i").test(t)
+  ) {
+    return true;
+  }
+
+  // Inability: "I can't schedule a walk right now", "I'm unable to create…"
+  if (
+    new RegExp(`\\b(i|we)\\s+(can'?t|cannot)\\s+${createVerb}\\b`, "i").test(t) ||
+    new RegExp(
+      `\\b(i'?m|we'?re|i\\s+am|we\\s+are)\\s+unable\\s+to\\s+${createVerb}\\b`,
+      "i"
+    ).test(t)
+  ) {
+    return true;
+  }
+
+  // Temporal self-talk: "before I schedule…", "after I create…"
+  if (
+    new RegExp(`\\b(before|after|until)\\s+(i|we)\\s+${createVerb}\\b`, "i").test(t)
+  ) {
+    return true;
+  }
+
+  // Past emphatic: "I did schedule a walk yesterday"
+  if (new RegExp(`\\b(i|we)\\s+did\\s+${createVerb}\\b`, "i").test(t)) {
+    return true;
+  }
+
+  // Habitual present: "I schedule a walk every morning"
+  if (
+    new RegExp(
+      `\\b(i|we)\\s+${createVerb}\\b.{0,40}\\b(every|most\\s+days|whenever|each)\\b`,
+      "i"
+    ).test(t)
+  ) {
+    return true;
+  }
+
+  // First-person desire without addressing the Coach as actor.
+  // "I want to schedule a walk someday" vs "I want you to schedule a walk".
+  if (
+    (new RegExp(
+      `\\b(i|we)\\s+(want\\s+to|would\\s+like\\s+to|hope\\s+to)\\s+${createVerb}\\b`,
+      "i"
+    ).test(t) ||
+      new RegExp(`\\bi'?d\\s+like\\s+to\\s+${createVerb}\\b`, "i").test(t)) &&
+    !/\b(you|coach|please|help)\b/i.test(t)
+  ) {
+    return true;
+  }
+  if (new RegExp(`\\bi\\s+wish\\s+i\\s+could\\s+${createVerb}\\b`, "i").test(t)) {
+    return true;
+  }
+
+  // Correction: "I didn't mean to schedule a walk"
+  if (
+    new RegExp(
+      `\\b(didn'?t|did\\s+not)\\s+mean\\s+to\\s+${createVerb}\\b`,
+      "i"
+    ).test(t)
+  ) {
+    return true;
+  }
+
+  // Contrast: "rather than schedule a walk I'd nap"
+  if (new RegExp(`\\brather\\s+than\\s+${createVerb}\\b`, "i").test(t)) {
+    return true;
+  }
+
+  return false;
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
     test: (s) =>
-      /\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(s) ||
-      /\bsuds\b/i.test(s)
+      !isTentativeCreate(s) &&
+      (/\b(add|schedule|plan|create|build)\b.*\b(exposure|expose|in[\s-]?vivo|hierarchy)\b/i.test(
+        s
+      ) ||
+        /\bsuds\b/i.test(s))
   },
   {
     name: "add_activation",
     test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
-      /^let'?s plan/i.test(s)
+      !isTentativeCreate(s) &&
+      (/\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        s
+      ) ||
+        /^let'?s plan/i.test(s))
   },
-  { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
+  {
+    name: "add_goal",
+    test: (s) => !isTentativeCreate(s) && /\b(add|create|set)\b.*\bgoal\b/i.test(s)
+  },
   { name: "summarize", test: (s) => /\b(summarize|summary|recap|how (have|did) i)\b/i.test(s) },
   {
     name: "suggest",
