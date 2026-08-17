@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-08-17T11:06:42Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1991,12 +1991,7 @@ async function coachSend(rawText, { silent = false } = {}) {
 
   // Allow user to start / resume / abort the interview from free chat.
   const lower = text.toLowerCase();
-  if (
-    /^(yes|sure|ok(ay)?|let'?s (start|do (it|this))|start interview|interview me|tell me about you|onboard me)/i.test(
-      text
-    ) &&
-    !STATE.profile.interviewStarted
-  ) {
+  if (isInterviewConsent(text) && !STATE.profile.interviewStarted) {
     startInterview();
     saveState();
     if (route === "home") render();
@@ -2038,6 +2033,18 @@ async function coachSend(rawText, { silent = false } = {}) {
 
   if (route === "home") render();
   else drawCoach();
+}
+
+// Consent to start the interview must be a whole word ("yes", "okay"),
+// not a prefix of ordinary chat ("Yesterday…", "Surely…", "tell me about your day").
+function isInterviewConsent(text) {
+  const t = String(text || "").trim();
+  if (!t) return false;
+  return (
+    /^(yes|sure|ok|okay)\b/i.test(t) ||
+    /^let'?s (start|do (it|this))\b/i.test(t) ||
+    /^(start interview|interview me|tell me about you|onboard me)\b/i.test(t)
+  );
 }
 
 function pushMemory(entry) {
