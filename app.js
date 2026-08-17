@@ -906,12 +906,7 @@ async function coachSend(rawText, { silent = false } = {}) {
 
   // Allow user to start / resume / abort the interview from free chat.
   const lower = text.toLowerCase();
-  if (
-    /^(yes|sure|ok(ay)?|let'?s (start|do (it|this))|start interview|interview me|tell me about you|onboard me)/i.test(
-      text
-    ) &&
-    !STATE.profile.interviewStarted
-  ) {
+  if (isInterviewConsent(text) && !STATE.profile.interviewStarted) {
     startInterview();
     saveState();
     if (route === "home") render();
@@ -953,6 +948,18 @@ async function coachSend(rawText, { silent = false } = {}) {
 
   if (route === "home") render();
   else drawCoach();
+}
+
+// Consent to start the interview must be a whole word ("yes", "okay"),
+// not a prefix of ordinary chat ("Yesterday…", "Surely…", "tell me about your day").
+function isInterviewConsent(text) {
+  const t = String(text || "").trim();
+  if (!t) return false;
+  return (
+    /^(yes|sure|ok|okay)\b/i.test(t) ||
+    /^let'?s (start|do (it|this))\b/i.test(t) ||
+    /^(start interview|interview me|tell me about you|onboard me)\b/i.test(t)
+  );
 }
 
 function pushMemory(entry) {
