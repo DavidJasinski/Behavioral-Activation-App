@@ -30,9 +30,27 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_interview_resume_is_guarded(path: Path) -> None:
+    text = path.read_text(encoding="utf-8")
+    unguarded_resume = (
+        "/(continue|resume).*interview|interview me( again)?|ask me more about/i"
+    )
+    assert "function isInterviewResumeRequest(" in text, (
+        f"{path} is missing isInterviewResumeRequest"
+    )
+    assert "function refusesInterviewRequest(" in text, (
+        f"{path} is missing refusesInterviewRequest"
+    )
+    assert unguarded_resume not in text, (
+        f"{path} still treats refusals and 'ask me more about' as interview resume"
+    )
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_interview_resume_is_guarded(ROOT / "app.js")
+    assert_interview_resume_is_guarded(ROOT / "dist" / "BreakFree.html")
     print("OK regression checks passed")
 
 
