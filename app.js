@@ -887,6 +887,30 @@ function truncate(s, n) {
   return s.length > n ? s.slice(0, n - 1) + "…" : s;
 }
 
+// Resume/restart must be an explicit interview request. The old matcher
+// treated "don't interview me" and "ask me more about why I freeze" as
+// consent, then parsed the next recap as an interview answer (often a name).
+function refusesInterviewRequest(text) {
+  const t = String(text || "").toLowerCase();
+  if (!t) return false;
+  return (
+    /\b(don'?t|do not|never)\b(?:\s+\w+){0,6}\s+interview/.test(t) ||
+    /\b(don'?t|do not|never)\b(?:\s+\w+){0,6}\s+(continue|resume)\b.{0,24}\binterview/.test(t) ||
+    /\bstop (?:the )?interview/.test(t) ||
+    /\bnot (?:going to|gonna|want(?:ing)? to) (?:be )?interview/.test(t)
+  );
+}
+
+function isInterviewResumeRequest(text) {
+  const t = String(text || "").trim();
+  if (!t || refusesInterviewRequest(t)) return false;
+  if (/\bask me more about\b/i.test(t)) return false;
+  return (
+    /\b(continue|resume)\b.{0,24}\binterview\b/i.test(t) ||
+    /\binterview me(\s+again)?\b/i.test(t)
+  );
+}
+
 async function coachSend(rawText, { silent = false } = {}) {
   const text = (rawText || "").trim();
   if (!text) return;
@@ -918,11 +942,7 @@ async function coachSend(rawText, { silent = false } = {}) {
     else drawCoach();
     return;
   }
-  if (
-    /(continue|resume).*interview|interview me( again)?|ask me more about/i.test(
-      lower
-    )
-  ) {
+  if (isInterviewResumeRequest(text)) {
     startInterview();
     saveState();
     if (route === "home") render();
