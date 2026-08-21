@@ -4,6 +4,9 @@ Run from the repository root:
   python3 scripts/check_regressions.py
 """
 
+from __future__ import annotations
+
+import subprocess
 from pathlib import Path
 
 
@@ -30,9 +33,16 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_interview_style_direct_guard() -> None:
+    script = ROOT / "scripts" / "check_interview_style_direct.js"
+    assert script.is_file(), f"missing {script}"
+    subprocess.run(["node", str(script)], cwd=ROOT, check=True)
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_interview_style_direct_guard()
     print("OK regression checks passed")
 
 

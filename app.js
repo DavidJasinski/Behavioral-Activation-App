@@ -992,6 +992,27 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// The style question offers "warm and gentle" / "concise and direct" / "push".
+// Bare "hard" is how people describe the work ("this is hard for me, be gentle"),
+// not a request to be blunt — and the parser historically never looked for
+// the word "direct" at all, so echoing the question persisted the opposite voice.
+function interviewCommunicationStyle(text) {
+  const t = String(text || "").toLowerCase();
+  if (/\b(don'?t|do\s+not|never)\b[^.!?]{0,40}\b(push(ing|y)?|direct)\b/.test(t)) {
+    return /concise|short|brief|to the point|don'?t ramble/.test(t) ? "concise" : "warm";
+  }
+  if (
+    /\bdirect\b/.test(t) ||
+    /push|challenge|tough|honest|brutal|real with|hard on me|be hard\b/.test(t)
+  ) {
+    return "direct";
+  }
+  if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t)) {
+    return "concise";
+  }
+  return "warm";
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
@@ -1012,12 +1033,7 @@ const INTERVIEW_TOPICS = [
       return `${n}ow do you like being spoken to? Some people want me warm and gentle. Some want me concise and direct. Some want me to actually push them. Which feels closest?`;
     },
     parse: (text) => {
-      const t = text.toLowerCase();
-      if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
-        STATE.profile.communicationStyle = "direct";
-      else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
-        STATE.profile.communicationStyle = "concise";
-      else STATE.profile.communicationStyle = "warm";
+      STATE.profile.communicationStyle = interviewCommunicationStyle(text);
       STATE.preferences.tone =
         STATE.profile.communicationStyle === "concise" ? "concise" :
         STATE.profile.communicationStyle === "direct" ? "concise" : "warm";

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-08-21T11:08:30Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2077,6 +2077,27 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// The style question offers "warm and gentle" / "concise and direct" / "push".
+// Bare "hard" is how people describe the work ("this is hard for me, be gentle"),
+// not a request to be blunt — and the parser historically never looked for
+// the word "direct" at all, so echoing the question persisted the opposite voice.
+function interviewCommunicationStyle(text) {
+  const t = String(text || "").toLowerCase();
+  if (/\b(don'?t|do\s+not|never)\b[^.!?]{0,40}\b(push(ing|y)?|direct)\b/.test(t)) {
+    return /concise|short|brief|to the point|don'?t ramble/.test(t) ? "concise" : "warm";
+  }
+  if (
+    /\bdirect\b/.test(t) ||
+    /push|challenge|tough|honest|brutal|real with|hard on me|be hard\b/.test(t)
+  ) {
+    return "direct";
+  }
+  if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t)) {
+    return "concise";
+  }
+  return "warm";
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
@@ -2097,12 +2118,7 @@ const INTERVIEW_TOPICS = [
       return `${n}ow do you like being spoken to? Some people want me warm and gentle. Some want me concise and direct. Some want me to actually push them. Which feels closest?`;
     },
     parse: (text) => {
-      const t = text.toLowerCase();
-      if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
-        STATE.profile.communicationStyle = "direct";
-      else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
-        STATE.profile.communicationStyle = "concise";
-      else STATE.profile.communicationStyle = "warm";
+      STATE.profile.communicationStyle = interviewCommunicationStyle(text);
       STATE.preferences.tone =
         STATE.profile.communicationStyle === "concise" ? "concise" :
         STATE.profile.communicationStyle === "direct" ? "concise" : "warm";
