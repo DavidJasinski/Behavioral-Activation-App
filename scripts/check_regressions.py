@@ -4,6 +4,9 @@ Run from the repository root:
   python3 scripts/check_regressions.py
 """
 
+from __future__ import annotations
+
+import subprocess
 from pathlib import Path
 
 
@@ -30,9 +33,22 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_freechat_refused_push_guard() -> None:
+    script = ROOT / "scripts" / "check_freechat_refused_push.js"
+    assert script.is_file(), f"missing {script}"
+    for path in (ROOT / "app.js", ROOT / "dist" / "BreakFree.html"):
+        text = path.read_text(encoding="utf-8")
+        assert "function refusesPush(" in text, f"{path} is missing refusesPush"
+        assert "if (refusesPush(text))" in text, (
+            f"{path} does not honor refused-push before the tone write"
+        )
+    subprocess.run(["node", str(script)], cwd=ROOT, check=True)
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_freechat_refused_push_guard()
     print("OK regression checks passed")
 
 
