@@ -1280,6 +1280,13 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// "don't push me" must not match the bare word "push" and invert into
+// direct/push personalization. Check negation before those branches.
+function refusesPush(text) {
+  const t = String(text || "").toLowerCase();
+  return /\b(don'?t|do\s+not|never)\b[^.!?]{0,40}\bpush(ing|y)?\b/.test(t);
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
@@ -1395,7 +1402,12 @@ async function executeIntent(intent, text) {
   if (intent === "summarize") return { kind: "summary", data: weekSummary() };
   if (intent === "suggest") return { kind: "suggestion", a: suggestActivation(text) };
   if (intent === "tone") {
-    if (/short|less wordy|direct|push/i.test(text)) {
+    if (refusesPush(text)) {
+      const concise = /short|less wordy|concise|brief/i.test(text);
+      STATE.preferences.tone = concise ? "concise" : "warm";
+      STATE.profile.communicationStyle = concise ? "concise" : "warm";
+      STATE.profile.challengeLevel = "gentle";
+    } else if (/short|less wordy|direct|push/i.test(text)) {
       STATE.preferences.tone = "concise";
       STATE.profile.communicationStyle = /push/i.test(text) ? "direct" : "concise";
     } else if (/long|more|detail/i.test(text)) {
