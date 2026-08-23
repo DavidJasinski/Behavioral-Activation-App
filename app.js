@@ -998,8 +998,8 @@ const INTERVIEW_TOPICS = [
     needs: () => !STATE.profile.name,
     ask: () => "First — what should I call you?",
     parse: (text) => {
-      const cleaned = text.trim().replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
-      const name = cleaned.split(/[\s.,!?]+/)[0];
+      if (isNonNameAnswer(text)) return;
+      const name = interviewNameToken(text);
       if (name && /^[a-z'-]{1,30}$/i.test(name)) STATE.profile.name = capitalize(name);
     },
     confirm: () => STATE.profile.name ? `Nice to meet you, ${STATE.profile.name}.` : "Got it."
@@ -1154,6 +1154,21 @@ const INTERVIEW_TOPICS = [
   }
 ];
 
+function interviewNameToken(text) {
+  const cleaned = String(text || "")
+    .trim()
+    .replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
+  return cleaned.split(/[\s.,!?]+/)[0] || "";
+}
+
+// Welcome copy says "just say yes"; the Interview button starts on the name
+// question. Affirmations are not names, and there is no later UI to fix this.
+function isNonNameAnswer(text) {
+  return /^(yes|yeah|yep|yup|no|nope|nah|ok|okay|sure)$/i.test(
+    interviewNameToken(text)
+  );
+}
+
 function capitalize(s) {
   s = String(s || "");
   return s.length ? s[0].toUpperCase() + s.slice(1) : s;
@@ -1216,6 +1231,13 @@ function handleInterviewAnswer(text) {
     if (!skip) {
       try { topic.parse(text); } catch {}
       confirmation = topic.confirm ? topic.confirm() : "";
+    }
+    if (topic.id === "name" && !STATE.profile.name && !skip && isNonNameAnswer(text)) {
+      pushMemory({
+        role: "coach",
+        text: "I still need something to call you — a first name is enough. Or say \"skip\"."
+      });
+      return;
     }
     const asked = STATE.profile.interviewProgress.askedTopics || [];
     if (!asked.includes(currentId)) asked.push(currentId);
