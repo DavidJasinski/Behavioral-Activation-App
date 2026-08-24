@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-08-24T11:04:57Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1980,8 +1980,10 @@ async function coachSend(rawText, { silent = false } = {}) {
   await KNOWLEDGE_PROMISE;
 
   // Interview takes precedence over normal chat.
+  // Do not run free-chat inference here: it can fill values/avoiding/energizers
+  // from a struggle answer, which makes later topics' needs() skip those
+  // questions and permanently personalize from the wrong fields.
   if (STATE.coach.mode === "interview") {
-    inferProfileFromMessage(text);
     handleInterviewAnswer(text);
     saveState();
     if (route === "home") render();

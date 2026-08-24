@@ -895,8 +895,10 @@ async function coachSend(rawText, { silent = false } = {}) {
   await KNOWLEDGE_PROMISE;
 
   // Interview takes precedence over normal chat.
+  // Do not run free-chat inference here: it can fill values/avoiding/energizers
+  // from a struggle answer, which makes later topics' needs() skip those
+  // questions and permanently personalize from the wrong fields.
   if (STATE.coach.mode === "interview") {
-    inferProfileFromMessage(text);
     handleInterviewAnswer(text);
     saveState();
     if (route === "home") render();
