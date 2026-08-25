@@ -942,7 +942,14 @@ async function coachSend(rawText, { silent = false } = {}) {
     return;
   }
 
-  inferProfileFromMessage(text);
+  // Opportunistic inference is the slow path for people who skipped or
+  // finished the interview. Running it before that lets "I want to…" / "I like
+  // to…" fill values/energizers and permanently skip those interview topics
+  // (needs() treats any array length as "already answered"), and it mints
+  // suggestion chips that persist junk plan items.
+  if (STATE.profile.interviewComplete || STATE.profile.interviewSkipped) {
+    inferProfileFromMessage(text);
+  }
 
   const intent = classify(text);
   const action = await executeIntent(intent, text);
@@ -1058,7 +1065,9 @@ const INTERVIEW_TOPICS = [
     id: "avoiding",
     needs: () => {
       const s = STATE.profile.struggles || [];
-      return (s.includes("anxiety") || s.includes("avoidance")) && !STATE.profile.avoiding?.length;
+      // Do not treat free-chat inference as having answered this topic.
+      // askedTopics already prevents re-asking after a real interview answer.
+      return s.includes("anxiety") || s.includes("avoidance");
     },
     ask: () => "When you say you're avoiding things — what comes up first? Could be small (a phone call, leaving the house) or big (a place, a person, a whole part of life).",
     parse: (text) => {
@@ -1068,7 +1077,7 @@ const INTERVIEW_TOPICS = [
   },
   {
     id: "values",
-    needs: () => !STATE.profile.values?.length,
+    needs: () => !STATE.profile.valueNotes?.length,
     ask: () => "If today were a little lighter, what would you want to be doing more of? People, places, activities, anything that pulls at you.",
     parse: (text) => {
       const topics = extractTopics(text);
@@ -1082,7 +1091,7 @@ const INTERVIEW_TOPICS = [
   },
   {
     id: "energizers",
-    needs: () => !STATE.profile.energizers?.length,
+    needs: () => !STATE.profile.energizerNotes?.length,
     ask: () => "When you do feel like yourself — even for a flash — what are you usually doing?",
     parse: (text) => {
       STATE.profile.energizers = extractTopics(text).slice(0, 8);
