@@ -992,6 +992,17 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// "don't go easy on me" is a request to be pushed. The challenge parser
+// historically matched the bare word "easy" (gentle) after the push branch
+// missed, so this idiom persisted the opposite of what the user asked for.
+// challengeLevel has no free-chat write path, so the inversion sticks.
+function refusesEasy(text) {
+  const t = String(text || "").toLowerCase();
+  return /\b(don'?t|do\s+not|never)\b(?:\s+\w+){0,5}\s+(go|take\s+it|make\s+it|be)\s+(too\s+)?easy\b/.test(
+    t
+  );
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
@@ -1013,7 +1024,7 @@ const INTERVIEW_TOPICS = [
     },
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
+      if (refusesEasy(t) || /push|challenge|hard|tough|honest|brutal|real with/.test(t))
         STATE.profile.communicationStyle = "direct";
       else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
         STATE.profile.communicationStyle = "concise";
@@ -1128,7 +1139,10 @@ const INTERVIEW_TOPICS = [
     ask: () => "Should I let you set the pace, or should I gently push you when I notice you holding back? You can change this later.",
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hold accountable|tough|harder|don'?t let me|call me out/.test(t))
+      if (
+        refusesEasy(t) ||
+        /push|challenge|hold accountable|tough|harder|don'?t let me|call me out/.test(t)
+      )
         STATE.profile.challengeLevel = "push";
       else if (/gentle|soft|slow|my pace|let me|don'?t push|easy/.test(t))
         STATE.profile.challengeLevel = "gentle";
