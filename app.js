@@ -998,8 +998,8 @@ const INTERVIEW_TOPICS = [
     needs: () => !STATE.profile.name,
     ask: () => "First — what should I call you?",
     parse: (text) => {
-      const cleaned = text.trim().replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
-      const name = cleaned.split(/[\s.,!?]+/)[0];
+      if (isNonNameAnswer(text)) return;
+      const name = interviewNameToken(text);
       if (name && /^[a-z'-]{1,30}$/i.test(name)) STATE.profile.name = capitalize(name);
     },
     confirm: () => STATE.profile.name ? `Nice to meet you, ${STATE.profile.name}.` : "Got it."
@@ -1154,6 +1154,33 @@ const INTERVIEW_TOPICS = [
   }
 ];
 
+function interviewNameToken(text) {
+  const cleaned = String(text || "")
+    .trim()
+    .replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
+  return cleaned.split(/[\s.,!?]+/)[0] || "";
+}
+
+// Hedges and postpone phrasing are not names. Stripping "I'm" / "call me"
+// otherwise persists Not / I / Later, and there is no later UI to fix it.
+function isNonNameAnswer(text) {
+  const raw = String(text || "").trim().toLowerCase();
+  if (!raw) return true;
+  if (
+    /\b(not sure|un.?sure|don'?t know|do not know|\bdunno\b|\bidk\b|no idea)\b/i.test(raw) ||
+    /\b(don'?t care|do not care|doesn'?t matter|does not matter|rather not)\b/i.test(raw) ||
+    /^(whatever|anything|you pick|you choose)$/i.test(raw) ||
+    /\b((call|ask|tell) me|maybe)\s+later\b/i.test(raw)
+  ) {
+    return true;
+  }
+  const token = interviewNameToken(text);
+  if (token.length < 2) return true;
+  return /^(you|me|we|it|not|don'?t|enough|stop|pause|whatever|anything|idk|dunno|maybe|later)$/i.test(
+    token
+  );
+}
+
 function capitalize(s) {
   s = String(s || "");
   return s.length ? s[0].toUpperCase() + s.slice(1) : s;
@@ -1216,6 +1243,13 @@ function handleInterviewAnswer(text) {
     if (!skip) {
       try { topic.parse(text); } catch {}
       confirmation = topic.confirm ? topic.confirm() : "";
+    }
+    if (topic.id === "name" && !STATE.profile.name && !skip) {
+      pushMemory({
+        role: "coach",
+        text: "I still need something to call you — a first name or nickname is enough. Or say \"skip\"."
+      });
+      return;
     }
     const asked = STATE.profile.interviewProgress.askedTopics || [];
     if (!asked.includes(currentId)) asked.push(currentId);
