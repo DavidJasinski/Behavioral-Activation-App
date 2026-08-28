@@ -1280,6 +1280,13 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// "step-by-step" / "step by step" is a manner idiom, not the activity noun
+// "step". Leaving it in the string makes "create a step-by-step plan"
+// match add_activation and persist a junk plan item.
+function withoutStepByStep(s) {
+  return String(s || "").replace(/step[\s-]+by[\s-]+step/gi, " ");
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
@@ -1290,7 +1297,9 @@ const INTENTS = [
   {
     name: "add_activation",
     test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
+      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        withoutStepByStep(s)
+      ) ||
       /^let'?s plan/i.test(s)
   },
   { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },

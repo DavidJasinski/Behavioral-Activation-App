@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-08-28T11:18:33Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2365,6 +2365,13 @@ function inferProfileFromMessage(text) {
   }
 }
 
+// "step-by-step" / "step by step" is a manner idiom, not the activity noun
+// "step". Leaving it in the string makes "create a step-by-step plan"
+// match add_activation and persist a junk plan item.
+function withoutStepByStep(s) {
+  return String(s || "").replace(/step[\s-]+by[\s-]+step/gi, " ");
+}
+
 const INTENTS = [
   {
     name: "add_exposure",
@@ -2375,7 +2382,9 @@ const INTENTS = [
   {
     name: "add_activation",
     test: (s) =>
-      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(s) ||
+      /\b(add|schedule|plan|create)\b.*\b(activation|activity|step|task|walk|run|read|call|stretch|meditate|journal|nap|cook)\b/i.test(
+        withoutStepByStep(s)
+      ) ||
       /^let'?s plan/i.test(s)
   },
   { name: "add_goal", test: (s) => /\b(add|create|set)\b.*\bgoal\b/i.test(s) },
