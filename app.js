@@ -992,14 +992,39 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// Name-bearing phrases often come after a greeting or politeness wrapper
+// ("Just call me Alex", "Hi I'm Maya"). Anchoring those prefixes at the
+// start of the string persisted Just / Hi / Please as profile.name, and
+// there is no later UI to change it. Prefer an explicit phrase anywhere
+// in the reply; fall back to the original start-anchored strip.
+function interviewNameToken(text) {
+  const raw = String(text || "").trim();
+  const callMeNegated = /\b(don'?t|do\s+not|never)\b[^.!?]{0,24}\bcall me\b/i.test(
+    raw
+  );
+  if (!callMeNegated) {
+    const callMe = raw.match(/\bcall me\s+([a-z'-]{2,30})\b/i);
+    if (callMe) return callMe[1];
+  }
+  const fromMyName = raw.match(/\bmy name is\s+([a-z'-]{2,30})\b/i);
+  if (fromMyName) return fromMyName[1];
+  const fromNames = raw.match(/\bname'?s\s+([a-z'-]{2,30})\b/i);
+  if (fromNames) return fromNames[1];
+  const fromIm = raw.match(/\b(?:i am|i'?m)\s+([a-z'-]{2,30})\b/i);
+  if (fromIm) return fromIm[1];
+  const cleaned = raw
+    .replace(/^(hi|hey|hello|please|just)\b[,!.\s]+/i, "")
+    .replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
+  return cleaned.split(/[\s.,!?]+/)[0] || "";
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
     needs: () => !STATE.profile.name,
     ask: () => "First — what should I call you?",
     parse: (text) => {
-      const cleaned = text.trim().replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
-      const name = cleaned.split(/[\s.,!?]+/)[0];
+      const name = interviewNameToken(text);
       if (name && /^[a-z'-]{1,30}$/i.test(name)) STATE.profile.name = capitalize(name);
     },
     confirm: () => STATE.profile.name ? `Nice to meet you, ${STATE.profile.name}.` : "Got it."
