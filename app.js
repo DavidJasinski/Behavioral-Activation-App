@@ -1015,7 +1015,9 @@ const INTERVIEW_TOPICS = [
       const t = text.toLowerCase();
       if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
         STATE.profile.communicationStyle = "direct";
-      else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
+      // `\bless\b` — bare `less` also matches unless/hopeless/blessing and
+      // persisted concise (every later reply truncated) after a warm answer.
+      else if (/concise|short|brief|\bless\b|quick|to the point|don'?t ramble/.test(t))
         STATE.profile.communicationStyle = "concise";
       else STATE.profile.communicationStyle = "warm";
       STATE.preferences.tone =
