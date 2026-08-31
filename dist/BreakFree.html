@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-08-31T11:06:44Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2100,7 +2100,9 @@ const INTERVIEW_TOPICS = [
       const t = text.toLowerCase();
       if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
         STATE.profile.communicationStyle = "direct";
-      else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
+      // `\bless\b` — bare `less` also matches unless/hopeless/blessing and
+      // persisted concise (every later reply truncated) after a warm answer.
+      else if (/concise|short|brief|\bless\b|quick|to the point|don'?t ramble/.test(t))
         STATE.profile.communicationStyle = "concise";
       else STATE.profile.communicationStyle = "warm";
       STATE.preferences.tone =
