@@ -998,8 +998,20 @@ const INTERVIEW_TOPICS = [
     needs: () => !STATE.profile.name,
     ask: () => "First — what should I call you?",
     parse: (text) => {
-      const cleaned = text.trim().replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
-      const name = cleaned.split(/[\s.,!?]+/)[0];
+      const raw = String(text || "").trim();
+      // "This is Maya" / "Hi this is Maya" — otherwise the first token is "This"
+      // and needs() never asks again. Distinct from call-me / I'm wrappers.
+      const thisIs = raw.match(/\bthis is\s+([a-z'-]{2,30})\b/i);
+      const thisIsName = thisIs && thisIs[1];
+      const thisIsFiller = thisIsName && /^(not|no|a|the|my|just|really|actually|probably|only|still|so|me|going|getting)$/i.test(thisIsName);
+      let name = "";
+      if (thisIsName && !thisIsFiller) {
+        name = thisIsName;
+      } else {
+        const cleaned = raw.replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
+        name = cleaned.split(/[\s.,!?]+/)[0] || "";
+        if (/^(this|that)$/i.test(name)) name = "";
+      }
       if (name && /^[a-z'-]{1,30}$/i.test(name)) STATE.profile.name = capitalize(name);
     },
     confirm: () => STATE.profile.name ? `Nice to meet you, ${STATE.profile.name}.` : "Got it."
