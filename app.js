@@ -992,6 +992,19 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// Honesty hedges ("I'll be honest", "honestly", "to be honest") must not
+// match the bare stem "honest" and invert into direct/concise style.
+function honestyDiscourse(text) {
+  const t = String(text || "").toLowerCase();
+  return (
+    /\bhonestly\b/.test(t) ||
+    /\bi('ll| will)\s+be honest\b/.test(t) ||
+    /\blet me be honest\b/.test(t) ||
+    /\bif i('m| am) honest\b/.test(t) ||
+    /(^|[.,;:!?]\s*)to be honest\b/.test(t)
+  );
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
@@ -1013,7 +1026,8 @@ const INTERVIEW_TOPICS = [
     },
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
+      const honestRequest = /\bhonest\b/.test(t) && !honestyDiscourse(t);
+      if (/push|challenge|hard|tough|brutal|real with/.test(t) || honestRequest)
         STATE.profile.communicationStyle = "direct";
       else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
         STATE.profile.communicationStyle = "concise";
