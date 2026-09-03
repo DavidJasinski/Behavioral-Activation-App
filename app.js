@@ -998,8 +998,18 @@ const INTERVIEW_TOPICS = [
     needs: () => !STATE.profile.name,
     ask: () => "First — what should I call you?",
     parse: (text) => {
-      const cleaned = text.trim().replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
-      const name = cleaned.split(/[\s.,!?]+/)[0];
+      const raw = String(text || "").trim();
+      // "I'm called Maya" / "I go by Alex" — the I'm/I-am prefix strip otherwise
+      // persists Called / I, needs() never asks again, and there is no UI to
+      // change it. Distinct from call-me / I'm wrappers (PR #43) and
+      // "this is <name>" (PR #46). If merging with #43, run this match before
+      // the generic `\b(?:i am|i'?m)\s+([a-z'-]{2,30})\b` capture.
+      const nick = raw.match(
+        /\b(?:(?:i am|i'?m)\s+(?:called|named)|i go by)\s+([a-z'-]{2,30})\b/i
+      );
+      const nickName = nick && nick[1];
+      const cleaned = raw.replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
+      const name = nickName || cleaned.split(/[\s.,!?]+/)[0];
       if (name && /^[a-z'-]{1,30}$/i.test(name)) STATE.profile.name = capitalize(name);
     },
     confirm: () => STATE.profile.name ? `Nice to meet you, ${STATE.profile.name}.` : "Got it."
