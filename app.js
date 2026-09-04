@@ -992,6 +992,30 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// The style question offers "warm and gentle" vs "concise and direct".
+// Answers like "don't be concise" / "warm, not short" historically matched
+// /concise|short|brief/ and persisted the opposite voice (every later reply
+// truncated to two sentences, no UI to undo). Do not treat "don't ramble"
+// as a refusal — that is a concise request.
+function refusesConcise(text) {
+  const t = String(text || "").toLowerCase();
+  if (
+    /\b(don'?t|do\s+not|never)\s+(be\s+)?(so\s+|too\s+)?(concise|short(?:er)?|brief|quick)(?!-)\b/.test(
+      t
+    )
+  )
+    return true;
+  if (/\bnot\s+(so\s+|too\s+|be\s+)?(concise|short(?:er)?|brief)(?!-)\b/.test(t))
+    return true;
+  if (
+    /\b(don'?t|do\s+not|never)\s+want\s+(you\s+)?(to\s+be\s+)?(so\s+|too\s+)?(concise|short(?:er)?|brief)(?!-)\b/.test(
+      t
+    )
+  )
+    return true;
+  return false;
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
@@ -1015,6 +1039,8 @@ const INTERVIEW_TOPICS = [
       const t = text.toLowerCase();
       if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
         STATE.profile.communicationStyle = "direct";
+      else if (refusesConcise(t))
+        STATE.profile.communicationStyle = "warm";
       else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
         STATE.profile.communicationStyle = "concise";
       else STATE.profile.communicationStyle = "warm";
@@ -1395,7 +1421,10 @@ async function executeIntent(intent, text) {
   if (intent === "summarize") return { kind: "summary", data: weekSummary() };
   if (intent === "suggest") return { kind: "suggestion", a: suggestActivation(text) };
   if (intent === "tone") {
-    if (/short|less wordy|direct|push/i.test(text)) {
+    if (refusesConcise(text)) {
+      STATE.preferences.tone = "warm";
+      STATE.profile.communicationStyle = "warm";
+    } else if (/short|less wordy|direct|push/i.test(text)) {
       STATE.preferences.tone = "concise";
       STATE.profile.communicationStyle = /push/i.test(text) ? "direct" : "concise";
     } else if (/long|more|detail/i.test(text)) {
