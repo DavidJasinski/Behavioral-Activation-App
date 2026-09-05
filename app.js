@@ -992,6 +992,19 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// The style and challenge parsers treat "challenge" as a request to be blunt
+// / push. Answers like "don't challenge me" / "I don't want a challenge"
+// historically matched /challenge/ first and persisted the opposite voice.
+// challengeLevel has no free-chat write path, so the inversion stuck.
+// Distinct from PR #33 (refusesPush looks only for "push") and PR #36
+// (interviewCommunicationStyle refuses "push|direct", not "challenge").
+function refusesChallenge(text) {
+  const t = String(text || "").toLowerCase();
+  return /\b(don'?t|do\s+not|never)\s+(?:please\s+)?(?:want\s+(?:a\s+|you\s+to\s+)?|like\s+(?:a\s+)?|you\s+to\s+)?challenge(?:s|d)?\b/.test(
+    t
+  );
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
@@ -1013,7 +1026,11 @@ const INTERVIEW_TOPICS = [
     },
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
+      if (refusesChallenge(t)) {
+        STATE.profile.communicationStyle = /concise|short|brief|less|quick|to the point|don'?t ramble/.test(t)
+          ? "concise"
+          : "warm";
+      } else if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
         STATE.profile.communicationStyle = "direct";
       else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
         STATE.profile.communicationStyle = "concise";
@@ -1128,7 +1145,9 @@ const INTERVIEW_TOPICS = [
     ask: () => "Should I let you set the pace, or should I gently push you when I notice you holding back? You can change this later.",
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hold accountable|tough|harder|don'?t let me|call me out/.test(t))
+      if (refusesChallenge(t))
+        STATE.profile.challengeLevel = "gentle";
+      else if (/push|challenge|hold accountable|tough|harder|don'?t let me|call me out/.test(t))
         STATE.profile.challengeLevel = "push";
       else if (/gentle|soft|slow|my pace|let me|don'?t push|easy/.test(t))
         STATE.profile.challengeLevel = "gentle";
