@@ -998,9 +998,8 @@ const INTERVIEW_TOPICS = [
     needs: () => !STATE.profile.name,
     ask: () => "First — what should I call you?",
     parse: (text) => {
-      const cleaned = text.trim().replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
-      const name = cleaned.split(/[\s.,!?]+/)[0];
-      if (name && /^[a-z'-]{1,30}$/i.test(name)) STATE.profile.name = capitalize(name);
+      const name = interviewNameToken(text);
+      if (name) STATE.profile.name = capitalize(name);
     },
     confirm: () => STATE.profile.name ? `Nice to meet you, ${STATE.profile.name}.` : "Got it."
   },
@@ -1157,6 +1156,21 @@ const INTERVIEW_TOPICS = [
 function capitalize(s) {
   s = String(s || "");
   return s.length ? s[0].toUpperCase() + s.slice(1) : s;
+}
+
+// Prefer "known as" / "know me as" before the start-anchored I'm / call-me
+// strip. Otherwise "I'm known as Maya" persists Known and "People know me as
+// Alex" persists People; needs() then skips the name topic forever.
+function interviewNameToken(text) {
+  const t = String(text || "").trim();
+  const known =
+    t.match(/\b(?:i(?:'?m| am) )?known as\s+([a-z'-]{2,30})\b/i) ||
+    t.match(/\bknows? me as\s+([a-z'-]{2,30})\b/i);
+  if (known) return known[1];
+  const cleaned = t.replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
+  const name = cleaned.split(/[\s.,!?]+/)[0];
+  if (name && /^[a-z'-]{1,30}$/i.test(name)) return name;
+  return "";
 }
 
 function nextInterviewTopic() {
