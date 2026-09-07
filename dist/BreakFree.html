@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-09-07T11:04:08Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2077,14 +2077,35 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// "Everyone calls me Maya" / "I prefer to be called Alex" are natural
+// answers to the name question. The start-anchored I'm / call me strip
+// then takes the first token, so those persist Everyone / I, and there
+// is no later UI to change it. Prefer these phrases anywhere in the
+// reply; fall back to the original start-anchored strip.
+// If merging with PR #43/#48, keep these matchers before generic
+// `call me` / `i am|i'm` captures (`\bcall me\b` does not match `calls me`,
+// and `I'm called` does not match `prefer to be called`).
+function interviewNameToken(text) {
+  const raw = String(text || "").trim();
+  const callsMe = raw.match(/\bcalls me\s+([a-z'-]{2,30})\b/i);
+  if (callsMe) return callsMe[1];
+  const preferCalled = raw.match(/\bprefer(?:s)? to be called\s+([a-z'-]{2,30})\b/i);
+  if (preferCalled) return preferCalled[1];
+  const iPrefer = raw.match(/\bi prefer\s+([a-z'-]{2,30})\b/i);
+  if (iPrefer && !/^(to|not|be|being|a|the|it|you|we|my)$/i.test(iPrefer[1])) {
+    return iPrefer[1];
+  }
+  const cleaned = raw.replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
+  return cleaned.split(/[\s.,!?]+/)[0] || "";
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
     needs: () => !STATE.profile.name,
     ask: () => "First — what should I call you?",
     parse: (text) => {
-      const cleaned = text.trim().replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
-      const name = cleaned.split(/[\s.,!?]+/)[0];
+      const name = interviewNameToken(text);
       if (name && /^[a-z'-]{1,30}$/i.test(name)) STATE.profile.name = capitalize(name);
     },
     confirm: () => STATE.profile.name ? `Nice to meet you, ${STATE.profile.name}.` : "Got it."
