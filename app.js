@@ -906,12 +906,7 @@ async function coachSend(rawText, { silent = false } = {}) {
 
   // Allow user to start / resume / abort the interview from free chat.
   const lower = text.toLowerCase();
-  if (
-    /^(yes|sure|ok(ay)?|let'?s (start|do (it|this))|start interview|interview me|tell me about you|onboard me)/i.test(
-      text
-    ) &&
-    !STATE.profile.interviewStarted
-  ) {
+  if (isInterviewConsent(text) && !STATE.profile.interviewStarted) {
     startInterview();
     saveState();
     if (route === "home") render();
@@ -953,6 +948,29 @@ async function coachSend(rawText, { silent = false } = {}) {
 
   if (route === "home") render();
   else drawCoach();
+}
+
+// "let's start" / "let's do this" are interview consent only as complete
+// utterances. "let's start walking" / "let's start small" are plan talk —
+// treating them as consent swallows the request and, if the user repeats it
+// on the name question, permanently stores profile.name = "Let's".
+function isLetsStartActivityTalk(text) {
+  const t = String(text || "").trim();
+  if (/^let'?s start\b/i.test(t)) {
+    return !/^let'?s start(\s+((the\s+)?interview|onboarding))?\s*[.!?]*\s*$/i.test(t);
+  }
+  if (/^let'?s do this\b/i.test(t)) {
+    return !/^let'?s do this\s*[.!?]*\s*$/i.test(t);
+  }
+  return false;
+}
+
+function isInterviewConsent(text) {
+  const t = String(text || "").trim();
+  if (!t || isLetsStartActivityTalk(t)) return false;
+  return /^(yes|sure|ok(ay)?|let'?s (start|do (it|this))|start interview|interview me|tell me about you|onboard me)/i.test(
+    t
+  );
 }
 
 function pushMemory(entry) {
