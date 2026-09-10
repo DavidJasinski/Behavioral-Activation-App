@@ -4,6 +4,7 @@ Run from the repository root:
   python3 scripts/check_regressions.py
 """
 
+import subprocess
 from pathlib import Path
 
 
@@ -30,9 +31,16 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def assert_refused_gentle_guard() -> None:
+    script = ROOT / "scripts" / "check_refused_gentle.js"
+    assert script.is_file(), f"missing {script}"
+    subprocess.run(["node", str(script)], cwd=ROOT, check=True)
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    assert_refused_gentle_guard()
     print("OK regression checks passed")
 
 

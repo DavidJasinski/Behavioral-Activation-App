@@ -992,6 +992,26 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// "don't be gentle" is a request to be pushed. The challenge parser matches
+// the bare word "gentle" as the easy-pace option, and the style parser falls
+// through to warm (the question's gentle option). challengeLevel has no
+// free-chat write path, so the inversion sticks.
+function refusesGentle(text) {
+  const t = String(text || "").toLowerCase();
+  if (
+    /\b(don'?t|do\s+not|never)\s+(be\s+)?(so\s+|too\s+)?gentle\b/.test(t)
+  )
+    return true;
+  if (/\bnot\s+(so\s+|too\s+|be\s+)?gentle\b/.test(t)) return true;
+  if (
+    /\b(don'?t|do\s+not|never)\s+want\s+(you\s+)?(to\s+be\s+)?(so\s+|too\s+)?gentle\b/.test(
+      t
+    )
+  )
+    return true;
+  return false;
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
@@ -1013,7 +1033,9 @@ const INTERVIEW_TOPICS = [
     },
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
+      if (refusesGentle(t))
+        STATE.profile.communicationStyle = "direct";
+      else if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
         STATE.profile.communicationStyle = "direct";
       else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
         STATE.profile.communicationStyle = "concise";
@@ -1128,7 +1150,9 @@ const INTERVIEW_TOPICS = [
     ask: () => "Should I let you set the pace, or should I gently push you when I notice you holding back? You can change this later.",
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hold accountable|tough|harder|don'?t let me|call me out/.test(t))
+      if (refusesGentle(t))
+        STATE.profile.challengeLevel = "push";
+      else if (/push|challenge|hold accountable|tough|harder|don'?t let me|call me out/.test(t))
         STATE.profile.challengeLevel = "push";
       else if (/gentle|soft|slow|my pace|let me|don'?t push|easy/.test(t))
         STATE.profile.challengeLevel = "gentle";
