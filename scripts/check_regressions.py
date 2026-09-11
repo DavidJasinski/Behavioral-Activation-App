@@ -5,6 +5,7 @@ Run from the repository root:
 """
 
 from pathlib import Path
+import subprocess
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -30,9 +31,24 @@ def assert_help_fallback_is_guarded(path: Path) -> None:
     )
 
 
+def run_node_check(script_name: str) -> None:
+    script = ROOT / "scripts" / script_name
+    result = subprocess.run(
+        ["node", str(script)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise AssertionError(
+            f"{script_name} failed:\n{result.stdout}\n{result.stderr}"
+        )
+
+
 def main() -> None:
     assert_help_fallback_is_guarded(ROOT / "app.js")
     assert_help_fallback_is_guarded(ROOT / "dist" / "BreakFree.html")
+    run_node_check("check_extract_when_negation.js")
     print("OK regression checks passed")
 
 
