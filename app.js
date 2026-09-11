@@ -1433,15 +1433,33 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
+function whenTokenIsNegated(text, token) {
+  const t = String(text || "");
+  const tok = String(token || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  if (!tok) return false;
+  // "I can't tonight", "not tomorrow", "don't today" — do not treat a refused
+  // day as the scheduled day when another day is also named.
+  return new RegExp(
+    String.raw`\b(?:can'?t|cannot|won'?t|don'?t|do\s+not|not)\s+${tok}\b`,
+    "i"
+  ).test(t);
+}
+
 function extractWhen(text) {
   const now = new Date();
-  if (/tonight/i.test(text)) {
-    const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
-  }
-  if (/tomorrow/i.test(text)) {
+  const t = String(text || "");
+  const wantsTomorrow = /\btomorrow\b/i.test(t) && !whenTokenIsNegated(t, "tomorrow");
+  const wantsTonight = /\btonight\b/i.test(t) && !whenTokenIsNegated(t, "tonight");
+  const wantsToday = /\btoday\b/i.test(t) && !whenTokenIsNegated(t, "today");
+  // Tomorrow before tonight: "schedule a walk tomorrow, I can't tonight"
+  // used to match /tonight/ first and persist the step on the wrong local day.
+  if (wantsTomorrow) {
     const d = new Date(now); d.setDate(d.getDate() + 1); d.setHours(10, 0, 0, 0); return d.toISOString();
   }
-  if (/today/i.test(text)) {
+  if (wantsTonight) {
+    const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
+  }
+  if (wantsToday) {
     const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
   }
   return null;
