@@ -1416,11 +1416,22 @@ async function executeIntent(intent, text) {
 }
 
 function extractActionTitle(text) {
-  const m = text.match(
-    /(?:to\s+)?(walk|run|stretch|read|call|journal|meditate|cook|clean|tidy|shower|breathe|step outside|drink water|nap|message|ride|approach|enter|go to|stand near|sit in|attend)\s*([a-z0-9 '-]{0,40})/i
+  // Title the step from the create request, not from earlier narrative verbs
+  // ("I went for a run… schedule a walk") or substrings ("already" contains "read").
+  const createRe = /\b(?:add|schedule|plan|create|build)\b/gi;
+  let lastCreate = null;
+  let found;
+  while ((found = createRe.exec(text))) lastCreate = found;
+  const scope = lastCreate ? text.slice(lastCreate.index + lastCreate[0].length) : text;
+  const m = scope.match(
+    /(?:to\s+)?\b(step outside|drink water|go to|stand near|sit in|walk|run|stretch|reading|read|call|journal|meditate|cook|clean|tidy|shower|breathe|nap|message|ride|approach|enter|attend)\b\s*([a-z0-9 '-]{0,40})/i
   );
   if (!m) return null;
-  return (m[1] + (m[2] ? " " + m[2] : "")).trim();
+  const title = (m[1] + (m[2] ? " " + m[2] : ""))
+    .trim()
+    .replace(/\s+(?:for\s+)?(?:today|tonight|tomorrow)\b.*$/i, "")
+    .trim();
+  return title || null;
 }
 
 function extractMinutes(text) {
