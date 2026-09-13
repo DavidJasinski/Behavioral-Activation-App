@@ -1000,7 +1000,7 @@ const INTERVIEW_TOPICS = [
     parse: (text) => {
       const cleaned = text.trim().replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
       const name = cleaned.split(/[\s.,!?]+/)[0];
-      if (name && /^[a-z'-]{1,30}$/i.test(name)) STATE.profile.name = capitalize(name);
+      if (name && isGivenNameToken(name)) STATE.profile.name = capitalize(name);
     },
     confirm: () => STATE.profile.name ? `Nice to meet you, ${STATE.profile.name}.` : "Got it."
   },
@@ -1159,6 +1159,12 @@ function capitalize(s) {
   return s.length ? s[0].toUpperCase() + s.slice(1) : s;
 }
 
+// Letters from any script, plus ASCII/hyphen nicknames. ASCII-only [a-z]
+// dropped José / François / 李 while still marking the name topic asked.
+function isGivenNameToken(name) {
+  return /^[\p{L}'-]{1,30}$/u.test(String(name || ""));
+}
+
 function nextInterviewTopic() {
   const asked = STATE.profile.interviewProgress.askedTopics || [];
   for (const topic of INTERVIEW_TOPICS) {
@@ -1216,6 +1222,16 @@ function handleInterviewAnswer(text) {
     if (!skip) {
       try { topic.parse(text); } catch {}
       confirmation = topic.confirm ? topic.confirm() : "";
+    }
+    // Name has no later edit UI. If parse rejected the token (or found none),
+    // do not consume the topic — needs() would skip it forever.
+    if (currentId === "name" && !skip && !STATE.profile.name) {
+      STATE.profile.interviewProgress.currentTopic = "name";
+      pushMemory({
+        role: "coach",
+        text: "I didn't catch a name I can use — what should I call you?"
+      });
+      return;
     }
     const asked = STATE.profile.interviewProgress.askedTopics || [];
     if (!asked.includes(currentId)) asked.push(currentId);
