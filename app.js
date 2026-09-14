@@ -1420,7 +1420,10 @@ function extractActionTitle(text) {
     /(?:to\s+)?(walk|run|stretch|read|call|journal|meditate|cook|clean|tidy|shower|breathe|step outside|drink water|nap|message|ride|approach|enter|go to|stand near|sit in|attend)\s*([a-z0-9 '-]{0,40})/i
   );
   if (!m) return null;
-  return (m[1] + (m[2] ? " " + m[2] : "")).trim();
+  return (m[1] + (m[2] ? " " + m[2] : ""))
+    .replace(/\s+(?:on|for|at)\s+\d{4}-\d{2}-\d{2}\b/gi, "")
+    .replace(/\s+\d{4}-\d{2}-\d{2}\b/g, "")
+    .trim();
 }
 
 function extractMinutes(text) {
@@ -1433,7 +1436,26 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
+function isoDateOnlyToLocalIso(text) {
+  const m = String(text).match(/\b(\d{4})-(\d{2})-(\d{2})\b/);
+  if (!m) return null;
+  const y = Number(m[1]);
+  const month = Number(m[2]);
+  const day = Number(m[3]);
+  const local = new Date(y, month - 1, day, 0, 0, 0, 0);
+  if (
+    local.getFullYear() !== y ||
+    local.getMonth() !== month - 1 ||
+    local.getDate() !== day
+  ) {
+    return null;
+  }
+  return local.toISOString();
+}
+
 function extractWhen(text) {
+  const iso = isoDateOnlyToLocalIso(text);
+  if (iso) return iso;
   const now = new Date();
   if (/tonight/i.test(text)) {
     const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
