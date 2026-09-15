@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-09-15T11:08:00Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2518,8 +2518,17 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
-function extractWhen(text) {
-  const now = new Date();
+function clampToLocalDay(date, ref = new Date()) {
+  const d = new Date(date);
+  const anchor = new Date(ref);
+  if (todayKey(d) === todayKey(anchor)) return d;
+  const clamped = new Date(anchor);
+  clamped.setHours(23, 59, 0, 0);
+  return clamped;
+}
+
+function extractWhen(text, now = new Date()) {
+  now = new Date(now);
   if (/tonight/i.test(text)) {
     const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
   }
@@ -2527,7 +2536,11 @@ function extractWhen(text) {
     const d = new Date(now); d.setDate(d.getDate() + 1); d.setHours(10, 0, 0, 0); return d.toISOString();
   }
   if (/today/i.test(text)) {
-    const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
+    const d = new Date(now);
+    d.setHours(d.getHours() + 1, 0, 0, 0);
+    // After 23:00, hours+1 rolls to the next local day so "today" vanished
+    // from today's calendar. Keep the requested local day.
+    return clampToLocalDay(d, now).toISOString();
   }
   return null;
 }
