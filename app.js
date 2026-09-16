@@ -1444,6 +1444,17 @@ function extractWhen(text) {
   if (/today/i.test(text)) {
     const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
   }
+  // Sibling of "tonight": "this afternoon" does not contain "today", so it used
+  // to return null and the step vanished from the calendar.
+  if (/\bthis morning\b|\bin the morning\b/i.test(text)) {
+    const d = new Date(now); d.setHours(9, 0, 0, 0); return d.toISOString();
+  }
+  if (/\bthis afternoon\b|\bin the afternoon\b/i.test(text)) {
+    const d = new Date(now); d.setHours(15, 0, 0, 0); return d.toISOString();
+  }
+  if (/\bthis evening\b|\bin the evening\b/i.test(text)) {
+    const d = new Date(now); d.setHours(18, 0, 0, 0); return d.toISOString();
+  }
   return null;
 }
 
