@@ -1420,7 +1420,11 @@ function extractActionTitle(text) {
     /(?:to\s+)?(walk|run|stretch|read|call|journal|meditate|cook|clean|tidy|shower|breathe|step outside|drink water|nap|message|ride|approach|enter|go to|stand near|sit in|attend)\s*([a-z0-9 '-]{0,40})/i
   );
   if (!m) return null;
-  return (m[1] + (m[2] ? " " + m[2] : "")).trim();
+  return (m[1] + (m[2] ? " " + m[2] : ""))
+    .replace(/\s+at\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?\b/gi, "")
+    .replace(/\s+at\s+(?:1[3-9]|2[0-3]):[0-5]\d\b/g, "")
+    .replace(/\s+at\s+(?:noon|midnight)\b/gi, "")
+    .trim();
 }
 
 function extractMinutes(text) {
@@ -1433,16 +1437,58 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
+function extractClockTime(text) {
+  const s = String(text || "");
+  if (/\bmidnight\b/i.test(s)) return { hours: 0, minutes: 0 };
+  if (/\bnoon\b/i.test(s)) return { hours: 12, minutes: 0 };
+  const ampm = s.match(/\b(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m\.?\b/i);
+  if (ampm) {
+    let hours = Number(ampm[1]);
+    const minutes = ampm[2] != null ? Number(ampm[2]) : 0;
+    if (hours < 1 || hours > 12 || minutes > 59) return null;
+    const isPm = ampm[3].toLowerCase() === "p";
+    if (hours === 12) hours = isPm ? 12 : 0;
+    else if (isPm) hours += 12;
+    return { hours, minutes };
+  }
+  // Colon times without am/pm: only 13:00–23:59, so "15:00" is 3pm and
+  // "3:30" / durations like "15 minutes" are not treated as a clock time.
+  const h24 = s.match(/\b(1[3-9]|2[0-3]):([0-5]\d)\b/);
+  if (h24) return { hours: Number(h24[1]), minutes: Number(h24[2]) };
+  return null;
+}
+
+function applyClockOrFallback(d, clock, fallbackHours, fallbackMinutes) {
+  if (clock) d.setHours(clock.hours, clock.minutes, 0, 0);
+  else d.setHours(fallbackHours, fallbackMinutes, 0, 0);
+  return d.toISOString();
+}
+
 function extractWhen(text) {
   const now = new Date();
+  const clock = extractClockTime(text);
   if (/tonight/i.test(text)) {
-    const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
+    const d = new Date(now);
+    return applyClockOrFallback(d, clock, 20, 0);
   }
   if (/tomorrow/i.test(text)) {
-    const d = new Date(now); d.setDate(d.getDate() + 1); d.setHours(10, 0, 0, 0); return d.toISOString();
+    const d = new Date(now);
+    d.setDate(d.getDate() + 1);
+    return applyClockOrFallback(d, clock, 10, 0);
   }
   if (/today/i.test(text)) {
-    const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
+    const d = new Date(now);
+    if (clock) {
+      d.setHours(clock.hours, clock.minutes, 0, 0);
+      return d.toISOString();
+    }
+    d.setHours(d.getHours() + 1, 0, 0, 0);
+    return d.toISOString();
+  }
+  if (clock) {
+    const d = new Date(now);
+    d.setHours(clock.hours, clock.minutes, 0, 0);
+    return d.toISOString();
   }
   return null;
 }
