@@ -1420,12 +1420,24 @@ function extractActionTitle(text) {
     /(?:to\s+)?(walk|run|stretch|read|call|journal|meditate|cook|clean|tidy|shower|breathe|step outside|drink water|nap|message|ride|approach|enter|go to|stand near|sit in|attend)\s*([a-z0-9 '-]{0,40})/i
   );
   if (!m) return null;
-  return (m[1] + (m[2] ? " " + m[2] : "")).trim();
+  return (m[1] + (m[2] ? " " + m[2] : ""))
+    .replace(/\s+in\s+(?:an?\s+hour|\d{1,3}\s*(?:minutes?|mins?|hours?|hrs?|days?))\b/gi, "")
+    .replace(/\s+(?:an?\s+hour|\d{1,3}\s*(?:minutes?|mins?|hours?|hrs?))\s+from\s+now\b/gi, "")
+    .trim();
 }
 
 function extractMinutes(text) {
-  const m = text.match(/(\d{1,3})\s*(min|minute|m\b)/i);
-  return m ? Number(m[1]) : null;
+  const s = String(text || "");
+  const re = /(\d{1,3})\s*(minutes?|mins?|m\b)/gi;
+  let m;
+  while ((m = re.exec(s))) {
+    const before = s.slice(0, m.index);
+    const after = s.slice(m.index + m[0].length);
+    if (/\bin\s+$/i.test(before)) continue;
+    if (/^\s*from\s+now\b/i.test(after)) continue;
+    return Number(m[1]);
+  }
+  return null;
 }
 
 function extractSuds(text) {
@@ -1433,8 +1445,46 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
-function extractWhen(text) {
-  const now = new Date();
+function normalizeOffsetUnit(raw) {
+  const u = String(raw || "").toLowerCase();
+  if (u.startsWith("min")) return "minute";
+  if (u.startsWith("hour") || u.startsWith("hr")) return "hour";
+  if (u.startsWith("day")) return "day";
+  return null;
+}
+
+function extractRelativeOffset(text) {
+  const s = String(text || "");
+  const numeric = s.match(/\bin\s+(\d{1,3})\s*(minutes?|mins?|hours?|hrs?|days?)\b/i);
+  if (numeric) {
+    return { amount: Number(numeric[1]), unit: normalizeOffsetUnit(numeric[2]) };
+  }
+  if (/\bin\s+an?\s+hour\b/i.test(s)) {
+    return { amount: 1, unit: "hour" };
+  }
+  const fromNow = s.match(
+    /\b(?:(\d{1,3})\s*(minutes?|mins?|hours?|hrs?)|an?\s+hour)\s+from\s+now\b/i
+  );
+  if (fromNow) {
+    if (fromNow[1]) {
+      return { amount: Number(fromNow[1]), unit: normalizeOffsetUnit(fromNow[2]) };
+    }
+    return { amount: 1, unit: "hour" };
+  }
+  return null;
+}
+
+function applyRelativeOffset(now, spec) {
+  const d = new Date(now);
+  if (spec.unit === "minute") d.setMinutes(d.getMinutes() + spec.amount);
+  else if (spec.unit === "hour") d.setHours(d.getHours() + spec.amount);
+  else if (spec.unit === "day") d.setDate(d.getDate() + spec.amount);
+  else return null;
+  return d;
+}
+
+function extractWhen(text, now) {
+  now = now instanceof Date && !Number.isNaN(now.getTime()) ? new Date(now) : new Date();
   if (/tonight/i.test(text)) {
     const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
   }
@@ -1443,6 +1493,11 @@ function extractWhen(text) {
   }
   if (/today/i.test(text)) {
     const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
+  }
+  const offset = extractRelativeOffset(text);
+  if (offset && offset.amount > 0 && offset.unit) {
+    const d = applyRelativeOffset(now, offset);
+    return d ? d.toISOString() : null;
   }
   return null;
 }
