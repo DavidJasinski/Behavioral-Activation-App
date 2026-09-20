@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-09-20T11:06:47Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2500,12 +2500,76 @@ async function executeIntent(intent, text) {
   return { kind: intent };
 }
 
+const MONTH_NAME_RE =
+  "january|february|march|april|june|july|august|september|october|november|december|sept|jan|feb|aug|oct|nov|dec|mar|apr|jun|jul|sep|may";
+
+const MONTH_INDEX = {
+  january: 0,
+  jan: 0,
+  february: 1,
+  feb: 1,
+  march: 2,
+  mar: 2,
+  april: 3,
+  apr: 3,
+  may: 4,
+  june: 5,
+  jun: 5,
+  july: 6,
+  jul: 6,
+  august: 7,
+  aug: 7,
+  september: 8,
+  sept: 8,
+  sep: 8,
+  october: 9,
+  oct: 9,
+  november: 10,
+  nov: 10,
+  december: 11,
+  dec: 11
+};
+
 function extractActionTitle(text) {
   const m = text.match(
     /(?:to\s+)?(walk|run|stretch|read|call|journal|meditate|cook|clean|tidy|shower|breathe|step outside|drink water|nap|message|ride|approach|enter|go to|stand near|sit in|attend)\s*([a-z0-9 '-]{0,40})/i
   );
   if (!m) return null;
-  return (m[1] + (m[2] ? " " + m[2] : "")).trim();
+  return stripMonthDayFromTitle((m[1] + (m[2] ? " " + m[2] : "")).trim());
+}
+
+function stripMonthDayFromTitle(title) {
+  const month = MONTH_NAME_RE;
+  return String(title)
+    .replace(
+      new RegExp(
+        `\\s+(?:on|for|at)\\s+(?:the\\s+)?(?:${month})\\.?\\s+\\d{1,2}(?:st|nd|rd|th)?(?:,?\\s*(?:19|20)\\d{2})?\\b`,
+        "gi"
+      ),
+      ""
+    )
+    .replace(
+      new RegExp(
+        `\\s+(?:on|for|at)\\s+(?:the\\s+)?\\d{1,2}(?:st|nd|rd|th)?\\s+(?:of\\s+)?(?:${month})\\.?(?:,?\\s*(?:19|20)\\d{2})?\\b`,
+        "gi"
+      ),
+      ""
+    )
+    .replace(
+      new RegExp(
+        `\\s+(?:${month})\\.?\\s+\\d{1,2}(?:st|nd|rd|th)?(?:,?\\s*(?:19|20)\\d{2})?\\b`,
+        "gi"
+      ),
+      ""
+    )
+    .replace(
+      new RegExp(
+        `\\s+(?:the\\s+)?\\d{1,2}(?:st|nd|rd|th)?\\s+(?:of\\s+)?(?:${month})\\.?(?:,?\\s*(?:19|20)\\d{2})?\\b`,
+        "gi"
+      ),
+      ""
+    )
+    .trim();
 }
 
 function extractMinutes(text) {
@@ -2518,8 +2582,61 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
-function extractWhen(text) {
-  const now = new Date();
+function localYmdToIso(year, monthIndex, day, hour = 10, minute = 0) {
+  const local = new Date(year, monthIndex, day, hour, minute, 0, 0);
+  if (
+    local.getFullYear() !== year ||
+    local.getMonth() !== monthIndex ||
+    local.getDate() !== day
+  ) {
+    return null;
+  }
+  return local.toISOString();
+}
+
+function extractMonthDay(text, now = new Date()) {
+  const src = String(text);
+  const monthFirst = new RegExp(
+    `\\b(${MONTH_NAME_RE})\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?(?!\\d)(?:,?\\s*((?:19|20)\\d{2}))?\\b`,
+    "i"
+  );
+  const dayFirst = new RegExp(
+    `\\b(?:the\\s+)?(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?(${MONTH_NAME_RE})\\.?(?:,?\\s*((?:19|20)\\d{2}))?\\b`,
+    "i"
+  );
+  const m1 = src.match(monthFirst);
+  const m2 = src.match(dayFirst);
+  let monthName;
+  let dayStr;
+  let yearStr;
+  if (m1 && (!m2 || m1.index <= m2.index)) {
+    monthName = m1[1];
+    dayStr = m1[2];
+    yearStr = m1[3];
+  } else if (m2) {
+    dayStr = m2[1];
+    monthName = m2[2];
+    yearStr = m2[3];
+  } else {
+    return null;
+  }
+
+  const monthIndex = MONTH_INDEX[monthName.toLowerCase().replace(/\.$/, "")];
+  if (monthIndex == null) return null;
+  const day = Number(dayStr);
+  const explicitYear = Boolean(yearStr);
+  const year = explicitYear ? Number(yearStr) : now.getFullYear();
+  const iso = localYmdToIso(year, monthIndex, day);
+  if (!iso) return null;
+  if (!explicitYear) {
+    const namedDay = new Date(year, monthIndex, day);
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (namedDay < todayStart) return localYmdToIso(year + 1, monthIndex, day);
+  }
+  return iso;
+}
+
+function extractWhen(text, now = new Date()) {
   if (/tonight/i.test(text)) {
     const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
   }
@@ -2529,6 +2646,8 @@ function extractWhen(text) {
   if (/today/i.test(text)) {
     const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
   }
+  const named = extractMonthDay(text, now);
+  if (named) return named;
   return null;
 }
 
