@@ -1416,11 +1416,18 @@ async function executeIntent(intent, text) {
 }
 
 function extractActionTitle(text) {
-  const m = text.match(
+  const m = stripSlashDatePhrases(text).match(
     /(?:to\s+)?(walk|run|stretch|read|call|journal|meditate|cook|clean|tidy|shower|breathe|step outside|drink water|nap|message|ride|approach|enter|go to|stand near|sit in|attend)\s*([a-z0-9 '-]{0,40})/i
   );
   if (!m) return null;
   return (m[1] + (m[2] ? " " + m[2] : "")).trim();
+}
+
+function stripSlashDatePhrases(text) {
+  return String(text)
+    .replace(/\s+(?:on|for|at)\s+\d{1,2}\/\d{1,2}(?!\d)(?:\/(?:19|20)\d{2})?(?!\/\d)/gi, "")
+    .replace(/\s+(?:19|20)\d{2}\/\d{1,2}\/\d{1,2}\b/g, "")
+    .replace(/\s+\d{1,2}\/\d{1,2}(?!\d)(?:\/(?:19|20)\d{2})?(?!\/\d)/g, "");
 }
 
 function extractMinutes(text) {
@@ -1433,8 +1440,64 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
-function extractWhen(text) {
-  const now = new Date();
+function localYmdToIso(year, monthIndex, day, hour = 10, minute = 0) {
+  const local = new Date(year, monthIndex, day, hour, minute, 0, 0);
+  if (
+    local.getFullYear() !== year ||
+    local.getMonth() !== monthIndex ||
+    local.getDate() !== day
+  ) {
+    return null;
+  }
+  return local.toISOString();
+}
+
+function slashDateToIso(month, day, year, now, explicitYear) {
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const iso = localYmdToIso(year, month - 1, day);
+  if (!iso) return null;
+  if (!explicitYear) {
+    const namedDay = new Date(year, month - 1, day);
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (namedDay < todayStart) return localYmdToIso(year + 1, month - 1, day);
+  }
+  return iso;
+}
+
+function isFractionSlash(src, index, matched) {
+  const before = src.slice(0, index);
+  const after = src.slice(index + matched.length);
+  if (/\bin\s+$/i.test(before)) return true;
+  if (/^\s*(an?\s+)?(hour|hr|hours|minute|min|minutes)\b/i.test(after)) return true;
+  return false;
+}
+
+function extractSlashDate(text, now = new Date()) {
+  const src = String(text);
+
+  const ymd = src.match(/\b((?:19|20)\d{2})\/(\d{1,2})\/(\d{1,2})\b/);
+  if (ymd && !isFractionSlash(src, ymd.index, ymd[0])) {
+    return slashDateToIso(Number(ymd[2]), Number(ymd[3]), Number(ymd[1]), now, true);
+  }
+
+  const mdy = src.match(/\b(\d{1,2})\/(\d{1,2})(?!\d)(?:\/((?:19|20)\d{2}))?(?!\/\d)/);
+  if (!mdy || isFractionSlash(src, mdy.index, mdy[0])) return null;
+
+  const month = Number(mdy[1]);
+  const day = Number(mdy[2]);
+  const explicitYear = Boolean(mdy[3]);
+  const year = explicitYear ? Number(mdy[3]) : now.getFullYear();
+
+  // Bare M/D with both parts <= 12 is ambiguous (and overlaps fractions like 1/2).
+  // Require on/for, or an unambiguous day (>12), or an explicit 4-digit year.
+  const cue = src.slice(Math.max(0, mdy.index - 4), mdy.index);
+  const hasDateCue = /(?:on|for)\s+$/i.test(cue);
+  if (!explicitYear && day <= 12 && !hasDateCue) return null;
+
+  return slashDateToIso(month, day, year, now, explicitYear);
+}
+
+function extractWhen(text, now = new Date()) {
   if (/tonight/i.test(text)) {
     const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
   }
@@ -1444,6 +1507,8 @@ function extractWhen(text) {
   if (/today/i.test(text)) {
     const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
   }
+  const slash = extractSlashDate(text, now);
+  if (slash) return slash;
   return null;
 }
 
