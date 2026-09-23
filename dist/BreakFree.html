@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-09-23T11:09:06Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1955,14 +1955,15 @@ function generateSuggestions() {
   if (!p.interviewStarted) out.push("interview me");
   else if (!p.interviewComplete) out.push("continue interview");
 
-  if (p.values?.length)
-    out.push(`suggest an activation around ${p.values[0]}`);
+  const valueTopic = firstContentTopic(p.values);
+  if (valueTopic)
+    out.push(`suggest an activation around ${valueTopic}`);
   if (p.avoiding?.length)
     out.push(`build me a small in-vivo exposure step toward ${truncate(p.avoiding[0], 30)}`);
   if (STATE.activations.some((a) => !a.completed))
     out.push("what's the easiest thing I have planned?");
   out.push("summarize my week");
-  if (!p.values?.length) out.push("suggest a 10-minute activation tied to a value");
+  if (!valueTopic) out.push("suggest a 10-minute activation tied to a value");
   if (!p.avoiding?.length) out.push("build me a small in-vivo exposure step");
   return out.slice(0, 5);
 }
@@ -2075,6 +2076,42 @@ function extractTopics(text) {
   ).slice(0, 8);
 }
 
+// "I like walking" / "I want to cook" — the verb is not the activity. If it
+// stays as values[0] or energizers[0], suggestion chips persist a plan item
+// titled from that verb ("5 minutes of like") and there is no edit/delete UI.
+const PROFILE_TOPIC_NOISE = new Set([
+  "feel", "feels", "felt", "feeling", "myself", "alive", "usually", "doing",
+  "makes", "make", "made", "hoping", "hope", "hopes", "hoped", "wish", "wishes",
+  "wishing", "something", "things", "thing", "really", "getting", "gets", "got",
+  "most", "im", "i'm", "often", "actually", "gonna", "wanna", "good"
+]);
+const PROFILE_LEADING_VERBS = new Set([
+  "like", "likes", "liked", "love", "loves", "loved", "enjoy", "enjoys",
+  "enjoyed", "enjoying", "want", "wants", "wanted", "wanting"
+]);
+// Dropped even when nothing follows. "love" is kept in that case — it is also a value.
+const PROFILE_EMPTY_VERBS = new Set([
+  "like", "likes", "liked", "enjoy", "enjoys", "enjoyed", "enjoying",
+  "want", "wants", "wanted", "wanting"
+]);
+
+function meaningfulTopics(words) {
+  const raw = (words || []).filter((w) => w && !PROFILE_TOPIC_NOISE.has(w));
+  let start = 0;
+  while (start < raw.length && PROFILE_LEADING_VERBS.has(raw[start])) start++;
+  if (start > 0 && start < raw.length) return raw.slice(start);
+  return raw.filter((w) => !PROFILE_EMPTY_VERBS.has(w));
+}
+
+function profileTopics(text) {
+  return meaningfulTopics(extractTopics(text));
+}
+
+function firstContentTopic(list) {
+  const words = (list || []).map((t) => String(t || "").toLowerCase());
+  return meaningfulTopics(words)[0] || null;
+}
+
 /* ---------- Interview engine ---------- */
 
 const INTERVIEW_TOPICS = [
@@ -2156,7 +2193,7 @@ const INTERVIEW_TOPICS = [
     needs: () => !STATE.profile.values?.length,
     ask: () => "If today were a little lighter, what would you want to be doing more of? People, places, activities, anything that pulls at you.",
     parse: (text) => {
-      const topics = extractTopics(text);
+      const topics = profileTopics(text);
       STATE.profile.values = topics.slice(0, 8);
       STATE.profile.valueNotes = (STATE.profile.valueNotes || []).concat([text.trim()]).slice(-5);
     },
@@ -2170,7 +2207,7 @@ const INTERVIEW_TOPICS = [
     needs: () => !STATE.profile.energizers?.length,
     ask: () => "When you do feel like yourself — even for a flash — what are you usually doing?",
     parse: (text) => {
-      STATE.profile.energizers = extractTopics(text).slice(0, 8);
+      STATE.profile.energizers = profileTopics(text).slice(0, 8);
       STATE.profile.energizerNotes = (STATE.profile.energizerNotes || []).concat([text.trim()]).slice(-5);
     },
     confirm: () => {
@@ -2352,15 +2389,15 @@ function inferProfileFromMessage(text) {
   // Quietly enrich profile from free-chat content. Does not overwrite explicit answers.
   const t = text.toLowerCase();
   const p = STATE.profile;
-  const newTopics = extractTopics(text);
+  const newTopics = profileTopics(text);
 
-  if (/i (love|enjoy|like) (to )?\w+/.test(t) || /makes me feel (good|alive|like myself)/.test(t)) {
+  if ((/i (love|enjoy|like) (to )?\w+/.test(t) || /makes me feel (good|alive|like myself)/.test(t)) && newTopics.length) {
     p.energizers = Array.from(new Set([...(p.energizers || []), ...newTopics])).slice(0, 12);
   }
   if (/i'?m avoiding|i can'?t (face|go|leave|do)|i keep putting off/.test(t)) {
     p.avoiding = (p.avoiding || []).concat([text.trim()]).slice(-6);
   }
-  if (/i want to|hoping to|i'?d like to|my goal is|i wish i could/.test(t)) {
+  if ((/i want to|hoping to|i'?d like to|my goal is|i wish i could/.test(t)) && newTopics.length) {
     p.values = Array.from(new Set([...(p.values || []), ...newTopics])).slice(0, 12);
   }
 }
@@ -2569,12 +2606,13 @@ function suggestActivation(text) {
     };
   }
 
-  if (!wantIvex && p.energizers?.length) {
+  const energizer = !wantIvex ? firstContentTopic(p.energizers) : null;
+  if (energizer) {
     return {
       id: uid(),
       modality: "ba",
-      title: `5 minutes of ${p.energizers[0]}`,
-      category: guessCategory(p.energizers[0]),
+      title: `5 minutes of ${energizer}`,
+      category: guessCategory(energizer),
       energy: 1,
       duration: 5,
       scheduledFor: null,
@@ -2584,12 +2622,13 @@ function suggestActivation(text) {
     };
   }
 
-  if (!wantIvex && p.values?.length) {
+  const valueTopic = !wantIvex ? firstContentTopic(p.values) : null;
+  if (valueTopic) {
     return {
       id: uid(),
       modality: "ba",
-      title: `5 minutes around ${p.values[0]}`,
-      category: guessCategory(p.values[0]),
+      title: `5 minutes around ${valueTopic}`,
+      category: guessCategory(valueTopic),
       energy: 1,
       duration: 5,
       scheduledFor: null,
