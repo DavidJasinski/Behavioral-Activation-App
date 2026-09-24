@@ -992,14 +992,34 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// "I'd like to be called Maya" / "I like to be called Maya" are natural
+// answers to the name question. The start-anchored I'm / call me strip
+// then takes the first token, so those persist I'd / I, and there is no
+// later UI to change it. `I'm called` and `prefer to be called` do not
+// match this phrasing. If merging with those extractors, run this matcher
+// before generic `call me` / `i am|i'm` captures and the first-token fallback.
+function interviewNameToken(text) {
+  const raw = String(text || "").trim();
+  const likeCalled = raw.match(
+    /\b(?:i['’]d like to be called|i would like to be called|i like to be called)\s+([a-z'-]{2,30})(?![a-z'-])/i
+  );
+  if (likeCalled) {
+    if (/^(later|tomorrow|soon|something|anything|somebody|someone|please|thanks)$/i.test(likeCalled[1])) {
+      return "";
+    }
+    return likeCalled[1];
+  }
+  const cleaned = raw.replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
+  return cleaned.split(/[\s.,!?]+/)[0] || "";
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
     needs: () => !STATE.profile.name,
     ask: () => "First — what should I call you?",
     parse: (text) => {
-      const cleaned = text.trim().replace(/^(i'?m|my name is|call me|it's|im|name's)\s+/i, "");
-      const name = cleaned.split(/[\s.,!?]+/)[0];
+      const name = interviewNameToken(text);
       if (name && /^[a-z'-]{1,30}$/i.test(name)) STATE.profile.name = capitalize(name);
     },
     confirm: () => STATE.profile.name ? `Nice to meet you, ${STATE.profile.name}.` : "Got it."
