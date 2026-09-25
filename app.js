@@ -992,6 +992,21 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// Bare "tough" is how people describe their week ("it's been a tough week,
+// please be gentle" / "this is tough, let me set the pace"). The style and
+// challenge parsers treated that adjective as a request to be blunt, and
+// challengeLevel has no free-chat write path, so the inversion stuck.
+// Only an actual request ("be tough", "tough on me") counts. Negated
+// "don't be tough" is not a request.
+function requestsTough(text) {
+  const t = String(text || "").toLowerCase();
+  if (/\b(?:don'?t|do\s+not|never)\b[^.!?]{0,48}\btough(?:er|est)?\b/.test(t)) return false;
+  return (
+    /\b(?:be|being)\s+tough(?:er|est)?\b/.test(t) ||
+    /\btough(?:er|est)?\s+on\s+me\b/.test(t)
+  );
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
@@ -1013,7 +1028,7 @@ const INTERVIEW_TOPICS = [
     },
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
+      if (/push|challenge|hard|honest|brutal|real with/.test(t) || requestsTough(t))
         STATE.profile.communicationStyle = "direct";
       else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
         STATE.profile.communicationStyle = "concise";
@@ -1128,7 +1143,7 @@ const INTERVIEW_TOPICS = [
     ask: () => "Should I let you set the pace, or should I gently push you when I notice you holding back? You can change this later.",
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hold accountable|tough|harder|don'?t let me|call me out/.test(t))
+      if (/push|challenge|hold accountable|harder|don'?t let me|call me out/.test(t) || requestsTough(t))
         STATE.profile.challengeLevel = "push";
       else if (/gentle|soft|slow|my pace|let me|don'?t push|easy/.test(t))
         STATE.profile.challengeLevel = "gentle";
