@@ -896,7 +896,8 @@ async function coachSend(rawText, { silent = false } = {}) {
 
   // Interview takes precedence over normal chat.
   if (STATE.coach.mode === "interview") {
-    inferProfileFromMessage(text);
+    // Pause requests must not be indexed as values/energizers before we abort.
+    if (!isInterviewPause(text)) inferProfileFromMessage(text);
     handleInterviewAnswer(text);
     saveState();
     if (route === "home") render();
@@ -1193,11 +1194,48 @@ function startInterview() {
   pushMemory({ role: "coach", text: topic.ask() });
 }
 
+function isInterviewPause(text) {
+  const t = String(text || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[.…!?]+$/g, "")
+    .replace(/\s+/g, " ");
+  if (!t) return false;
+  // "I can't stop worrying" is an answer, not an abort.
+  if (/\b(can'?t|cannot|don'?t|do not|won'?t|will not|never|not)\s+stop\b/.test(t)) {
+    return false;
+  }
+  if (/^(enough|that'?s enough|stop|pause|later|let'?s pick this up later)$/.test(t)) {
+    return true;
+  }
+  if (/^(please\s+|just\s+)?(stop|pause)(\s+(please|now|it))?$/.test(t)) return true;
+  if (
+    /^(please\s+|just\s+)?(stop|pause)\s+(the\s+|this\s+)?(interview|questions?|asking)(\s+please)?$/.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  if (/^(please\s+)?stop\s+asking(\s+me)?(\s+(these\s+|the\s+)?questions?)?$/.test(t)) {
+    return true;
+  }
+  if (
+    /^(can we|could we|can you|could you|will you|would you|let'?s|i want to|i'?d like to)(\s+please)?\s+(stop|pause)(\s+(the\s+|this\s+)?(interview|questions?|asking|now|here|it))?$/.test(
+      t
+    )
+  ) {
+    return true;
+  }
+  if (/^ok(ay)?\s+(stop|pause)(\s+please)?$/.test(t)) return true;
+  return false;
+}
+
 function handleInterviewAnswer(text) {
   const lower = text.trim().toLowerCase();
 
-  // Pause / abort signals.
-  if (/^(enough|that'?s enough|stop|pause|later|let'?s pick this up later)$/.test(lower)) {
+  // Pause / abort. Exact "stop" already worked; "please stop" and
+  // "stop the interview" did not, and the name parser stored them.
+  if (isInterviewPause(text)) {
     STATE.coach.mode = "free";
     pushMemory({
       role: "coach",
