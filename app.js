@@ -1013,7 +1013,11 @@ const INTERVIEW_TOPICS = [
     },
     parse: (text) => {
       const t = text.toLowerCase();
-      if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
+      if (refusesBrutalHonesty(t))
+        STATE.profile.communicationStyle = /concise|short|brief|less|quick|to the point|don'?t ramble/.test(t)
+          ? "concise"
+          : "warm";
+      else if (/push|challenge|hard|tough|honest|brutal|real with/.test(t))
         STATE.profile.communicationStyle = "direct";
       else if (/concise|short|brief|less|quick|to the point|don'?t ramble/.test(t))
         STATE.profile.communicationStyle = "concise";
@@ -1157,6 +1161,22 @@ const INTERVIEW_TOPICS = [
 function capitalize(s) {
   s = String(s || "");
   return s.length ? s[0].toUpperCase() + s.slice(1) : s;
+}
+
+// "brutally" is not the word "brutal", so a bare /brutal/ or /honest/ test
+// treats "don't be brutally honest" as a request to be blunt. That persists
+// communicationStyle=direct and a concise tone, and every later reply is
+// truncated to two sentences. Explicit "be brutally honest" / "be honest"
+// must still mean direct.
+function refusesBrutalHonesty(text) {
+  const t = String(text || "").toLowerCase();
+  return (
+    /\b(?:don'?t|do\s+not|never)\s+(?:be|being)\s+(?:so\s+|too\s+)?(?:brutally\s+)?honest\b/.test(t) ||
+    /\b(?:don'?t|do\s+not)\s+want\s+(?:you\s+)?(?:to\s+be\s+|being\s+)?(?:so\s+|too\s+)?(?:brutally\s+)?honest\b/.test(t) ||
+    /\b(?:don'?t|do\s+not|never)\s+want\s+(?:any\s+|the\s+|your\s+)?brutal\s+honesty\b/.test(t) ||
+    /\bnot\s+(?:be\s+)?(?:so\s+|too\s+)?brutally\s+honest\b/.test(t) ||
+    /\bnot\s+(?:be\s+)?(?:so\s+|too\s+)?brutal\s+honesty\b/.test(t)
+  );
 }
 
 function nextInterviewTopic() {
