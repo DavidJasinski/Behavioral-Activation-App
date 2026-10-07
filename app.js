@@ -992,6 +992,41 @@ function extractTopics(text) {
 
 /* ---------- Interview engine ---------- */
 
+// "anxiet" misses anxious/anxiously; "worry" misses worried/worries.
+// Those are the usual answers to "what's making life smaller?", and a miss
+// leaves struggles empty, marks the topic asked, and permanently skips the
+// avoiding follow-up. Negation is scoped to these stems so "I'm not anxious,
+// I'm just tired" does not start an exposure interview.
+function reportsAnxiety(text) {
+  const t = String(text || "").toLowerCase().replace(/[’‘]/g, "'");
+  if (/anxiet|fear|afraid|scared|panic|worry|dread|overwhelm|nervous/.test(t)) return true;
+  const extra = /\b(?:anxious(?:ly|ness)?|worried|worries)\b/gi;
+  let match;
+  while ((match = extra.exec(t))) {
+    if (!anxietyStemNegated(t.slice(0, match.index))) return true;
+  }
+  return false;
+}
+
+function anxietyStemNegated(before) {
+  const words = String(before || "")
+    .toLowerCase()
+    .split(/[^a-z']+/)
+    .filter(Boolean)
+    .slice(-4);
+  const negators = new Set([
+    "not", "no", "never", "don't", "dont",
+    "isn't", "isnt", "aren't", "arent",
+    "wasn't", "wasnt", "weren't", "werent",
+    "without"
+  ]);
+  const idx = words.findIndex((w) => negators.has(w));
+  if (idx === -1) return false;
+  const between = words.slice(idx + 1);
+  if (between.includes("just") || between.includes("only")) return false;
+  return true;
+}
+
 const INTERVIEW_TOPICS = [
   {
     id: "name",
@@ -1038,7 +1073,7 @@ const INTERVIEW_TOPICS = [
       const t = text.toLowerCase();
       const s = new Set(STATE.profile.struggles || []);
       if (/depress|sad|heav|low|down|empty|numb|tired|exhaust|no energy|no motivation|hopeless|grief|flat|blah|drained/.test(t)) s.add("depression");
-      if (/anxiet|fear|afraid|scared|panic|worry|dread|overwhelm|nervous/.test(t)) s.add("anxiety");
+      if (reportsAnxiety(t)) s.add("anxiety");
       if (/avoid|can'?t (do|face|go|leave)|don'?t leave|hide/.test(t)) s.add("avoidance");
       if (/stuck|frozen|paralyz|spinning|loop/.test(t)) s.add("stuck");
       STATE.profile.struggles = Array.from(s);
