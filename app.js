@@ -1323,13 +1323,18 @@ async function executeIntent(intent, text) {
     const minutes = extractMinutes(text) || 15;
     const when = extractWhen(text);
     const suds = extractSuds(text);
+    // 0 is a real SUDS rating (the bottom of the hierarchy). A truthy check
+    // treated it as "missing" and stored the default bucket, which displays
+    // as SUDS ~40 — harder than an explicit SUDS 20 step.
+    const energy =
+      suds == null ? 2 : Math.max(1, Math.min(5, Math.round(suds / 20)));
     const a = {
       id: uid(),
       modality: "ivex",
       title,
       value: "",
       category: guessCategory(text),
-      energy: suds ? Math.max(1, Math.min(5, Math.round(suds / 20))) : 2,
+      energy,
       duration: minutes,
       scheduledFor: when,
       linkedGoalId: null,

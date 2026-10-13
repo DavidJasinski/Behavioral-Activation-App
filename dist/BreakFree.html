@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-10-13T11:12:47Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2408,13 +2408,18 @@ async function executeIntent(intent, text) {
     const minutes = extractMinutes(text) || 15;
     const when = extractWhen(text);
     const suds = extractSuds(text);
+    // 0 is a real SUDS rating (the bottom of the hierarchy). A truthy check
+    // treated it as "missing" and stored the default bucket, which displays
+    // as SUDS ~40 — harder than an explicit SUDS 20 step.
+    const energy =
+      suds == null ? 2 : Math.max(1, Math.min(5, Math.round(suds / 20)));
     const a = {
       id: uid(),
       modality: "ivex",
       title,
       value: "",
       category: guessCategory(text),
-      energy: suds ? Math.max(1, Math.min(5, Math.round(suds / 20))) : 2,
+      energy,
       duration: minutes,
       scheduledFor: when,
       linkedGoalId: null,
