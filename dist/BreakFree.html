@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <!-- BreakFree single-file build 2026-05-01T11:09:10Z -->
+  <!-- BreakFree single-file build 2026-11-07T11:06:17Z -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#c46b48" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2505,7 +2505,10 @@ function extractActionTitle(text) {
     /(?:to\s+)?(walk|run|stretch|read|call|journal|meditate|cook|clean|tidy|shower|breathe|step outside|drink water|nap|message|ride|approach|enter|go to|stand near|sit in|attend)\s*([a-z0-9 '-]{0,40})/i
   );
   if (!m) return null;
-  return (m[1] + (m[2] ? " " + m[2] : "")).trim();
+  return (m[1] + (m[2] ? " " + m[2] : ""))
+    .replace(twoWeeksFromTonightPattern(), " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function extractMinutes(text) {
@@ -2518,15 +2521,58 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
-function extractWhen(text) {
-  const now = new Date();
-  if (/tonight/i.test(text)) {
+// "two weeks from tonight" contains tonight. The shorter check used to
+// persist today at 20:00 instead of fourteen days later at 20:00.
+const TWO_WEEKS_FROM_TONIGHT_SOURCE =
+  "\\b(?:two|2)\\s+weeks\\s+from\\s+tonight\\b";
+
+function twoWeeksFromTonightPattern() {
+  return new RegExp(TWO_WEEKS_FROM_TONIGHT_SOURCE, "gi");
+}
+
+// "not two weeks from tonight" must not win over a separately named night.
+// Keep the negation next to this occurrence so an earlier "not" / "can't"
+// does not cancel a later request, and a later "not" does not cancel this one.
+function twoWeeksFromTonightNegated(text, index) {
+  const before = text.slice(Math.max(0, index - 80), index);
+  const cut = Math.max(
+    before.lastIndexOf("."),
+    before.lastIndexOf("!"),
+    before.lastIndexOf("?"),
+    before.lastIndexOf("\n")
+  );
+  const sentence = cut >= 0 ? before.slice(cut + 1) : before;
+  return /\b(?:can(?:['’]t|not)|won['’]?t|don['’]?t|do\s+not|not)\b[^.!?\n]{0,24}$/i.test(
+    sentence
+  );
+}
+
+function requestsTwoWeeksFromTonight(text) {
+  const source = String(text || "");
+  const re = twoWeeksFromTonightPattern();
+  let match;
+  while ((match = re.exec(source))) {
+    if (!twoWeeksFromTonightNegated(source, match.index)) return true;
+  }
+  return false;
+}
+
+function extractWhen(text, now = new Date()) {
+  const source = String(text || "");
+  if (requestsTwoWeeksFromTonight(source)) {
+    const d = new Date(now);
+    d.setDate(d.getDate() + 14);
+    d.setHours(20, 0, 0, 0);
+    return d.toISOString();
+  }
+  const withoutPhrase = source.replace(twoWeeksFromTonightPattern(), " ");
+  if (/tonight/i.test(withoutPhrase)) {
     const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
   }
-  if (/tomorrow/i.test(text)) {
+  if (/tomorrow/i.test(withoutPhrase)) {
     const d = new Date(now); d.setDate(d.getDate() + 1); d.setHours(10, 0, 0, 0); return d.toISOString();
   }
-  if (/today/i.test(text)) {
+  if (/today/i.test(withoutPhrase)) {
     const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
   }
   return null;
