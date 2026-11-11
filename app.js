@@ -1420,7 +1420,10 @@ function extractActionTitle(text) {
     /(?:to\s+)?(walk|run|stretch|read|call|journal|meditate|cook|clean|tidy|shower|breathe|step outside|drink water|nap|message|ride|approach|enter|go to|stand near|sit in|attend)\s*([a-z0-9 '-]{0,40})/i
   );
   if (!m) return null;
-  return (m[1] + (m[2] ? " " + m[2] : "")).trim();
+  return (m[1] + (m[2] ? " " + m[2] : ""))
+    .replace(sixWeeksFromAnchorPattern(), " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function extractMinutes(text) {
@@ -1433,15 +1436,70 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
-function extractWhen(text) {
-  const now = new Date();
-  if (/tonight/i.test(text)) {
+// "six weeks from tonight/today/tomorrow" contains the shorter token.
+// Those checks used to persist the anchor itself (tonight at 20:00, today at
+// now+1h, tomorrow at 10:00) instead of forty-two days later — or
+// forty-three when the anchor is tomorrow.
+const SIX_WEEKS_FROM_ANCHOR_SOURCE =
+  "\\b(?:six|6)\\s+weeks\\s+from\\s+(tonight|today|tomorrow)\\b";
+
+function sixWeeksFromAnchorPattern() {
+  return new RegExp(SIX_WEEKS_FROM_ANCHOR_SOURCE, "gi");
+}
+
+// "not six weeks from tonight" must not win over a separately named day.
+// Keep the negation next to this occurrence so an earlier "not" / "can't"
+// does not cancel a later request, and a later "not" does not cancel this one.
+function sixWeeksPhraseNegated(text, index) {
+  const before = text.slice(Math.max(0, index - 80), index);
+  const cut = Math.max(
+    before.lastIndexOf("."),
+    before.lastIndexOf("!"),
+    before.lastIndexOf("?"),
+    before.lastIndexOf("\n")
+  );
+  const sentence = cut >= 0 ? before.slice(cut + 1) : before;
+  return /\b(?:can(?:['’]t|not)|won['’]?t|don['’]?t|do\s+not|not)\b[^.!?\n]{0,24}$/i.test(
+    sentence
+  );
+}
+
+function firstSixWeeksOffset(text) {
+  const source = String(text || "");
+  const re = sixWeeksFromAnchorPattern();
+  let match;
+  while ((match = re.exec(source))) {
+    if (sixWeeksPhraseNegated(source, match.index)) continue;
+    return { index: match.index, anchor: match[1].toLowerCase() };
+  }
+  return null;
+}
+
+function extractWhen(text, now = new Date()) {
+  const source = String(text || "");
+  const hit = firstSixWeeksOffset(source);
+  if (hit) {
+    const d = new Date(now);
+    if (hit.anchor === "tonight") {
+      d.setDate(d.getDate() + 42);
+      d.setHours(20, 0, 0, 0);
+    } else if (hit.anchor === "tomorrow") {
+      d.setDate(d.getDate() + 43);
+      d.setHours(10, 0, 0, 0);
+    } else {
+      d.setDate(d.getDate() + 42);
+      d.setHours(10, 0, 0, 0);
+    }
+    return d.toISOString();
+  }
+  const withoutPhrase = source.replace(sixWeeksFromAnchorPattern(), " ");
+  if (/tonight/i.test(withoutPhrase)) {
     const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
   }
-  if (/tomorrow/i.test(text)) {
+  if (/tomorrow/i.test(withoutPhrase)) {
     const d = new Date(now); d.setDate(d.getDate() + 1); d.setHours(10, 0, 0, 0); return d.toISOString();
   }
-  if (/today/i.test(text)) {
+  if (/today/i.test(withoutPhrase)) {
     const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
   }
   return null;
