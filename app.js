@@ -1420,7 +1420,10 @@ function extractActionTitle(text) {
     /(?:to\s+)?(walk|run|stretch|read|call|journal|meditate|cook|clean|tidy|shower|breathe|step outside|drink water|nap|message|ride|approach|enter|go to|stand near|sit in|attend)\s*([a-z0-9 '-]{0,40})/i
   );
   if (!m) return null;
-  return (m[1] + (m[2] ? " " + m[2] : "")).trim();
+  return (m[1] + (m[2] ? " " + m[2] : ""))
+    .replace(/\b(?:the\s+)?day\s+after\s+tomorrow\b/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function extractMinutes(text) {
@@ -1433,15 +1436,39 @@ function extractSuds(text) {
   return m ? Math.min(100, Number(m[1])) : null;
 }
 
-function extractWhen(text) {
-  const now = new Date();
-  if (/tonight/i.test(text)) {
+const DAY_AFTER_TOMORROW_RE = /\b(?:the\s+)?day\s+after\s+tomorrow\b/i;
+
+// "not the day after tomorrow" / "can't do the day after tomorrow" must not
+// win over a separately named day. Keep the negation next to the phrase so an
+// earlier "not" in the sentence does not cancel a real request.
+function dayAfterTomorrowNegated(text) {
+  return /\b(?:can(?:['’]t|not)|won['’]?t|don['’]?t|do\s+not|not)\b[^.!?\n]{0,24}(?:the\s+)?day\s+after\s+tomorrow\b/i.test(
+    text
+  );
+}
+
+function requestsDayAfterTomorrow(text) {
+  return DAY_AFTER_TOMORROW_RE.test(text) && !dayAfterTomorrowNegated(text);
+}
+
+function extractWhen(text, now = new Date()) {
+  const source = String(text || "");
+  // Check this before /tomorrow/. The shorter token is inside the phrase, so
+  // "schedule a walk the day after tomorrow" used to persist tomorrow.
+  if (requestsDayAfterTomorrow(source)) {
+    const d = new Date(now);
+    d.setDate(d.getDate() + 2);
+    d.setHours(10, 0, 0, 0);
+    return d.toISOString();
+  }
+  const withoutDayAfter = source.replace(new RegExp(DAY_AFTER_TOMORROW_RE.source, "gi"), " ");
+  if (/tonight/i.test(withoutDayAfter)) {
     const d = new Date(now); d.setHours(20, 0, 0, 0); return d.toISOString();
   }
-  if (/tomorrow/i.test(text)) {
+  if (/tomorrow/i.test(withoutDayAfter)) {
     const d = new Date(now); d.setDate(d.getDate() + 1); d.setHours(10, 0, 0, 0); return d.toISOString();
   }
-  if (/today/i.test(text)) {
+  if (/today/i.test(withoutDayAfter)) {
     const d = new Date(now); d.setHours(d.getHours() + 1, 0, 0, 0); return d.toISOString();
   }
   return null;
